@@ -25,9 +25,11 @@ mongoose.connect("mongodb+srv://soufian_node:soufianch@testnode.fblmhkz.mongodb.
 
  
 //Middlware
+app.use('/', express.static('uploads'));
 app.use(cors()) ; 
-app.use(bodyParse.urlencoded({extended : true})) ;
-app.use(bodyParse.json()) ;
+app.use(bodyParse.urlencoded({extended : false , limit: '25mb'})) ;
+
+app.use(bodyParse.json({limit: '25mb'})) ;
 app.use('/' , router) ;
 
 

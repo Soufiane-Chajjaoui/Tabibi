@@ -1,6 +1,12 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unused_import, non_constant_identifier_names, use_build_context_synchronously
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unused_import, non_constant_identifier_names, use_build_context_synchronously, sort_child_properties_last, prefer_typing_uninitialized_variables, deprecated_member_use
 
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:project_pfe/actions/Patient.dart';
 import 'package:project_pfe/auth/Log_in.dart';
 import 'package:project_pfe/auth/auth_doctor/signUp_two.dart';
@@ -15,6 +21,51 @@ class SingUp extends StatefulWidget {
 
 class _SingUpState extends State<SingUp> {
   final _formkey = GlobalKey<FormState>();
+  late Map<String, dynamic> filename = {};
+  var file;
+  void _opengallery() async {
+    file = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (file != null) {
+      print("it's ok");
+      File imagefile = File(file.path);
+      Uint8List fileBYtes = await imagefile.readAsBytesSync();
+      String base_file = base64.encode(fileBYtes);
+      
+      String extension = file.path.split('.').last;
+      filename.addAll(
+          {'base64': base_file, 'extension': file.path.split('.').last});
+    }
+  }
+
+  // String? image_based;
+  // String? extension;
+  // File? image;
+  // var _image;
+
+  // // Map<String, dynamic>? filename;
+
+  // var pickedimage = ImagePicker();
+
+  // setimage() async {
+  //   _image = await pickedimage.getImage(source: ImageSource.gallery);
+  //   if (_image != null) {
+  //     setState(() {
+  //       image = File(_image.path);
+  //     });
+  //     image_based = base64Encode(_image.readAsBytes());
+  //     print(image_based);
+  //     extension = _image.path.split('/').last;
+  //     print(extension);
+  //   }
+  // }
+
+  // Future<void> basecodePicture() async {
+  //   if (image != null) {
+  //     String base64 = base64Encode(image!.readAsBytesSync());
+  //     String nameImage = image!.path.split('/').last;
+  //     filename?.addAll({'base64': base64, 'nameImage': nameImage});
+  //   }
+  // }
 
   static final RegExp nameRegExp = RegExp('[a-zA-Z]');
   // data for doctor passing to page number 2
@@ -108,6 +159,51 @@ class _SingUpState extends State<SingUp> {
                                 key: _formkey,
                                 child: Column(
                                   children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 20, bottom: 12),
+                                      child: Stack(
+                                        clipBehavior: Clip.none,
+                                        children: [
+                                          InkWell(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              radius: 60,
+                                              onTap: () {
+                                                _opengallery();
+                                              },
+                                              child: ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        300.0),
+                                                child: file == null
+                                                    ? Image.asset(
+                                                        'images/pngwing.png',
+                                                        width: 100,
+                                                        height: 100,
+                                                        fit: BoxFit.cover,
+                                                      )
+                                                    : Image.file(
+                                                        width: 100,
+                                                        height: 100,
+                                                        File(file!.path),
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                              )),
+                                          Positioned(
+                                              top: 50,
+                                              left: 60,
+                                              child: IconButton(
+                                                  onPressed: () {},
+                                                  icon: Icon(
+                                                    Icons.camera,
+                                                    size: 30,
+                                                    color: Color.fromARGB(
+                                                        255, 64, 57, 98),
+                                                  ))),
+                                        ],
+                                      ),
+                                    ),
                                     Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 15, vertical: 4),
@@ -332,11 +428,14 @@ class _SingUpState extends State<SingUp> {
                                                     settings: RouteSettings(
                                                         arguments: data)));
                                           } else {
+                                            // await basecodePicture();
                                             await Patient.registre_patient(
                                                 controller_cni.text,
                                                 controller_tele.text,
                                                 controller_name.text,
-                                                controller_password.text);
+                                                controller_password.text,
+                                                filename['base64'],
+                                                filename['extension']);
                                             Navigator.of(context)
                                                 .push(MaterialPageRoute(
                                               builder: (BuildContext context) {

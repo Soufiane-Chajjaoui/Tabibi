@@ -1,8 +1,11 @@
+// ignore_for_file: unused_import, prefer_const_constructors
+
 import 'package:flutter/material.dart';
 // import 'package:project_pfe/start_Screen.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-
 import 'package:project_pfe/auth/SingUp.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+
 import 'package:project_pfe/choice_type.dart';
 import 'package:project_pfe/patient/homepage.dart';
 
@@ -11,6 +14,7 @@ import 'package:project_pfe/patient/homepage.dart';
 import 'package:project_pfe/auth/Log_in.dart';
 import 'package:project_pfe/patient/search_page.dart';
 import 'package:project_pfe/start_Screen.dart';
+import 'package:project_pfe/testshowImage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
@@ -28,6 +32,18 @@ class MyApp extends StatelessWidget {
   }) : super(key: key);
   // This widget is the root of your application.
   @override
+  void initState() {
+    // _checkConnectivity();
+  }
+
+  void _checkConnectivity() async {
+    var connection = await Connectivity().checkConnectivity();
+    print('this is check ' +
+        connection
+            .name); //this print none I will to use them in login & registre
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
@@ -36,8 +52,19 @@ class MyApp extends StatelessWidget {
       },
       theme: ThemeData(),
       //home: showhome ?homepage(): choise_type(),
-      home: const homepage(),
-      //home: const  SingUp(),
+      // we using stream for fetching data but if restart programm it return true and not show indecatorProgress
+      // so for eleminet this Problem use method _checkCOnnectivity()
+      home: StreamBuilder<ConnectivityResult>(
+        stream: Connectivity().onConnectivityChanged,
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          return Scaffold(
+            body: snapshot.data == ConnectivityResult.none
+                ? Center(child: CircularProgressIndicator())
+                : choise_type(),
+          );
+        },
+      ),
+      // home:   homepage(),
       debugShowCheckedModeBanner: false,
     );
   }

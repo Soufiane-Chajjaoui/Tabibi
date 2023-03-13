@@ -11,8 +11,7 @@ class _searchPageState extends State<searchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-              backgroundColor: Color(0xff99d8d7),
-
+      backgroundColor: Color.fromARGB(208, 227, 245, 245),
       body: CustomScrollView(
         //double? cacheExtent,
         slivers: [
@@ -22,7 +21,7 @@ class _searchPageState extends State<searchPage> {
             //     bottom: Radius.circular(40),
             //   ),
             // ),
-            expandedHeight: 240,
+            expandedHeight: 200,
             backgroundColor: Color.fromARGB(255, 0, 0, 0),
             centerTitle: true,
             forceElevated: true,
@@ -40,6 +39,7 @@ class _searchPageState extends State<searchPage> {
                   color: Color.fromARGB(255, 112, 111, 106),
                   padding: EdgeInsets.symmetric(horizontal: 30),
                   alignment: Alignment.centerLeft,
+                  // ignore: prefer_const_constructors
                   child: Text(
                     'Recherche',
                     style: TextStyle(
@@ -51,10 +51,10 @@ class _searchPageState extends State<searchPage> {
               ),
               centerTitle: true,
               title: SizedBox(
-                height: 60,
+                height: 50,
                 width: MediaQuery.of(context).size.width / 1.2,
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 20),
+                  padding: const EdgeInsets.only(top: 10),
                   child: Wrap(
                     children: [
                       TextFormField(

@@ -1,6 +1,6 @@
-// ignore_for_file: prefer_const_constructors, camel_case_types, unused_local_variable
-
+// ignore_for_file: prefer_const_constructors, camel_case_types, unused_local_variable, sort_child_properties_last
 import 'package:flutter/material.dart';
+import 'package:project_pfe/auth/Log_in.dart';
 import 'package:project_pfe/patient/Profile.dart';
 import 'package:project_pfe/patient/search_page.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
@@ -24,8 +24,6 @@ class _homepageState extends State<homepage> {
   ];
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-
     return Scaffold(
       // drawer: Drawer(
       //   width: width / 1.7,
@@ -44,14 +42,16 @@ class _homepageState extends State<homepage> {
       extendBody: true,
       body: pages[pageIndex],
       backgroundColor: Color(0xff99d8d7),
-      bottomNavigationBar: buildnavbottom(context),
+      floatingActionButton: buildnavbottom(context),
     );
   }
 
   Container buildnavbottom(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+
     return Container(
       height: 50,
-      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      margin: EdgeInsets.only(left: width / 10.5),
       decoration: BoxDecoration(
           color: Color(0xff3279B6), borderRadius: BorderRadius.circular(40)),
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
@@ -144,7 +144,6 @@ class accueil extends StatefulWidget {
 }
 
 class _accueilState extends State<accueil> {
-  
   _callNumber() async {
     const number = '15'; //set the number here
     bool? res = await FlutterPhoneDirectCaller.callNumber(number);
@@ -153,182 +152,133 @@ class _accueilState extends State<accueil> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xff99d8d7),
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            // shape: RoundedRectangleBorder(
-            //   borderRadius: BorderRadius.vertical(
-            //     bottom: Radius.circular(40),
-            //   ),
-            // ),
-            expandedHeight: 240,
-            backgroundColor: Color.fromARGB(255, 241, 66, 66),
-            centerTitle: true,
-            actions: [
-              IconButton(
-                  onPressed: () {},
-                  icon: Icon(
-                    Icons.notifications_none_rounded,
-                    size: 30,
-                  ))
-            ],
-            forceElevated: true,
-            elevation: 4,
-            floating: true,
-            pinned: true,
-            flexibleSpace: FlexibleSpaceBar(
-                collapseMode: CollapseMode.pin,
-                background: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(20),
-                        bottomRight: Radius.circular(20)),
-                    color: Colors.transparent,
+      backgroundColor: Color.fromARGB(208, 227, 245, 245),
+      body: SafeArea(
+        child: NestedScrollView(
+          //floatHeaderSlivers: true,
+          headerSliverBuilder: (context, innerBoxIsScrolled) => [
+            SliverAppBar(
+              // shape: RoundedRectangleBorder(
+              //   borderRadius: BorderRadius.vertical(
+              //     bottom: Radius.circular(40),
+              //   ),
+              // ),
+
+              expandedHeight: 200,
+              backgroundColor: Color.fromARGB(255, 236, 193, 193),
+              centerTitle: true,
+              actions: [
+                IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      Icons.notifications_none_rounded,
+                      size: 30,
+                    ))
+              ],
+              forceElevated: true,
+              elevation: 4,
+              pinned: true,
+              floating: false,
+              flexibleSpace: FlexibleSpaceBar(
+                  collapseMode: CollapseMode.pin,
+                  background: Container(
+                    decoration: BoxDecoration(
+                      // borderRadius: BorderRadius.only(
+                      //     bottomLeft: Radius.circular(20),
+                      //     bottomRight: Radius.circular(20)),
+                      color: Colors.transparent,
+                    ),
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            onPrimary: Color.fromARGB(255, 64, 255, 137),
+                            primary: Color.fromARGB(185, 205, 204, 202)),
+                        onPressed: () => _callNumber(),
+                        child: Icon(
+                          color: Colors.black,
+                          Icons.call_outlined,
+                          size: 50,
+                        )),
                   ),
-                  child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          onPrimary: Colors.lightBlueAccent[200],
-                          primary: Color.fromARGB(255, 112, 111, 106)),
-                      onPressed: () => _callNumber(),
-                      child: Icon(
-                        color: Colors.black,
-                        Icons.call_outlined,
-                        size: 50,
+                  centerTitle: true,
+                  title: Text(
+                    'Emergency help needed?',
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Poppins'),
+                  )),
+            ),
+          ],
+          body: GridView.count(
+            crossAxisCount: 2,
+            children: List.generate(12, (index) {
+              return IconButton(
+                onPressed: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (BuildContext context) {
+                    return Log_in();
+                  }));
+                },
+                icon: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: Color.fromARGB(255, 199, 106, 106),
+                  ),
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Image.asset(
+                              'images/logo_tabibi.png',
+                              alignment: Alignment.topCenter,
+                            ),
+                            Text(
+                              'Lah yshafina',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Poppins'),
+                            )
+                          ],
+                        ),
                       )),
+                  height: 150,
+                  margin: EdgeInsets.all(1),
                 ),
-                centerTitle: true,
-                title: Text(
-                  'Emergency help needed?',
-                  style: TextStyle(fontSize: 19),
-                )),
+              );
+            }),
           ),
-          SliverToBoxAdapter(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(
-                    child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: Color.fromARGB(255, 199, 106, 106),
-                  ),
-                  height: 150,
-                  margin: EdgeInsets.all(12),
-                )),
-                Expanded(
-                    child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: Color.fromARGB(255, 199, 106, 106),
-                  ),
-                  height: 150,
-                  margin: EdgeInsets.all(12),
-                )),
-              ],
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(
-                    child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: Color.fromARGB(255, 199, 106, 106),
-                  ),
-                  height: 150,
-                  margin: EdgeInsets.all(12),
-                )),
-                Expanded(
-                    child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: Color.fromARGB(255, 199, 106, 106),
-                  ),
-                  height: 150,
-                  margin: EdgeInsets.all(12),
-                )),
-              ],
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(
-                    child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: Color.fromARGB(255, 199, 106, 106),
-                  ),
-                  height: 150,
-                  margin: EdgeInsets.all(12),
-                )),
-                Expanded(
-                    child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: Color.fromARGB(255, 199, 106, 106),
-                  ),
-                  height: 150,
-                  margin: EdgeInsets.all(12),
-                )),
-              ],
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(
-                    child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: Color.fromARGB(255, 199, 106, 106),
-                  ),
-                  height: 150,
-                  margin: EdgeInsets.all(12),
-                )),
-                Expanded(
-                    child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: Color.fromARGB(255, 199, 106, 106),
-                  ),
-                  height: 150,
-                  margin: EdgeInsets.all(12),
-                )),
-              ],
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(
-                    child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: Color.fromARGB(255, 199, 106, 106),
-                  ),
-                  height: 150,
-                  margin: EdgeInsets.all(12),
-                )),
-                Expanded(
-                    child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: Color.fromARGB(255, 199, 106, 106),
-                  ),
-                  height: 150,
-                  margin: EdgeInsets.all(12),
-                )),
-              ],
-            ),
-          ),
-        ],
+          // body: ListView.builder(
+          //     itemCount: 40,
+          //     itemBuilder: (context, i) {
+          //       return Row(
+          //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          //         children: [
+          //           Expanded(
+          //               child: Container(
+          //             decoration: BoxDecoration(
+          //               borderRadius: BorderRadius.circular(12),
+          //               color: Color.fromARGB(255, 199, 106, 106),
+          //             ),
+          //             height: 150,
+          //             margin: EdgeInsets.all(12),
+          //           )),
+          //           Expanded(
+          //               child: Container(
+          //             decoration: BoxDecoration(
+          //               borderRadius: BorderRadius.circular(12),
+          //               color: Color.fromARGB(255, 199, 106, 106),
+          //             ),
+          //             height: 150,
+          //             margin: EdgeInsets.all(12),
+          //           )),
+          //         ],
+          //       );
+          //     }),
+        ),
       ),
     );
   }

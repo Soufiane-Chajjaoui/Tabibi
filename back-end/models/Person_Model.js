@@ -28,9 +28,7 @@ const PersonSchema = new mongoose.Schema({
       type : String ,
       enum : ['Male' , 'Female']
   } ,
-  avatar : {
-    type : String 
-  }
+
   });
 
    /*+++++++++++++++++++++++++++++++++++ Doctor Schema parent +++++++++++++++++++++++++++++++++++++++*/
@@ -46,7 +44,9 @@ const PersonSchema = new mongoose.Schema({
   } ,{timestamps : true});
    /*+++++++++++++++++++++++++++++++++++ Patient Schema Child +++++++++++++++++++++++++++++++++++++++*/
   const PatientSchema = extendSchema(PersonSchema , {
-
+    avatar : {
+        type : String 
+      }
   } , {timestamps : true}) ;
 
   const Person = mongoose.model('Person',PersonSchema)
