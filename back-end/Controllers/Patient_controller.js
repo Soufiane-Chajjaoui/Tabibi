@@ -1,3 +1,5 @@
+
+
 const { Patient } = require('../models/Person_Model') ;
 const fs = require('fs');
 const register_patient = async (req , res)=>  {
@@ -12,16 +14,16 @@ const register_patient = async (req , res)=>  {
             num_tele : req.body.num_tele ,
         }
        )
-       if(req.body.avatar == null){
-        patient.avatar = "pngwing.png" ;
+       if(req.body.avatar == 'vide'){
+        patient.avatar = "1678653984379.jpg" ;
        }
        else { 
         patient.avatar = namefile ; 
         const readfile = Buffer.from(req.body.avatar , 'base64') ;
          
-        fs.writeFileSync('./uploads/'+namefile,readfile);
+        fs.writeFileSync('./uploads/Person/'+namefile,readfile);
 
-           console.log(readfile);
+          // console.log(readfile);
       // const imgdata = req.body.avatar;
 
       // const base64Data = imgdata.replace(/^data:([A-Za-z-+/]+);base64,/, '');
@@ -32,7 +34,7 @@ const register_patient = async (req , res)=>  {
     //     res.send("OK");
        }
 
-    patient.save().then( result =>  {res.json({response : 'patient has been added'})  
+    patient.save().then( result =>  {res.status(200).json({response : 'patient has been added'})  
      console.log('patient has been added')}
      ).catch(err => console.log(err) )
 

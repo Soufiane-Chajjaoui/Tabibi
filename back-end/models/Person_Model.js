@@ -1,7 +1,7 @@
  const { default: mongoose } = require('mongoose');
  const extendSchema = require('mongoose-extend-schema');
 
-   /*+++++++++++++++++++++++++++++++++++ Person Schema parent +++++++++++++++++++++++++++++++++++++++*/
+   /*+++++++++++++++++++++++++++++++++++ Person Schema Model Parent +++++++++++++++++++++++++++++++++++++++*/
 
 const PersonSchema = new mongoose.Schema({
     id : {

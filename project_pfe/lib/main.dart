@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 // import 'package:project_pfe/start_Screen.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:project_pfe/Admin/Urgance/addUrgance.dart';
+import 'package:project_pfe/Admin/Urgance/displayUrgance.dart';
 import 'package:project_pfe/auth/SingUp.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
@@ -54,17 +56,17 @@ class MyApp extends StatelessWidget {
       //home: showhome ?homepage(): choise_type(),
       // we using stream for fetching data but if restart programm it return true and not show indecatorProgress
       // so for eleminet this Problem use method _checkCOnnectivity()
-      home: StreamBuilder<ConnectivityResult>(
-        stream: Connectivity().onConnectivityChanged,
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          return Scaffold(
-            body: snapshot.data == ConnectivityResult.none
-                ? Center(child: CircularProgressIndicator())
-                : choise_type(),
-          );
-        },
-      ),
-      // home:   homepage(),
+      // home: StreamBuilder<ConnectivityResult>(
+      //   stream: Connectivity().onConnectivityChanged,
+      //   builder: (BuildContext context, AsyncSnapshot snapshot) {
+      //     return Scaffold(
+      //       body: snapshot.data == ConnectivityResult.none
+      //           ? Center(child: CircularProgressIndicator())
+      //           : choise_type(),
+      //     );
+      //   },
+      // ),
+      home: displayUrgance(),
       debugShowCheckedModeBanner: false,
     );
   }

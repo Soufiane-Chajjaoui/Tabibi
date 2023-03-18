@@ -17,7 +17,8 @@ mongoose.set('strictQuery', true);
 
 mongoose.connect("mongodb+srv://soufian_node:soufianch@testnode.fblmhkz.mongodb.net/project_pfe?retryWrites=true&w=majority", {
     useNewUrlParser : true ,
-    useUnifiedTopology : true 
+    useUnifiedTopology : true , 
+    dbName : 'project_pfe'
 }) .then(() => app.listen(port))
  .catch((error) => {
    console.error('Error connecting to database: ', error);

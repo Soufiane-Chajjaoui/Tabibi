@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -9,14 +11,12 @@ class MyImageListWidget extends StatefulWidget {
 }
 
 class _MyImageListWidgetState extends State<MyImageListWidget> {
-  List<dynamic> _images = [
-    'https://picsum.photos/seed/picsum/200/300' ,'https://picsum.photos/200'
-  ];
+  List<dynamic> _images = [];
 
   @override
   void initState() {
     super.initState();
-  //  _loadImages();
+    _loadImages();
   }
 
   Future _loadImages() async {
@@ -44,10 +44,12 @@ class _MyImageListWidgetState extends State<MyImageListWidget> {
             return Container(
               width: 50,
               height: 200,
-              child: Image.network(
-                 _images[index] ,
-                // base64.decode(_images[index]['data']),
-                fit: BoxFit.fitWidth,
+              child: CircleAvatar(
+                radius: 5,
+                child: CircularProgressIndicator(),
+                foregroundImage: MemoryImage(
+                  base64.decode(_images[index]['data']),
+                ),
               ),
             );
           },

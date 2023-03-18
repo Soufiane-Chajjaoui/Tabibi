@@ -48,8 +48,8 @@ class Patient extends Person {
       String? tele,
       String? complete_name,
       String? password,
-      String image,
-      String extension) async {
+      String? image,
+      String? extension) async {
     var url = Uri.parse("http://127.0.0.1:8080/signup_patient")
         .replace(host: "192.168.1.3");
     var res = await http.post(url, headers: <String, String>{
@@ -59,8 +59,8 @@ class Patient extends Person {
       'CNI': cni,
       'num_tele': tele,
       'password': password,
-      'avatar': image,
-      'extension': extension
+      'avatar': image ?? 'vide',
+      'extension': extension  ?? 'vide'
     });
     if (res.statusCode == 200) {
       print(res.body);

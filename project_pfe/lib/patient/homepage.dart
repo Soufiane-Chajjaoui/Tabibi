@@ -1,9 +1,12 @@
 // ignore_for_file: prefer_const_constructors, camel_case_types, unused_local_variable, sort_child_properties_last
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:project_pfe/auth/Log_in.dart';
 import 'package:project_pfe/patient/Profile.dart';
 import 'package:project_pfe/patient/search_page.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
+import 'package:http/http.dart' as http;
 
 // ignore: camel_case_types
 class homepage extends StatefulWidget {
@@ -144,6 +147,26 @@ class accueil extends StatefulWidget {
 }
 
 class _accueilState extends State<accueil> {
+  List<dynamic> _images = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadImages();
+  }
+
+  Future _loadImages() async {
+    final response = await http.get(
+        Uri.parse('http://127.0.0.1:8080/images').replace(host: "192.168.1.3"));
+    if (response.statusCode == 200) {
+      setState(() {
+        _images = jsonDecode(response.body);
+      });
+    } else {
+      // Handle error
+    }
+  }
+
   _callNumber() async {
     const number = '15'; //set the number here
     bool? res = await FlutterPhoneDirectCaller.callNumber(number);
@@ -209,47 +232,51 @@ class _accueilState extends State<accueil> {
                   )),
             ),
           ],
-          body: GridView.count(
-            crossAxisCount: 2,
-            children: List.generate(12, (index) {
-              return IconButton(
-                onPressed: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (BuildContext context) {
-                    return Log_in();
-                  }));
-                },
-                icon: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: Color.fromARGB(255, 199, 106, 106),
-                  ),
-                  child: ClipRRect(
+          body: Padding(
+            padding: EdgeInsetsDirectional.only(top: 20),
+            child: GridView.count(
+              crossAxisCount: 2,
+              children: List.generate(_images.length, (index) {
+                return IconButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (BuildContext context) {
+                      return Log_in();
+                    }));
+                  },
+                  icon: Container(
+                    decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Image.asset(
-                              'images/logo_tabibi.png',
-                              alignment: Alignment.topCenter,
-                            ),
-                            Text(
-                              'Lah yshafina',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Poppins'),
-                            )
-                          ],
+                      color: Color.fromARGB(255, 199, 106, 106),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.memory(
+                            
+                            base64.decode(_images[index]['data']),
+                            fit: BoxFit.cover,
+                            width: 200,
+                            height: 100,
+                          ),
                         ),
-                      )),
-                  height: 150,
-                  margin: EdgeInsets.all(1),
-                ),
-              );
-            }),
+                        Text(
+                          'Lah yshafina',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Poppins'),
+                        )
+                      ],
+                    ),
+                    height: 150,
+                    margin: EdgeInsets.all(1),
+                  ),
+                );
+              }),
+            ),
           ),
           // body: ListView.builder(
           //     itemCount: 40,

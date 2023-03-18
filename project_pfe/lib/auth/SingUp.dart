@@ -7,6 +7,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
 import 'package:project_pfe/actions/Patient.dart';
 import 'package:project_pfe/auth/Log_in.dart';
 import 'package:project_pfe/auth/auth_doctor/signUp_two.dart';
@@ -23,19 +24,36 @@ class _SingUpState extends State<SingUp> {
   final _formkey = GlobalKey<FormState>();
   late Map<String, dynamic> filename = {};
   var file;
+  File? imagefile;
   void _opengallery() async {
     file = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (file != null) {
-      print("it's ok");
-      File imagefile = File(file.path);
-      Uint8List fileBYtes = await imagefile.readAsBytesSync();
+      setState(() {
+        imagefile = File(file.path);
+      });
+    }
+    UploadImage();
+  }
+
+  void _opencamera() async {
+    file = await ImagePicker().pickImage(source: ImageSource.camera);
+    if (file != null) {
+      setState(() {
+        imagefile = File(file.path);
+      });
+    }
+    UploadImage();
+  }
+
+  void UploadImage() async {
+     if (imagefile == null) return;
+       Uint8List fileBYtes = await imagefile!.readAsBytesSync();
       String base_file = base64.encode(fileBYtes);
-      
+
       String extension = file.path.split('.').last;
       filename.addAll(
           {'base64': base_file, 'extension': file.path.split('.').last});
     }
-  }
 
   // String? image_based;
   // String? extension;
@@ -170,7 +188,60 @@ class _SingUpState extends State<SingUp> {
                                                   BorderRadius.circular(20),
                                               radius: 60,
                                               onTap: () {
-                                                _opengallery();
+                                                showModalBottomSheet(
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.vertical(
+                                                                top: Radius
+                                                                    .circular(
+                                                                        20))),
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return Container(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                top: 10),
+                                                        height: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .height /
+                                                            5,
+                                                        child: Row(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .center,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceAround,
+                                                          children: [
+                                                            Column(
+                                                              children: [
+                                                                IconButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                      _opencamera();
+                                                                    },
+                                                                    icon: Icon(Icons
+                                                                        .camera_alt_rounded)),
+                                                                Text('Camera')
+                                                              ],
+                                                            ),
+                                                            Column(
+                                                              children: [
+                                                                IconButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                      _opengallery();
+                                                                    },
+                                                                    icon: Icon(Icons
+                                                                        .photo_album_rounded)),
+                                                                Text('gallery')
+                                                              ],
+                                                            )
+                                                          ],
+                                                        ),
+                                                      );
+                                                    });
                                               },
                                               child: ClipRRect(
                                                 borderRadius:
@@ -186,7 +257,7 @@ class _SingUpState extends State<SingUp> {
                                                     : Image.file(
                                                         width: 100,
                                                         height: 100,
-                                                        File(file!.path),
+                                                        File(imagefile!.path),
                                                         fit: BoxFit.cover,
                                                       ),
                                               )),
