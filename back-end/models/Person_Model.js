@@ -40,7 +40,10 @@ const PersonSchema = new mongoose.Schema({
   speciality : {
       type : String ,
       require : true 
-  } ,
+  } , 
+  avatar : {
+    type : String 
+  }
   } ,{timestamps : true});
    /*+++++++++++++++++++++++++++++++++++ Patient Schema Child +++++++++++++++++++++++++++++++++++++++*/
   const PatientSchema = extendSchema(PersonSchema , {

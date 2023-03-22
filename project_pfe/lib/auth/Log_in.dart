@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unused_local_variable
 
 import 'package:flutter/material.dart';
+import 'package:project_pfe/actions/Doctor.dart';
 import 'package:project_pfe/actions/Patient.dart';
 import 'package:project_pfe/auth/validations.dart';
 import 'package:project_pfe/patient/homepage.dart';
@@ -19,10 +20,32 @@ class _Log_inState extends State<Log_in> {
 
   var controller_password = TextEditingController();
   var controller_tele = TextEditingController();
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> snack(
+      BuildContext context) {
+    return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      backgroundColor: Colors.cyan[300],
+      content: const Text(
+        "Password incorrect. try again Or click 'Forget Password'",
+        style: TextStyle(
+            color: Color.fromARGB(255, 88, 63, 112),
+            fontWeight: FontWeight.w200,
+            fontFamily: 'Poppins'),
+      ),
+      duration: const Duration(milliseconds: 3000),
+      width: 280.0, // Width of the SnackBar.
+      padding: const EdgeInsets.all(15 // Inner padding for SnackBar content.
+          ),
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+    ));
+  }
 
   @override
   Widget build(BuildContext context) {
-    dynamic login = ModalRoute.of(context)?.settings.arguments;
+    dynamic email = ModalRoute.of(context)?.settings.arguments;
+    print(email);
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -83,9 +106,11 @@ class _Log_inState extends State<Log_in> {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 15, vertical: 10),
                                     child: TextFormField(
-                                      keyboardType: TextInputType.phone,
+                                      keyboardType: email['person'] == 'doctor'
+                                          ? TextInputType.emailAddress
+                                          : TextInputType.phone,
                                       validator: (value) =>
-                                          validatetele(value!),
+                                       email['person'] == 'doctor' ? validateEmail(value!) : validatetele(value!),
                                       controller: controller_tele,
                                       cursorHeight: 30,
                                       decoration: InputDecoration(
@@ -198,44 +223,33 @@ class _Log_inState extends State<Log_in> {
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(40)),
-                                      // background (button) color
-                                      // foreground (text) color
                                     ),
                                     onPressed: () async {
                                       if (_formKey.currentState!.validate()) {
-                                        if (await Patient.login_patient(
-                                            controller_tele.text,
-                                            controller_password.text)) {
-                                          Navigator.pushReplacement(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: ((context) =>
-                                                      homepage())));
+                                        if (email['person'] != 'doctor') {
+                                          if (await Patient.login_patient(
+                                              controller_tele.text,
+                                              controller_password.text)) {
+                                            Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: ((context) =>
+                                                        homepage())));
+                                          } else {
+                                            snack(context);
+                                          }
                                         } else {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(SnackBar(
-                                            backgroundColor: Colors.cyan[300],
-                                            content: const Text(
-                                              "Password incorrect. try again Or click 'Forget Password'",
-                                              style: TextStyle(
-                                                  color: Color.fromARGB(
-                                                      255, 88, 63, 112),
-                                                  fontWeight: FontWeight.w200,
-                                                  fontFamily: 'Poppins'),
-                                            ),
-                                            duration: const Duration(
-                                                milliseconds: 3000),
-                                            width:
-                                                280.0, // Width of the SnackBar.
-                                            padding: const EdgeInsets.all(
-                                                15 // Inner padding for SnackBar content.
-                                                ),
-                                            behavior: SnackBarBehavior.floating,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10.0),
-                                            ),
-                                          ));
+                                          if (await Doctor.login_doctor(
+                                              controller_tele.text,
+                                              controller_password.text)) {
+                                            Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: ((context) =>
+                                                        homepage())));
+                                          } else
+                                            snack(context);
+                                          print('do');
                                         }
                                       }
 
@@ -267,7 +281,7 @@ class _Log_inState extends State<Log_in> {
                               ),
                               Expanded(
                                   child: Container(
-                                      child: Text(' Or Sign in with'))),
+                                      child: Text('Or Sign in with'))),
                               Expanded(
                                 flex: 1,
                                 child: Divider(

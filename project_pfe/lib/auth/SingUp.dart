@@ -22,7 +22,7 @@ class SingUp extends StatefulWidget {
 
 class _SingUpState extends State<SingUp> {
   final _formkey = GlobalKey<FormState>();
-  late Map<String, dynamic> filename = {};
+  late Map<String, dynamic> filename = {'base64': 'vide', 'extension': 'vide'};
   var file;
   File? imagefile;
   void _opengallery() async {
@@ -46,14 +46,14 @@ class _SingUpState extends State<SingUp> {
   }
 
   void UploadImage() async {
-     if (imagefile == null) return;
-       Uint8List fileBYtes = await imagefile!.readAsBytesSync();
-      String base_file = base64.encode(fileBYtes);
+    if (imagefile == null) return;
+    Uint8List fileBYtes = await imagefile!.readAsBytesSync();
+    String base_file = base64.encode(fileBYtes);
 
-      String extension = file.path.split('.').last;
-      filename.addAll(
-          {'base64': base_file, 'extension': file.path.split('.').last});
-    }
+    String extension = file.path.split('.').last;
+    filename
+        .addAll({'base64': base_file, 'extension': file.path.split('.').last});
+  }
 
   // String? image_based;
   // String? extension;
@@ -100,7 +100,8 @@ class _SingUpState extends State<SingUp> {
         'name': controller_name.text,
         'cni': controller_cni.text,
         'tele': controller_tele.text,
-        'password': controller_password
+        'password': controller_password.text,
+        "data": filename
       });
     });
   }
@@ -477,30 +478,78 @@ class _SingUpState extends State<SingUp> {
                                                     Radius.circular(20)))),
                                       ),
                                     ),
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        primary: Color(0xFF3279B6),
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(40)),
-                                        // background (button) color
-                                        // foreground (text) color
-                                      ),
-                                      onPressed: () async {
-                                        if (_formkey.currentState!.validate()) {
-                                          if (type == 'doctor') {
-                                            passingto2();
-                                            Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                    builder:
-                                                        (BuildContext context) {
-                                                      return SignUp_two();
-                                                    },
-                                                    settings: RouteSettings(
-                                                        arguments: data)));
-                                          } else {
-                                            // await basecodePicture();
-                                            await Patient.registre_patient(
+                                    Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 15, vertical: 4),
+                                        child: type == 'doctor'
+                                            ? Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  TextButton(
+                                                      onPressed: () async {
+                                                        if (_formkey
+                                                            .currentState!
+                                                            .validate()) {
+                                                          if (type ==
+                                                              'doctor') {
+                                                            passingto2();
+                                                            print(filename);
+                                                            Navigator.of(context).push(
+                                                                MaterialPageRoute(
+                                                                    builder:
+                                                                        (BuildContext
+                                                                            context) {
+                                                                      return SignUp_two();
+                                                                    },
+                                                                    settings: RouteSettings(
+                                                                        arguments:
+                                                                            data)));
+                                                          }
+                                                        }
+
+                                                        // Navigator.of(context).pushNamed
+                                                      },
+                                                      child: Row(
+                                                         children: [
+                                                          Text(
+                                                            'Next',
+                                                            textAlign: TextAlign.end,
+                                                            style: TextStyle(
+                                                                fontSize: 20,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                fontFamily:
+                                                                    'Poppins_Reguler'),
+                                                          ),
+                                                          Icon(
+                                                            Icons
+                                                                .navigate_next_rounded,
+                                                            size: 30,
+                                                          )
+                                                        ],
+                                                      ))
+                                                ],
+                                              )
+                                            : Container(
+                                                alignment: Alignment.center,
+                                                child: ElevatedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    primary: Color(0xFF3279B6),
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        40)),
+                                                    // background (button) color
+                                                    // foreground (text) color
+                                                  ),
+                                                  onPressed: () async {
+                                                    if (_formkey.currentState!.validate())  {
+                                                await Patient.registre_patient(
                                                 controller_cni.text,
                                                 controller_tele.text,
                                                 controller_name.text,
@@ -513,21 +562,22 @@ class _SingUpState extends State<SingUp> {
                                                 return Log_in();
                                               },
                                             ));
-                                          }
-                                        }
-
-                                        // Navigator.of(context).pushNamed
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(
-                                          "Sign in",
-                                          style: TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.w400),
-                                        ),
-                                      ),
-                                    ),
+                                                  }
+                                                  },
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: Text(
+                                                      "Sing Up",
+                                                      style: TextStyle(
+                                                          fontSize: 20,
+                                                          fontWeight:
+                                                              FontWeight.w400),
+                                                    ),
+                                                  ),
+                                                ),
+                                              )),
                                   ],
                                 )),
                             Padding(
@@ -544,7 +594,7 @@ class _SingUpState extends State<SingUp> {
                                 ),
                                 Expanded(
                                     child: SizedBox(
-                                  child: Text(' Or Sign in with'),
+                                  child: Text('Or Sign in with'),
                                   width: double.infinity,
                                 )),
                                 Expanded(
@@ -587,8 +637,14 @@ class _SingUpState extends State<SingUp> {
                                 ),
                                 TextButton(
                                     onPressed: () {
-                                      Navigator.of(context)
-                                          .pushReplacementNamed('Log_in');
+                                
+                                          Navigator.of(context)
+                                                .push(MaterialPageRoute(
+                                              builder: (BuildContext context) {
+                                                return Log_in();
+                                              },
+                                              settings: type == 'doctor'  ?  RouteSettings(arguments: {'person':'doctor'} ) : RouteSettings(arguments: {'person':''} ) 
+                                            ) );
                                     },
                                     child: Text(
                                       'Log in',

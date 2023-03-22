@@ -1,6 +1,10 @@
 // ignore_for_file: prefer_const_constructors
-
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:project_pfe/actions/Doctor.dart';
+import 'package:project_pfe/auth/Log_in.dart';
+import 'package:project_pfe/auth/validations.dart';
 
 class SignUp_two extends StatefulWidget {
   const SignUp_two({super.key});
@@ -10,13 +14,15 @@ class SignUp_two extends StatefulWidget {
 }
 
 class _SignUp_twoState extends State<SignUp_two> {
-    final _formkey = GlobalKey<FormState>();
-
+  final _formkey = GlobalKey<FormState>();
+  var controller_email = TextEditingController();
   @override
   Widget build(BuildContext context) {
     dynamic fromPageOne = ModalRoute.of(context)?.settings.arguments;
 
+    // print(!fromPageOne['data']);
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 255, 255, 255),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Stack(
@@ -53,10 +59,11 @@ class _SignUp_twoState extends State<SignUp_two> {
                   child: Column(
                     children: [
                       Container(
-                        margin: const EdgeInsets.only(top: 20),
+                        padding: const EdgeInsets.only(top: 1, bottom: 20),
                         child: Column(children: [
                           Text(
-                             fromPageOne['name']+' to Back !',
+                            fromPageOne['name'] + 'Choisissez votre Speciality',
+                            textAlign: TextAlign.center,
                             style: TextStyle(
                                 color: Color(0xFF034277),
                                 fontFamily: 'Poppins',
@@ -76,6 +83,10 @@ class _SignUp_twoState extends State<SignUp_two> {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 15, vertical: 10),
                                     child: TextFormField(
+                                      keyboardType: TextInputType.emailAddress,
+                                      validator: (value) =>
+                                          validateEmail(value!),
+                                      controller: controller_email,
                                       cursorHeight: 30,
                                       decoration: InputDecoration(
                                           enabledBorder: OutlineInputBorder(
@@ -118,83 +129,171 @@ class _SignUp_twoState extends State<SignUp_two> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
-                                        horizontal: 15, vertical: 5),
-                                    child: TextFormField(
-                                      cursorHeight: 30,
+                                        vertical: 10, horizontal: 15),
+                                    child: DropdownButtonFormField2(
                                       decoration: InputDecoration(
-                                          enabledBorder: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(16),
-                                              borderSide: BorderSide(
-                                                  color: Color(0xFF034277))),
-                                          focusedBorder: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(16),
-                                              borderSide: BorderSide(
-                                                  color: Colors.blue)),
-                                          errorBorder: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(16),
-                                              borderSide: BorderSide(
-                                                  color: Colors.red)),
-                                          focusedErrorBorder:
-                                              OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(16),
-                                                  borderSide: BorderSide(
-                                                      color: Colors.red)),
-                                          prefixIcon: Icon(Icons.password),
-                                          prefixIconColor: Color(0xFF034277),
-                                          contentPadding: EdgeInsets.all(10),
-                                          label: Text(
-                                            'Password',
-                                            style: TextStyle(
-                                                color: Color(0xFF034277),
-                                                fontFamily: 'PoppinsExtraLight',
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w600),
-                                          ),
-                                          border: OutlineInputBorder(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(20)))),
+                                        errorBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                            borderSide: BorderSide(
+                                                color: Colors.red,
+                                                width: 1.5,
+                                                style: BorderStyle.solid)),
+                                        //Add isDense true and zero Padding.
+                                        //Add Horizontal padding using buttonPadding and Vertical padding by increasing buttonHeight instead of add Padding here so that The whole TextField Button become clickable, and also the dropdown menu open under The whole TextField Button.
+                                        isDense: true,
+                                        contentPadding: EdgeInsets.zero,
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        //Add more decoration as you want here
+                                        //Add label If you want but add hint outside the decoration to be aligned in the button perfectly.
+                                      ),
+                                      hint: const Text(
+                                        'Select Your Speciality',
+                                        style: TextStyle(fontSize: 14),
+                                      ),
+                                      items: Doctor.speciality
+                                          .map((item) =>
+                                              DropdownMenuItem<String>(
+                                                value: item,
+                                                child: Text(
+                                                  item,
+                                                  style: const TextStyle(
+                                                    fontSize: 14,
+                                                  ),
+                                                ),
+                                              ))
+                                          .toList(),
+                                      validator: (value) {
+                                        if (value == null) {
+                                          return 'Please select Speciality.';
+                                        }
+                                        return null;
+                                      },
+                                      onChanged: (value) {
+                                        // print(value is String);
+                                        // print(value.runtimeType);
+                                        fromPageOne
+                                            .addAll({'speciality': value});
+                                        print(fromPageOne['speciality']);
+                                      },
+                                      buttonStyleData: const ButtonStyleData(
+                                        height: 60,
+                                        padding: EdgeInsets.only(
+                                            left: 10, right: 10),
+                                      ),
+                                      iconStyleData: const IconStyleData(
+                                        icon: Icon(
+                                          Icons.arrow_drop_down,
+                                          color: Colors.black45,
+                                        ),
+                                        iconSize: 30,
+                                      ),
+                                      dropdownStyleData: DropdownStyleData(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                        ),
+                                      ),
                                     ),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
-                                        horizontal: 15),
+                                        vertical: 10, horizontal: 15),
                                     child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          TextButton(
-                                              onPressed: () {},
-                                              child: Text(
-                                                'Forget Password?',
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        TextButton.icon(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            icon: Icon(
+                                                Icons.arrow_back_ios_rounded),
+                                            label: Text('Back',
                                                 style: TextStyle(
-                                                    fontSize: 12,
-                                                    color: Colors.black,
-                                                    fontFamily: 'Poppins'),
-                                              )),
-                                        ]),
-                                  ),
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      primary: Color(0xFF3279B6),
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(40)),
-                                      // background (button) color
-                                      // foreground (text) color
-                                    ),
-                                    onPressed: () {},
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        "Log in",
-                                        style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.w400),
-                                      ),
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.w500,
+                                                    fontFamily:
+                                                        'Poppins_Reguler'))),
+                                        TextButton(
+                                          onPressed: () async {
+                                            if (_formkey.currentState!
+                                                .validate()) {
+                                              if (await Doctor.registre_doctor(
+                                                  fromPageOne['cni'],
+                                                  fromPageOne['tele'],
+                                                  fromPageOne['name'],
+                                                  fromPageOne['password'],
+                                                  controller_email.text,
+                                                  fromPageOne['speciality'],
+                                                  fromPageOne['base64'],
+                                                  fromPageOne['extension'])) {
+                                                AwesomeDialog(
+                                                  context: context,
+                                                  animType: AnimType.leftSlide,
+                                                  headerAnimationLoop: false,
+                                                  dialogType:
+                                                      DialogType.success,
+                                                  showCloseIcon: true,
+                                                  title: 'Succes',
+                                                  desc:
+                                                      'Walcome to Your Hospital',
+                                                  btnOkOnPress: () {
+                                                    Navigator.of(context).push(
+                                                        MaterialPageRoute(
+                                                            builder:
+                                                                (BuildContext
+                                                                    context) {
+                                                              return Log_in();
+                                                            },
+                                                            settings:
+                                                                RouteSettings(
+                                                                    arguments: {
+                                                                  'person':
+                                                                      'doctor'
+                                                                })));
+                                                  },
+                                                  btnOkIcon: Icons.check_circle,
+                                                  onDismissCallback: (type) {
+                                                    debugPrint(
+                                                        'Dialog Dissmiss from callback $type');
+                                                  },
+                                                ).show();
+                                              } else {
+                                                AwesomeDialog(
+                                                  context: context,
+                                                  dialogType:
+                                                      DialogType.warning,
+                                                  headerAnimationLoop: false,
+                                                  animType: AnimType.topSlide,
+                                                  showCloseIcon: false,
+                                                  closeIcon: const Icon(Icons
+                                                      .close_fullscreen_outlined),
+                                                  title: 'Warning',
+                                                  desc:
+                                                      'This email is Already exist',
+                                                  btnCancelOnPress: () {},
+                                                  onDismissCallback: (type) {
+                                                    debugPrint(
+                                                        'Dialog Dismiss from callback $type');
+                                                  },
+                                                  btnOkOnPress: () {},
+                                                ).show();
+                                              }
+                                            }
+                                          },
+                                          child: Text(
+                                            "Save",
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w500,
+                                                fontFamily: 'Poppins_Reguler'),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
@@ -213,7 +312,7 @@ class _SignUp_twoState extends State<SignUp_two> {
                               ),
                               Expanded(
                                   child: Container(
-                                      child: Text(' Or Sign in with'))),
+                                      child: Text('Or Sign in with'))),
                               Expanded(
                                 flex: 1,
                                 child: Divider(
@@ -279,6 +378,7 @@ class _SignUp_twoState extends State<SignUp_two> {
             ],
           ),
         ),
-      ),);
+      ),
+    );
   }
 }

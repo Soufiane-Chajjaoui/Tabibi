@@ -91,7 +91,7 @@ const addUrgance = (req ,res) =>{
            );
             urgances.push(obj);        
           }
-           res.status(200).json({   urgances })
+           res.status(200).json({urgances})
        }).catch(error => {
         res.status(500).send("Error reading files " + error );
       });

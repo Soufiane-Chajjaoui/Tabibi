@@ -1,7 +1,8 @@
 // ignore_for_file: prefer_const_constructors, camel_case_types, unused_local_variable, sort_child_properties_last
 import 'dart:convert';
-
+import 'package:lottie/lottie.dart';
 import 'package:flutter/material.dart';
+import 'package:project_pfe/actions/Urgance.dart';
 import 'package:project_pfe/auth/Log_in.dart';
 import 'package:project_pfe/patient/Profile.dart';
 import 'package:project_pfe/patient/search_page.dart';
@@ -42,7 +43,7 @@ class _homepageState extends State<homepage> {
       //     ],
       //   ),
       // ),
-      extendBody: true,
+      // extendBody: true,
       body: pages[pageIndex],
       backgroundColor: Color(0xff99d8d7),
       floatingActionButton: buildnavbottom(context),
@@ -155,6 +156,7 @@ class _accueilState extends State<accueil> {
     _loadImages();
   }
 
+  // test get images from server
   Future _loadImages() async {
     final response = await http.get(
         Uri.parse('http://127.0.0.1:8080/images').replace(host: "192.168.1.3"));
@@ -211,15 +213,12 @@ class _accueilState extends State<accueil> {
                       //     bottomRight: Radius.circular(20)),
                       color: Colors.transparent,
                     ),
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            onPrimary: Color.fromARGB(255, 64, 255, 137),
-                            primary: Color.fromARGB(185, 205, 204, 202)),
+                    child: IconButton(
                         onPressed: () => _callNumber(),
-                        child: Icon(
+                        icon: Icon(
                           color: Colors.black,
                           Icons.call_outlined,
-                          size: 50,
+                          size: 60,
                         )),
                   ),
                   centerTitle: true,
@@ -233,50 +232,82 @@ class _accueilState extends State<accueil> {
             ),
           ],
           body: Padding(
-            padding: EdgeInsetsDirectional.only(top: 20),
-            child: GridView.count(
-              crossAxisCount: 2,
-              children: List.generate(_images.length, (index) {
-                return IconButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (BuildContext context) {
-                      return Log_in();
-                    }));
-                  },
-                  icon: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: Color.fromARGB(255, 199, 106, 106),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.memory(
-                            
-                            base64.decode(_images[index]['data']),
-                            fit: BoxFit.cover,
-                            width: 200,
-                            height: 100,
-                          ),
-                        ),
-                        Text(
-                          'Lah yshafina',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Poppins'),
-                        )
-                      ],
-                    ),
-                    height: 150,
-                    margin: EdgeInsets.all(1),
-                  ),
-                );
-              }),
-            ),
+            padding: EdgeInsetsDirectional.only(top: 2),
+            child: FutureBuilder(
+                future: Urgance.get_urgance(),
+                builder: (context, snapshot) {
+                  List<Urgance>? list = snapshot.data as List<Urgance>?;
+                  return !snapshot.hasData
+                      ? Center(
+                          child: Lottie.network(
+                          'https://assets4.lottiefiles.com/packages/lf20_x62chJ.json',
+                          width: 200,
+                          height: 230,
+                         ))
+                      : list?.length == 0
+                          ? Center(child: Text('Data not availabe'))
+                          : GridView.count(
+                              crossAxisCount: 2,
+                              children: List.generate(list!.length, (index) {
+                                return IconButton(
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) {
+                                      return Log_in();
+                                    }));
+                                  },
+                                  icon: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      color: Color.fromARGB(255, 199, 106, 106),
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.vertical(
+                                              top: Radius.circular(12)),
+                                          child: Stack(
+                                            children: [
+                                              Image.memory(
+                                                base64.decode(
+                                                    "${list[index].data_Image}"),
+                                                fit: BoxFit.cover,
+                                                width: 200,
+                                                height: 110,
+                                              ),
+                                              Align(
+                                                alignment: Alignment.topRight,
+                                                child: IconButton(
+                                                  icon: Icon(Icons
+                                                      .record_voice_over_rounded),
+                                                  onPressed: () {},
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Container(
+                                          margin: EdgeInsets.only(bottom: 4),
+                                          child: Text(
+                                            "${list[index].libell}",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontFamily: 'Poppins'),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                    height: 150,
+                                    margin: EdgeInsets.all(1),
+                                  ),
+                                );
+                              }),
+                            );
+                }),
           ),
           // body: ListView.builder(
           //     itemCount: 40,

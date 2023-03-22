@@ -7,6 +7,7 @@ import 'package:project_pfe/Admin/Urgance/addUrgance.dart';
 import 'package:project_pfe/Admin/Urgance/displayUrgance.dart';
 import 'package:project_pfe/auth/SingUp.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:project_pfe/auth/auth_doctor/signUp_two.dart';
 
 import 'package:project_pfe/choice_type.dart';
 import 'package:project_pfe/patient/homepage.dart';
@@ -52,7 +53,9 @@ class MyApp extends StatelessWidget {
         "Sing_up": (context) => const SingUp(),
         "Log_in": (context) => const Log_in(),
       },
-      theme: ThemeData(),
+      theme: ThemeData(
+        useMaterial3: true,
+      ),
       //home: showhome ?homepage(): choise_type(),
       // we using stream for fetching data but if restart programm it return true and not show indecatorProgress
       // so for eleminet this Problem use method _checkCOnnectivity()
@@ -66,7 +69,7 @@ class MyApp extends StatelessWidget {
       //     );
       //   },
       // ),
-      home: displayUrgance(),
+      home: homepage(),
       debugShowCheckedModeBanner: false,
     );
   }

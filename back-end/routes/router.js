@@ -22,6 +22,7 @@ router.get('upload_image' ,PatientController.register_patient) ;
 
 /*      Router Doctor       */
 router.post('/signup_doctor' , DoctorController.register_doctor) ;
+router.post('/login_doctor' , DoctorController.login_doctor) ;
 
 /*      Router Patient       */
 router.post('/signup_patient' , PatientController.register_patient) ;
