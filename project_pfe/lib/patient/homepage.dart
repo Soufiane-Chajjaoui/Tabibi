@@ -214,6 +214,7 @@ class _accueilState extends State<accueil> {
                       color: Colors.transparent,
                     ),
                     child: IconButton(
+                        highlightColor: Colors.transparent,
                         onPressed: () => _callNumber(),
                         icon: Icon(
                           color: Colors.black,
@@ -243,13 +244,14 @@ class _accueilState extends State<accueil> {
                           'https://assets4.lottiefiles.com/packages/lf20_x62chJ.json',
                           width: 200,
                           height: 230,
-                         ))
-                      : list?.length == 0
-                          ? Center(child: Text('Data not availabe'))
+                        ))
+                      // : list?.length == 0
+                      //     ? Center(child: Text('Data not availabe'))
                           : GridView.count(
                               crossAxisCount: 2,
                               children: List.generate(list!.length, (index) {
                                 return IconButton(
+                                  highlightColor: Colors.transparent,
                                   onPressed: () {
                                     Navigator.of(context).push(
                                         MaterialPageRoute(
@@ -257,52 +259,55 @@ class _accueilState extends State<accueil> {
                                       return Log_in();
                                     }));
                                   },
-                                  icon: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12),
-                                      color: Color.fromARGB(255, 199, 106, 106),
-                                    ),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.vertical(
-                                              top: Radius.circular(12)),
-                                          child: Stack(
-                                            children: [
-                                              Image.memory(
-                                                base64.decode(
-                                                    "${list[index].data_Image}"),
-                                                fit: BoxFit.cover,
-                                                width: 200,
-                                                height: 110,
-                                              ),
-                                              Align(
-                                                alignment: Alignment.topRight,
-                                                child: IconButton(
-                                                  icon: Icon(Icons
-                                                      .record_voice_over_rounded),
-                                                  onPressed: () {},
+                                  icon: Card(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12),
+                                        color:
+                                            Color.fromARGB(255, 199, 106, 106),
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.vertical(
+                                                top: Radius.circular(12)),
+                                            child: Stack(
+                                              children: [
+                                                Image.memory(
+                                                  base64.decode(
+                                                      "${list[index].data_Image}"),
+                                                  fit: BoxFit.cover,
+                                                  width: 200,
+                                                  height: 110,
                                                 ),
-                                              ),
-                                            ],
+                                                Align(
+                                                  alignment: Alignment.topRight,
+                                                  child: IconButton(
+                                                    icon: Icon(Icons
+                                                        .record_voice_over_rounded),
+                                                    onPressed: () {},
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                        Container(
-                                          margin: EdgeInsets.only(bottom: 4),
-                                          child: Text(
-                                            "${list[index].libell}",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontFamily: 'Poppins'),
-                                          ),
-                                        )
-                                      ],
+                                          Container(
+                                            margin: EdgeInsets.only(bottom: 4),
+                                            child: Text(
+                                              "${list[index].libell}",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontFamily: 'Poppins'),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                      height: 150,
+                                      margin: EdgeInsets.all(1),
                                     ),
-                                    height: 150,
-                                    margin: EdgeInsets.all(1),
                                   ),
                                 );
                               }),

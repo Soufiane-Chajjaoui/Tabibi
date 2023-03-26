@@ -14,8 +14,14 @@ const { default: mongoose } = require('mongoose');
             require : true
         },
         name_Image : {
+         public_id : {
             type : String ,
             require : true
+           } ,
+           url  : {
+            type : String ,
+            require : true
+           }
         } ,
          
     }

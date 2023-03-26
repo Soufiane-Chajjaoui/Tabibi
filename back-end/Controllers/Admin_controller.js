@@ -4,6 +4,11 @@
 const Reponse = require('../models/Reponse');
  const {Urgance , Sous_urgance} = require('../models/Urgance');
 
+
+const directaddUrgance = (req , res) =>{
+
+      res.render('addUrgance') ;
+}
 const addUrgance = (req ,res) =>{
     const namefile = Date.now()  + '.' + req.body.extension ;
 
@@ -64,39 +69,63 @@ const addUrgance = (req ,res) =>{
 
     }
 
-    const get_urgance = (req , res) => {
+    const get_urgance = async (req , res) => {
+            // new version
 
-        const dirPath = path.join(__dirname, '../uploads/Urgance');
-     fs.readdir(dirPath, (err, files) => {
-      if (err) {
-        return res.status(500).send('Error reading directory');
-      }
-      const imageFiles = files.filter(file => file.endsWith('.png') || file.endsWith('.jpg')  || file.endsWith('.gif')  || file.endsWith('.jpeg'));
-      const imagePromises = imageFiles.map(file => new Promise((resolve, reject) => {
-        fs.readFile(path.join(dirPath, file), (err, data) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve({ filename: file, data: data.toString('base64') });
-          }
-        });
-      }));
-      Promise.all(imagePromises).then(  async images => {
-        const urgances = [] ;
-        // Urgance.find().then(result => res.status(200).json({ response : result , length : images.length})).catch(err => {console.log(err) ; res.status(400).json({ response : err}) }) ;
-      await  Urgance.find().then(result => { info_urgance = result  }).catch(err => {console.log(err) ; res.status(400).json({ response : err}) }) ;
-       for (let i = 0; i < info_urgance.length; i++) {
-                const obj  = new Object({
-               info :   info_urgance[i] , Image : images[i].data} , 
-           );
-            urgances.push(obj);        
-          }
-           res.status(200).json({urgances})
-       }).catch(error => {
-        res.status(500).send("Error reading files " + error );
-      });
-    });
+      //    const urgances = [] ;
+      // await  Urgance.find().then(result => { info_urgance = result  }).catch(err => {console.log(err) ; res.status(400).json({ response : err}) }) ;
+      // const folderPath = './uploads/Urgance/'; // Replace with the path to your folder
+      // const fileName = '1679611562364.jpg'; // Replace with the name of the file you're looking for
+      
+      // fs.readdir(folderPath, (err, files) => {
+      //   if (err) throw err;
+      
+      //   files.forEach(file => {
+      //     if (file === fileName) {
+      //       const filePath = path.join(folderPath, file);
+      
+      //       fs.readFile(filePath , (err, data) => {
+      //         if (err) throw err;
+      
+      //         console.log(data.toString('base64'));
+      //       });
+      //     }
+      //   });
+      // });
+       
+      // Last version
+      
+    //     const dirPath = path.join(__dirname, '../uploads/Urgance');
+    //  fs.readdir(dirPath, (err, files) => {
+    //   if (err) {
+    //     return res.status(500).send('Error reading directory');
+    //   }
+    //   const imageFiles = files.filter(file => file.endsWith('.png') || file.endsWith('.jpg')  || file.endsWith('.gif')  || file.endsWith('.jpeg'));
+    //   const imagePromises = imageFiles.map(file => new Promise((resolve, reject) => {
+    //     fs.readFile(path.join(dirPath, file), (err, data) => {
+    //       if (err) {
+    //         reject(err);
+    //       } else {
+    //         resolve({ filename: file, data: data.toString('base64') });
+    //       }
+    //     });
+    //   }));
+    //   Promise.all(imagePromises).then(  async images => {
+    //     const urgances = [] ;
+    //     // Urgance.find().then(result => res.status(200).json({ response : result , length : images.length})).catch(err => {console.log(err) ; res.status(400).json({ response : err}) }) ;
+    //   await  Urgance.find().then(result => { info_urgance = result  }).catch(err => {console.log(err) ; res.status(400).json({ response : err}) }) ;
+    //    for (let i = 0; i < info_urgance.length; i++) {
+    //             const obj  = new Object({
+    //            info :   info_urgance[i] , Image : images[i].data} , 
+    //        );
+    //         urgances.push(obj);        
+    //       }
+    //        res.status(200).json({urgances})
+    //    }).catch(error => {
+    //     res.status(500).send("Error reading files " + error );
+    //   });
+    // });
     }
   
 
-module.exports = {addUrgance , add_Sous_urgance , add_reponse , get_urgance}
+module.exports = {addUrgance , add_Sous_urgance , add_reponse , get_urgance , directaddUrgance}

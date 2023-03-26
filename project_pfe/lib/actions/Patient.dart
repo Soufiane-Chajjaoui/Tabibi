@@ -1,17 +1,33 @@
-// ignore_for_file: non_constant_identifier_names, avoid_print
+// ignore_for_file: non_constant_identifier_names, avoid_print, prefer_const_declarations
 
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:project_pfe/DB/models/user.dart';
 import 'package:project_pfe/actions/Person.dart';
 
 class Patient extends Person {
   Patient(
-      {required super.cni,
+      {super.id,
+      required super.cni,
       required super.tele,
       required super.complete_name,
       required super.password});
+
+  Patient copy(
+      {int? id,
+      String? complete_name,
+      String? password,
+      String? cni,
+      String? tele}) {
+    return Patient(
+        id: id ?? this.id,
+        cni: cni ?? this.cni,
+        tele: tele ?? this.tele,
+        complete_name: complete_name ?? this.complete_name,
+        password: password ?? this.password);
+  }
 
   // static Future<void> registre_patient(String? cni, String? tele,
   //     String? complete_name, String? password ) async {
@@ -60,7 +76,7 @@ class Patient extends Person {
       'num_tele': tele,
       'password': password,
       'avatar': image ?? 'vide',
-      'extension': extension  ?? 'vide'
+      'extension': extension ?? 'vide'
     });
     if (res.statusCode == 200) {
       print(res.body);
@@ -80,5 +96,20 @@ class Patient extends Person {
     });
     var decode = jsonDecode(response.body);
     return decode['message'];
+  }
+
+  Map<String, dynamic> toJson() => {
+        PatientFields.id: id,
+        PatientFields.complete_name: complete_name,
+        PatientFields.cni: cni,
+        PatientFields.tele: tele,
+      };
+
+  static Patient fromjson(Map<String, dynamic> json) {
+    return Patient(
+        cni: json['id'],
+        tele: json['tele'],
+        complete_name: json['complete_name'],
+        password: json['password']);
   }
 }

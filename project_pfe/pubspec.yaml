@@ -48,6 +48,7 @@ dependencies:
   awesome_dialog: ^3.0.2
   sqflite: ^2.2.6
   lottie: ^2.3.0
+  objectid: ^2.1.0
   
 dev_dependencies:
   flutter_test:

@@ -3,6 +3,7 @@ const { default: mongoose } = require('mongoose');
 const {Doctor, Patient} = require('./models/Person_Model') ;
 const { ObjectId} = require('mongodb')
 const express  = require('express') ;
+const ejs = require('ejs');
 const cors = require('cors') ;
 const bodyParse = require('body-parser') ;
 const app = express() ;
@@ -27,9 +28,10 @@ mongoose.connect("mongodb+srv://soufian_node:soufianch@testnode.fblmhkz.mongodb.
  
 //Middlware
 app.use('/', express.static('uploads'));
+app.use(express.static('public'));
 app.use(cors()) ; 
-app.use(bodyParse.urlencoded({extended : false , limit: '25mb'})) ;
-
+app.use(bodyParse.urlencoded({extended : true , limit: '25mb'})) ;
+app.set('view engine','ejs') ;
 app.use(bodyParse.json({limit: '25mb'})) ;
 app.use('/' , router) ;
 

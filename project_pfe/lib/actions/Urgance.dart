@@ -10,6 +10,7 @@ Urgance UrganceFromJson(String str) => Urgance.fromJson(json.decode(str));
 String UrganceToJson(Urgance data) => json.encode(data.toJson());
 
 class Urgance {
+  
   String? libell;
   String? data_Image;
   String? ext;

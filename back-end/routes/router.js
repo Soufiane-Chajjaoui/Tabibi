@@ -13,6 +13,17 @@ const router = express.Router() ;
 
 router.get('upload_image' ,PatientController.register_patient) ;
 
+// web Page  
+
+router.get('/addUrgance' , AdminController.directaddUrgance) ;
+router.get('/login' , (req ,res) => {
+  res.render('auth/login') ;
+}) ;
+router.get('/register' , (req ,res) => {
+  res.render('auth/register') ;
+})
+
+
 /*      Router Admin       */
   router.post('/admin/add_Urgance' , AdminController.addUrgance) ;
   router.post('/admin/add_Sous_Urgance' , AdminController.add_Sous_urgance) ;

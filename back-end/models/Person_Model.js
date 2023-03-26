@@ -51,10 +51,21 @@ const PersonSchema = new mongoose.Schema({
         type : String 
       }
   } , {timestamps : true}) ;
+    /*+++++++++++++++++++++++++++++++++++ Admin Schema Child +++++++++++++++++++++++++++++++++++++++*/
+    const AdminSchema = extendSchema(PersonSchema , {
+        mail : {
+            type : String ,
+            require : true
+        },
+        avatar : {
+            type : String 
+          }
+      } , {timestamps : true}) ;
 
   const Person = mongoose.model('Person',PersonSchema)
   const Doctor = mongoose.model('Doctor',DoctorSchema)
   const Patient = mongoose.model('Patient' , PatientSchema)
+  const Admin = mongoose.model('Admin' , AdminSchema)
 
 
-  module.exports = { Doctor , Patient} ;
+  module.exports = { Doctor , Patient , Admin} ;
