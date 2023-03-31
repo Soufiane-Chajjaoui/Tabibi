@@ -2,14 +2,69 @@
  const fs = require('fs');
  const path = require('path') 
 const Reponse = require('../models/Reponse');
+const { Admin } = require('../models/Person_Model')
  const {Urgance , Sous_urgance} = require('../models/Urgance');
 
-
-const directaddUrgance = (req , res) =>{
-
-      res.render('addUrgance') ;
+const register_admin = (req , res )=>{
+    Admin.findOne({         
+        mail : req.body.email ,
+        password : req.body.password ,
+        } , (err , admin)=> {
+           if(err)  { 
+            console.log(err) ;
+            res.json(err)
+        }
+           else {
+            if (admin == null) {
+                const admin_create = new Admin({
+                    complete_name: req.body.prenom + ' ' + req.body.nom   ,
+                    password : req.body.password ,
+                    mail : req.body.email ,
+                    CNI : req.body.cni ,
+                    num_tele : req.body.tele ,
+                    gender : req.body.gender
+                })
+                 admin_create.save().then((result) => { res.render('auth/login')}).catch((err)=>{
+                    
+                    res.json({'test':err})
+                 })  ;
+                //  res.json({'message' : 'has been register' , 'data' : admin_create}) ;
+                //  console.log({'message' : 'has been register'}) ;
+     
+            }
+             else if(admin != null){
+                res.json({'message' : 'deja existe please try again'}) ;
+               }
+        
+           }
+        })
 }
-const addUrgance = (req ,res) =>{
+
+const login_admin = (req , res )=>{
+ 
+     Admin.findOne({         
+        mail : req.body.email ,
+        password : req.body.password ,
+        } , (err , admin)=> {
+           if(err)  { 
+            console.log(err) ;
+            //res.json(err)
+        }
+           else {
+            if (admin == null) {
+                res.json({response : false})
+            }
+             else if(admin != null){
+                
+                //  res.json({response : true}) ;
+
+                res.redirect('/admin/dashboard') ;
+               }
+        
+           }
+        })
+}
+ const addUrgance = (req ,res) =>{
     const namefile = Date.now()  + '.' + req.body.extension ;
 
     const urgance =new Urgance({libell :  req.body.libell});
@@ -128,4 +183,4 @@ const addUrgance = (req ,res) =>{
     }
   
 
-module.exports = {addUrgance , add_Sous_urgance , add_reponse , get_urgance , directaddUrgance}
+module.exports = {addUrgance , add_Sous_urgance , add_reponse , get_urgance , register_admin , login_admin}

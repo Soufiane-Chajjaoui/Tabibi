@@ -20,7 +20,6 @@ const register_patient = async (req , res)=>  {
        else { 
         patient.avatar = namefile ; 
         const readfile = Buffer.from(req.body.avatar , 'base64') ;
-         
         fs.writeFileSync('./uploads/Person/patients/'+namefile,readfile);
 
           // console.log(readfile);

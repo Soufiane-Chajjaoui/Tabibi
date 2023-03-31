@@ -2,33 +2,59 @@
 const DoctorController = require('../Controllers/Doctor_controller');
 const PatientController = require('../Controllers/Patient_controller');
 const AdminController = require('../Controllers/Admin_controller');
-
+const Auth = require('../Controllers/Auth');
 const fs = require('fs')
 const path = require('path');
 const express = require('express');
 const upload = require('../middleware/upload');
-
+const { cloudinary } = require('../Tools/Cloudinary')
 const router = express.Router() ;
+const Uploader = require('../Tools/multer')
 /* TEST MULTER is failure*/
 
 router.get('upload_image' ,PatientController.register_patient) ;
 
-// web Page  
-
-router.get('/addUrgance' , AdminController.directaddUrgance) ;
-router.get('/login' , (req ,res) => {
-  res.render('auth/login') ;
-}) ;
-router.get('/register' , (req ,res) => {
-  res.render('auth/register') ;
-})
-
-
 /*      Router Admin       */
-  router.post('/admin/add_Urgance' , AdminController.addUrgance) ;
+    /* links */
+
+  router.get('/login' , (req ,res) => {
+    const username = req.session.username;
+    console.log(`Username: ${username}`);
+    res.render('auth/login') ;
+  }) ;
+
+  router.get('/register' , (req ,res) => {
+    req.session.username = 'John'; 
+    res.render('auth/register') ;
+  }) ;
+  
+  router.get('/admin/dashboard' , (req ,res) => {
+    res.render('admin/dashboard') ;
+  })
+
+  router.get('/' , (req ,res) => {
+    res.render('home') ;
+  })
+  
+
+  router.get('/addUrgance' , (req , res) =>{
+      res.render('admin/addUrgance') ;
+  }) ;
+ 
+    /* end links */
+
+  /*      Action Admin       */
+
+  router.post('/admin/add_Urgance' ,  AdminController.addUrgance) ;
+  router.post('/admin/register' ,  AdminController.register_admin) ;
+  router.post('/admin/login' ,  AdminController.login_admin) ;
   router.post('/admin/add_Sous_Urgance' , AdminController.add_Sous_urgance) ;
   router.post('/admin/add_Reponse' , AdminController.add_reponse) ;
-  router.get('/admin/get_urgance' , AdminController.get_urgance) 
+  router.get('/admin/get_urgance' , AdminController.get_urgance) ;
+
+  /*     end Action Admin    */
+
+/*      Router Admin       */
 
 
 /*      Router Doctor       */

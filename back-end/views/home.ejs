@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('./component/navbar') %>
+    <title>TABIBI</title>
+    <style>/* Color of the links BEFORE scroll */
+        .navbar-scroll .nav-link,
+        .navbar-scroll .navbar-toggler .fa-bars {
+          color: #fff;
+        }
+        
+        /* Color of the links AFTER scroll */
+        .navbar-scrolled .nav-link,
+        .navbar-scrolled .navbar-toggler .fa-bars {
+          color: #fafafa;
+        }
+        
+        /* Color of the navbar AFTER scroll */
+        .navbar-scrolled {
+          background-color: #fff;
+        }
+        
+        /* An optional height of the navbar AFTER scroll */
+        .navbar.navbar-scroll.navbar-scrolled {
+          padding-top: 5px;
+          padding-bottom: 5px;
+        }
+        p , dd{
+            font-family: Poppins, sans-serif;
+            font-size: 20px;  
+        }
+        dt {
+            font-family: Oswald, sans-serif;
+            font-size: 26px; 
+            color: black; 
+        }
+        </style>
+</head>
+<body>
+    <!-- Just an image -->
+<!--Main Navigation-->
+<header>
+    <!-- Animated navbar-->
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark"   style="background-color: rgba(0, 0, 0, 0.8);">
+      <div class="container-fluid">
+        <button
+                class="navbar-toggler ps-0"
+                type="button"
+                data-mdb-toggle="collapse"
+                data-mdb-target="#navbarExample01"
+                aria-controls="navbarExample01"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+                >
+          <span
+                class="d-flex justify-content-start align-items-center"
+                >
+            <i class="fas fa-bars"></i>
+          </span>
+        </button>
+        <div class="collapse navbar-collapse d-flex justify-content-between" id="navbarExample01">
+          <ul class="navbar-nav flex-row">
+            <li class="nav-item active">
+              <a class="navbar-brand me-2 mb-1 d-flex align-items-center" aria-current="page" href="#intro">
+                <img
+                src="assets/logo_tabibi.png"
+                height="49"
+                alt="TABIBI Logo"
+                loading="lazy"
+              /></a>
+            </li>
+           
+          </ul>
+  
+          <ul class="navbar-nav flex-row">
+            <!-- Icons -->
+            
+            <li class="nav-item">
+              <a
+                 class="nav-link px-2"
+                 href="/login"
+                 rel="nofollow"
+                  
+                 >
+                Login
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                 class="nav-link px-2"
+                 href="/register"
+                 rel="nofollow"
+                  
+                 >
+                Register
+              </a>
+            </li>
+           
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <!-- Animated navbar -->
+  
+    <!-- Background image -->
+    <div
+         id="intro"
+         class="bg-image"
+         style="
+                background-image: url(assets/background_doctor.png);
+                height: 100vh;
+                "
+         >
+      <div class="mask text-white" style="background-color: rgba(0, 0, 0, 0.8)">
+        <div class="container d-flex align-items-center text-center h-100">
+          <div>
+            <h1 class="mb-5" style="  font-size: 60px; word-spacing: 60px;font-family: 'Lucida Console', 'Courier New', monospace;">Administration</h1>
+            <p>
+                Les administrateurs de services de santé planifient, organisent, dirigent, coordonnent 
+                et évaluent les programmes et services axés sur la promotion de la santé ou la prestation 
+                de soins destinés aux gens, à des groupes ou à des collectivités.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Background image -->
+  </header>
+  <!--Main Navigation-->
+  
+  <div class="container my-5">
+    <dl>
+        <dt>Definition list</dt>
+        <dd>Consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
+     aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+     commodo consequat.</dd>
+        <dt>Lorem ipsum dolor sit amet</dt>
+        <dd>Consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
+     aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+     commodo consequat.</dd>
+     </dl>
+  </div>
+
+</body>
+</html>

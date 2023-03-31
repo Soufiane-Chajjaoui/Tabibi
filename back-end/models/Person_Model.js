@@ -58,7 +58,8 @@ const PersonSchema = new mongoose.Schema({
             require : true
         },
         avatar : {
-            type : String 
+            name: { type: String, required: true , default : 'ceceeecc'  },
+            url: { type: String, required: true , default : 'ceceeecc' },
           }
       } , {timestamps : true}) ;
 

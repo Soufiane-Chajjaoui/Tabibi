@@ -12,7 +12,7 @@ const register_doctor = (req , res) => {
                 res.json(err)
             } else {
                 if(doctor == null){
-                    const doctor =new Doctor(
+                    const doctor =new Doctor( 
                         {
                             complete_name:req.body.complete_name ,
                              mail : req.body.mail ,
