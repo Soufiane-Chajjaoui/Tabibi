@@ -2,9 +2,7 @@
 
 import 'package:flutter/material.dart';
 // import 'package:project_pfe/start_Screen.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:project_pfe/Admin/Urgance/addUrgance.dart';
-import 'package:project_pfe/Admin/Urgance/displayUrgance.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart'; 
 import 'package:project_pfe/auth/SingUp.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:project_pfe/auth/auth_doctor/signUp_two.dart';
@@ -69,7 +67,7 @@ class MyApp extends StatelessWidget {
       //     );
       //   },
       // ),
-      home: addUrgance(),
+      home: homepage(),
       debugShowCheckedModeBanner: false,
     );
   }

@@ -1,5 +1,5 @@
 const { default: mongoose } = require('mongoose');
- 
+const {Schema_reponse} = require('./Reponse')
 
 const Sous_Urgance_Schema = mongoose.Schema({
 
@@ -12,21 +12,27 @@ const Sous_Urgance_Schema = mongoose.Schema({
         require : true
     },
     name_Image : {
-        type : String ,
-        require : true
+        public_id : {
+            type : String ,
+            require : true
+           } ,
+           url  : {
+            type : String ,
+            require : true
+           }
     } ,
-    name_vocal : {
-        type  : String ,
-        require :true
-    },
-    id_Urgance : {
-        type : String ,
-        require : true
-    },
-    id_Response : {
-        type : String ,
-        require : true
+    // name_vocal : {
+    //     type  : String ,
+    //     require :true
+    // },
+    id_Urgance :  {
+        id_urg : String ,
+        libell_urg : String}
+     ,
+    reponse : {
+        type : [Schema_reponse] ,
+         
     }
 });
-
-module.exports = Sous_Urgance_Schema ;
+const Sous_urgance = mongoose.model('Sous_urgance' , Sous_Urgance_Schema )
+module.exports = Sous_urgance ;

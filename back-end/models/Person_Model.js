@@ -31,7 +31,7 @@ const PersonSchema = new mongoose.Schema({
 
   });
 
-   /*+++++++++++++++++++++++++++++++++++ Doctor Schema parent +++++++++++++++++++++++++++++++++++++++*/
+   /*+++++++++++++++++++++++++++++++++++ Doctor Schema Child +++++++++++++++++++++++++++++++++++++++*/
    const DoctorSchema =  extendSchema(PersonSchema, {
     mail : {
       type : String ,

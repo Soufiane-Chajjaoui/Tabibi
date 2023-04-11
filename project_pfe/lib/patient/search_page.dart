@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:project_pfe/actions/Patient.dart';
+import 'package:project_pfe/actions/Urgance.dart';
+import 'package:project_pfe/patient/searchDelegate.dart';
 
 class searchPage extends StatefulWidget {
   const searchPage({super.key});
@@ -8,6 +11,12 @@ class searchPage extends StatefulWidget {
 }
 
 class _searchPageState extends State<searchPage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,6 +67,10 @@ class _searchPageState extends State<searchPage> {
                   child: Wrap(
                     children: [
                       TextFormField(
+                        onTap: () {
+                          showSearch(
+                              context: context, delegate: searchdelegate());
+                        },
                         cursorColor: Color.fromARGB(255, 74, 66, 66),
                         cursorHeight: 20,
                         decoration: InputDecoration(

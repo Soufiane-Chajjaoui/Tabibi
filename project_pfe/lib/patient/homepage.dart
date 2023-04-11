@@ -2,9 +2,11 @@
 import 'dart:convert';
 import 'package:lottie/lottie.dart';
 import 'package:flutter/material.dart';
+import 'package:project_pfe/actions/Patient.dart';
 import 'package:project_pfe/actions/Urgance.dart';
 import 'package:project_pfe/auth/Log_in.dart';
 import 'package:project_pfe/patient/Profile.dart';
+import 'package:project_pfe/patient/Sous_urgance.dart';
 import 'package:project_pfe/patient/search_page.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:http/http.dart' as http;
@@ -153,21 +155,20 @@ class _accueilState extends State<accueil> {
   @override
   void initState() {
     super.initState();
-    _loadImages();
   }
 
   // test get images from server
-  Future _loadImages() async {
-    final response = await http.get(
-        Uri.parse('http://127.0.0.1:8080/images').replace(host: "192.168.1.3"));
-    if (response.statusCode == 200) {
-      setState(() {
-        _images = jsonDecode(response.body);
-      });
-    } else {
-      // Handle error
-    }
-  }
+  // Future _loadImages() async {
+  //   final response = await http.get(
+  //       Uri.parse('http://127.0.0.1:8080/images').replace(host: "192.168.1.3"));
+  //   if (response.statusCode == 200) {
+  //     setState(() {
+  //       _images = jsonDecode(response.body);
+  //     });
+  //   } else {
+  //     // Handle error
+  //   }
+  // }
 
   _callNumber() async {
     const number = '15'; //set the number here
@@ -235,7 +236,7 @@ class _accueilState extends State<accueil> {
           body: Padding(
             padding: EdgeInsetsDirectional.only(top: 2),
             child: FutureBuilder(
-                future: Urgance.get_urgance(),
+                future: Patient.getUrgance(),
                 builder: (context, snapshot) {
                   List<Urgance>? list = snapshot.data as List<Urgance>?;
                   return !snapshot.hasData
@@ -247,71 +248,74 @@ class _accueilState extends State<accueil> {
                         ))
                       // : list?.length == 0
                       //     ? Center(child: Text('Data not availabe'))
-                          : GridView.count(
-                              crossAxisCount: 2,
-                              children: List.generate(list!.length, (index) {
-                                return IconButton(
-                                  highlightColor: Colors.transparent,
-                                  onPressed: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (BuildContext context) {
-                                      return Log_in();
-                                    }));
-                                  },
-                                  icon: Card(
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(12),
-                                        color:
-                                            Color.fromARGB(255, 199, 106, 106),
-                                      ),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          ClipRRect(
-                                            borderRadius: BorderRadius.vertical(
-                                                top: Radius.circular(12)),
-                                            child: Stack(
-                                              children: [
-                                                Image.memory(
-                                                  base64.decode(
-                                                      "${list[index].data_Image}"),
-                                                  fit: BoxFit.cover,
-                                                  width: 200,
-                                                  height: 110,
-                                                ),
-                                                Align(
-                                                  alignment: Alignment.topRight,
-                                                  child: IconButton(
-                                                    icon: Icon(Icons
-                                                        .record_voice_over_rounded),
-                                                    onPressed: () {},
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Container(
-                                            margin: EdgeInsets.only(bottom: 4),
-                                            child: Text(
-                                              "${list[index].libell}",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontFamily: 'Poppins'),
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                      height: 150,
-                                      margin: EdgeInsets.all(1),
-                                    ),
+                      : GridView.count(
+                          crossAxisCount: 2,
+                          children: List.generate(list!.length, (index) {
+                            Map<String , dynamic> UrganceUrl = {};
+                            return IconButton(
+                              highlightColor: Colors.transparent,
+                              onPressed: () {
+                                UrganceUrl.addAll({"id" : list[index].id , "urgance_libell" : list[index].libell });
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    settings: RouteSettings( arguments: UrganceUrl)  ,
+                                    builder: (BuildContext context) {
+                                  return Sous_urgance_widget();
+                                }));
+                              },
+                              icon: Card(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12),
+                                    color: Color.fromARGB(255, 199, 106, 106),
                                   ),
-                                );
-                              }),
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.vertical(
+                                            top: Radius.circular(12)),
+                                        child: Stack(
+                                          children: [
+                                            Align(
+                                              alignment: Alignment.bottomCenter,
+                                              child: Image.network(
+                                                "${list[index].url}",
+                                                fit: BoxFit.cover,
+                                                width: 100,
+                                              ),
+                                            ),
+                                            Align(
+                                              alignment: Alignment.topRight,
+                                              child: IconButton(
+                                                icon: Icon(Icons
+                                                    .record_voice_over_rounded),
+                                                onPressed: () {
+                                                 },
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.only(bottom: 4),
+                                        child: Text(
+                                          "${list[index].libell}",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Poppins'),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  height: 150,
+                                  margin: EdgeInsets.all(1),
+                                ),
+                              ),
                             );
+                          }),
+                        );
                 }),
           ),
           // body: ListView.builder(

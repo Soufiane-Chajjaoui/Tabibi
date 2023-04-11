@@ -1,8 +1,11 @@
 const extendSchema = require('mongoose-extend-schema');
 const { default: mongoose } = require('mongoose');
 const {Doctor, Patient} = require('./models/Person_Model') ;
-const { ObjectId} = require('mongodb')
+const Sous_urgance = require('./models/SousUrgance') ;
+const { ObjectId} = require('mongodb');
+const favicon = require('serve-favicon') ;
 const express  = require('express') ;
+const path = require('path') ;
 const ejs = require('ejs');
 const cors = require('cors') ;
 const bodyParse = require('body-parser') ;
@@ -25,10 +28,11 @@ mongoose.connect("mongodb+srv://soufian_node:soufianch@testnode.fblmhkz.mongodb.
 }) .then(() => app.listen(port))
  .catch((error) => {
    console.error('Error connecting to database: ', error);
- });
+ }); 
 
- 
+  
 //Middlware
+
 app.use('/', express.static('uploads'));
 app.use(session({
   secret: 'mysecretkey', // set a secret key
@@ -36,16 +40,23 @@ app.use(session({
   saveUninitialized: false , // don't create session until something stored
   // cookie: { maxAge: new Date(Date.now() + 60000) } // 1 minute
 }));
+// app.use((req,res,next)=>{
+//   if (req.session.username && req.session) {
+//     res.redirect('/admin/dashboard') ;
+//     next() ;
+//   }else {res.redirect('../register') ;}
+// })
 // app.use(fileUpload({
 //   useTempFiles : true,
 // }));
 app.use(express.static('public'));
+app.use(favicon(path.join(__dirname , 'public' , '/assets/logo_tabibi.png')));
 app.use(cors()) ;  
 app.use(bodyParse.urlencoded({extended : true , limit: '25mb'})) ;
 app.set('view engine','ejs') ;
 app.use(bodyParse.json({limit: '25mb'})) ;
 app.use('/' , router) ; 
-
+ 
 
 
 

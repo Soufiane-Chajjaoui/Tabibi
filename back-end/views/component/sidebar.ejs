@@ -1,3 +1,43 @@
+<style>       
+ body {
+  background-color: #fbfbfb;
+}
+@media (min-width: 991.98px) {
+  main {
+    padding-left: 240px;
+  }
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  padding: 58px 0 0; /* Height of navbar */
+  box-shadow: 0 2px 5px 0 rgb(0 0 0 / 5%), 0 2px 10px 0 rgb(0 0 0 / 5%);
+  width: 240px;
+  z-index: 600;
+}
+
+@media (max-width: 991.98px) {
+  .sidebar {
+    width: 100%;
+  }
+}
+.sidebar .active {
+  border-radius: 5px;
+  box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
+}
+
+.sidebar-sticky {
+  position: relative;
+  top: 0;
+  height: calc(100vh - 48px);
+  padding-top: 0.5rem;
+  overflow-x: hidden;
+  overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+}</style>
 <header>
     <!-- Sidebar -->
     <nav
@@ -12,65 +52,43 @@
              aria-current="true"
              >
             <i class="fas fa-tachometer-alt fa-fw me-3"></i
-              ><span>Main dashboard</span>
+              ><span>Dashboard</span>
           </a>
-          <a
-             href="#"
-             class="list-group-item list-group-item-action py-2 ripple active"
-             >
-            <i class="fas fa-chart-area fa-fw me-3"></i
-              ><span>Webiste traffic</span>
-          </a>
-          <a
-             href="#"
-             class="list-group-item list-group-item-action py-2 ripple"
-             ><i class="fas fa-lock fa-fw me-3"></i><span>Password</span></a
-            >
-          <a
-             href="#"
-             class="list-group-item list-group-item-action py-2 ripple"
-             ><i class="fas fa-chart-line fa-fw me-3"></i
-            ><span>Analytics</span></a
-            >
           <a
              href="#"
              class="list-group-item list-group-item-action py-2 ripple"
              >
-            <i class="fas fa-chart-pie fa-fw me-3"></i><span>SEO</span>
+            <i class="fas fa-chart-area fa-fw me-3"></i
+              ><span>Statistique</span>
           </a>
           <a
              href="#"
-             class="list-group-item list-group-item-action py-2 ripple"
-             ><i class="fas fa-chart-bar fa-fw me-3"></i><span>Orders</span></a
+             class="list-group-item list-group-item-action py-2 ripple "
+             ><i class="fa-solid fa-user-doctor fa-fw me-3"></i><span>Doctors</span></a
             >
           <a
              href="#"
              class="list-group-item list-group-item-action py-2 ripple"
-             ><i class="fas fa-globe fa-fw me-3"></i
-            ><span>International</span></a
+             ><i class="fa-solid fa-hospital-user fa-fw me-3"></i>
+             <span>Patients</span></a
+            >
+          <a
+             href="../admin-get_urgance"
+             class="list-group-item list-group-item-action py-2 ripple"
+             ><i class="fa fa-heartbeat fa-fw me-3"></i>
+              <span>Urgance</span>
+          </a>
+          <a
+             href="../admin-get_Sous_urgance"
+             class="list-group-item list-group-item-action py-2 ripple"
+             ><i class="fa-solid fa-link fa-fw me-3"></i><span>Sous Urgance</span></a
             >
           <a
              href="#"
              class="list-group-item list-group-item-action py-2 ripple"
-             ><i class="fas fa-building fa-fw me-3"></i
-            ><span>Partners</span></a
+             ><i class="fa-solid fa-hand-holding-medical fa-fw me-3"></i><span>Reponse</span></a
             >
-          <a
-             href="#"
-             class="list-group-item list-group-item-action py-2 ripple"
-             ><i class="fas fa-calendar fa-fw me-3"></i
-            ><span>Calendar</span></a
-            >
-          <a
-             href="#"
-             class="list-group-item list-group-item-action py-2 ripple"
-             ><i class="fas fa-users fa-fw me-3"></i><span>Users</span></a
-            >
-          <a
-             href="#"
-             class="list-group-item list-group-item-action py-2 ripple"
-             ><i class="fas fa-money-bill fa-fw me-3"></i><span>Sales</span></a
-            >
+         
         </div>
       </div>
     </nav>
@@ -99,11 +117,11 @@
         <!-- Brand -->
         <a class="navbar-brand" href="#">
           <img
-               src="assets/logo_tabibi.png"
-               height="25"
+               src="../assets/logo_tabibi.png"
+               height="50px"
+               width="100px"
                alt="logo"
-               loading="lazy"
-               />
+                />
         </a>
         <!-- Search form -->
      
@@ -162,58 +180,7 @@
                >
               <i class="united kingdom flag m-0"></i>
             </a>
-            <ul
-                class="dropdown-menu dropdown-menu-end"
-                aria-labelledby="navbarDropdown"
-                >
-              <li>
-                <a class="dropdown-item" href="#"
-                   ><i class="united kingdom flag"></i>English
-                  <i class="fa fa-check text-success ms-2"></i
-                    ></a>
-              </li>
-              <li><hr class="dropdown-divider" /></li>
-              <li>
-                <a class="dropdown-item" href="#"
-                   ><i class="poland flag"></i>Polski</a
-                  >
-              </li>
-              <li>
-                <a class="dropdown-item" href="#"
-                   ><i class="china flag"></i>中文</a
-                  >
-              </li>
-              <li>
-                <a class="dropdown-item" href="#"
-                   ><i class="japan flag"></i>日本語</a
-                  >
-              </li>
-              <li>
-                <a class="dropdown-item" href="#"
-                   ><i class="germany flag"></i>Deutsch</a
-                  >
-              </li>
-              <li>
-                <a class="dropdown-item" href="#"
-                   ><i class="france flag"></i>Français</a
-                  >
-              </li>
-              <li>
-                <a class="dropdown-item" href="#"
-                   ><i class="spain flag"></i>Español</a
-                  >
-              </li>
-              <li>
-                <a class="dropdown-item" href="#"
-                   ><i class="russia flag"></i>Русский</a
-                  >
-              </li>
-              <li>
-                <a class="dropdown-item" href="#"
-                   ><i class="portugal flag"></i>Português</a
-                  >
-              </li>
-            </ul>
+           
           </li>
   
           <!-- Avatar -->

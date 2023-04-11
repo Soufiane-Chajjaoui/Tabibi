@@ -1,9 +1,11 @@
 
- const fs = require('fs');
- const path = require('path') 
-const Reponse = require('../models/Reponse');
-const { Admin } = require('../models/Person_Model')
- const {Urgance , Sous_urgance} = require('../models/Urgance');
+  const path = require('path') 
+ const { Admin } = require('../models/Person_Model')
+const {Urgance } = require('../models/Urgance');
+const {Reponse } = require('../models/Reponse');
+const { cloudinary } = require('../Tools/Cloudinary')
+const Sous_urgance =  require('../models/SousUrgance') ;
+const { exit } = require('process');
 
 const register_admin = (req , res )=>{
     Admin.findOne({         
@@ -64,123 +66,170 @@ const login_admin = (req , res )=>{
            }
         })
 }
- const addUrgance = (req ,res) =>{
-    const namefile = Date.now()  + '.' + req.body.extension ;
+ const addUrgance = async (req ,res) =>{
+     const urgance =new Urgance({libell :  req.body.libell});
 
-    const urgance =new Urgance({libell :  req.body.libell});
-
-    if(req.body.data_Image == 'vide'){
-        urgance.name_Image = "imageBydefault" ;
-       } else
-       {
-        urgance.name_Image = namefile ;
-        const readfile = Buffer.from(req.body.data_Image , 'base64') ;
-         
-        fs.writeFileSync('./uploads/Urgance/'+namefile,readfile);
-       }
-       urgance.save().then( result =>  {res.json({response : 'urgance has been added'})  
-       console.log('urgance has been added')}
+     try {
+      const result =   await cloudinary.uploader.upload( req.file.path , {
+       folder : 'uploads' ,
+      } ) ;
+      urgance.name_Image = {
+        public_id : result.public_id ,
+        url : result.secure_url
+      } ;
+      } catch (error) {
+        console.log(error)
+     }
+       urgance.save().then( result => 
+        {    
+         res.redirect('/admin-get_urgance') ;
+        console.log('urgance has been added')}
        ).catch(err => console.log(err) )
     }
+    const update_urgance = async (req ,res) =>{
+ 
+         const urg = await Urgance.findOne({_id : req.body.id}) ;
+         urg.libell =  req.body.libell_up ;
+         if (req.file) {
+          await cloudinary.uploader.destroy(urg.name_Image.public_id );
+          const result = await cloudinary.uploader.upload( req.file.path , {
+            folder : 'uploads'
+          })
+          urg.name_Image = {
+            public_id : result.public_id ,
+            url : result.secure_url
+          }
+        }
+        urg.save().then(result => {console.log(nadiii + ' ' + result)}).catch(err => {
+            console.log(err)
+        })
+            res.redirect('/admin-get_urgance') ;
+            console.log('urgance has been added')
+                 }
+       const get_urgance =   (req , res) => {
+ 
+
+        Urgance.find()
+        .then((result) => {res.status(200).render('admin/Urgance' ,  { Urgances : result})
+                            res.json(result)})
+        .catch(err => console.log(err))
+
+        }
+const delete_urgance = async (req , res) => {
+    console.log(req.params.id)
+
+            try { 
+                const urg = await Urgance.findOne(req.params.id) ;
+                var id = urg.name_Image.public_id ;
+                await cloudinary.uploader.destroy(id);
+
+                  await  Urgance.deleteOne(req.params.id);
+              res.send({ success: true , message : urg.libell });
+            } catch (error) {
+                console.log(error);
+            }
+        } 
+const   add_sous_Urgance =  async (req ,res) =>{
+ 
+    const sous_urgance = new Sous_urgance({libell :  req.body.libell , 
+        id_Urgance : { id_urg :  req.body.id_urgance , libell_urg : req.body.libell__Urgance} 
+         });
+   
+
+   const result =  await cloudinary.uploader.upload( req.file.path , {
+        folder : 'uploads'
+    }) ;
+
+    sous_urgance.name_Image = {
+        public_id : result.public_id ,
+        url : result.secure_url
+    }
+    sous_urgance.save()
+    .then(result => res.send({message : "Sous urgance " + req.body.libell + " ete bien enregistre"}))
+    .catch(err => console.log(err))
+        }
+ 
+const get_sous_urgance = (req,res) => {
+        Sous_urgance.find().then(result => res.render('admin/sous_urgance' , { sous_urgance : result })).catch(err => console.log(err))
+        }  
+const delete_sous_urgance = async (req , res) => {
+    
+        console.log(req.params.urganceId)
+        await Sous_urgance.find({_id : req.params.id}).then( async (result) => {
+            console.log(result)
+            // await cloudinary.uploader.destroy(id); 
+            // await  Urgance.deleteOne(req.params.id);
+            // res.send({ success: true , message : result.libell });
+        }).catch ((error) => {
+            console.log(error); 
+    } )
   
- const   add_Sous_urgance =  (req ,res) =>{
-    const namefile = Date.now()  + '.' + req.body.extension ;
+        }               
+    const add_reponse = async (req , res ) =>{
 
-    const sous_urgance =new Sous_urgance({libell :  req.body.libell , 
-        id_urgance : req.body.id_urgance ,
-         id_reponse : req.body.id_reponse});
+       
+             const sous_urgance = await Sous_urgance.findOne({ _id : req.body.id_sous_urgance}) ; 
 
-    if(req.body.data_Image == 'vide'){
-        sous_urgance.name_Image = "imageBydefault" ;
-       } else
-       {
-        sous_urgance.name_Image = namefile ;
-        const readfile = Buffer.from(req.body.data_Image , 'base64') ;
-         
-        fs.writeFileSync('./uploads/Urgance/Sous_urgance/'+namefile,readfile);
-       }
-       sous_urgance.save().then( result =>  {res.json({response : 'sous urgance has been added'})  
-       console.log('sous urgance has been added')}
-       ).catch(err => console.log(err) )
-    }
-    const add_reponse =    (req , res ) =>{
+              const result = await cloudinary.uploader.upload( req.file.path , {
+                folder : 'uploads' ,
+                })
+                const rep = new Reponse({ 
+                    description :  req.body.Description ,
+                    name_Image : {
+                        public_id : result.public_id ,
+                        url : result.secure_url
+                    }
+                    });
 
-        const namefile = Date.now()  + '.' + req.body.extension ;
-        const rep =new Reponse({ 
-            description :  req.body.discription
-            });
-            if(req.body.data_Image == 'vide'){
-                rep.name_Image = "imageBydefault" ;
-               } else
-               {
-                rep.name_Image = namefile ;
-                const readfile = Buffer.from(req.body.data_Image , 'base64') ;
-                 
-                fs.writeFileSync('./uploads/Urgance/Reponse/'+namefile,readfile);
-               }
-               rep.save().then( result =>  {res.json({response : 'Reponse has been added'})  
-               console.log('Reponse has been added')}
+                sous_urgance.reponse.push(rep);
+
+               sous_urgance.save().then( result =>  {
+               res.json({response : 'Reponse has been added'})  
+               console.log('Reponse has been added')
+            }
                ).catch(err => console.log(err) )
 
     }
 
-    const get_urgance = async (req , res) => {
-            // new version
 
-      //    const urgances = [] ;
-      // await  Urgance.find().then(result => { info_urgance = result  }).catch(err => {console.log(err) ; res.status(400).json({ response : err}) }) ;
-      // const folderPath = './uploads/Urgance/'; // Replace with the path to your folder
-      // const fileName = '1679611562364.jpg'; // Replace with the name of the file you're looking for
-      
-      // fs.readdir(folderPath, (err, files) => {
-      //   if (err) throw err;
-      
-      //   files.forEach(file => {
-      //     if (file === fileName) {
-      //       const filePath = path.join(folderPath, file);
-      
-      //       fs.readFile(filePath , (err, data) => {
-      //         if (err) throw err;
-      
-      //         console.log(data.toString('base64'));
-      //       });
-      //     }
-      //   });
-      // });
+    //    API
+    const API_get_urgance =   (req , res) => {
+ 
+
+        Urgance.find()
+        .then((result) => {res.status(200).json(result)})
+        .catch(err => console.log(err))
+
+        }
+    const API_get_sous_urgance = async  (req ,res) =>  {
+
+
+     // const result =   await   Sous_urgance.aggregate([{ $unwind :"$id_Urgance"}]).then(rs=> res.json(rs)).catch(err => console.log(err));
+        
+          await Sous_urgance.find({} , {reponse :0}).then(rs =>  {
+             
+             var list_sous = [] ;
+            
+            for (let index = 0; index < rs.length; index++) {            
+             if (rs[index].id_Urgance.id_urg == req.params.id) {
+                  list_sous.push(rs[index])
+             } 
+             }
+             res.status(200).json(list_sous);
+
+           }
+        )
+           .catch(err => console.log(err)) ;
+        //await Sous_urgance.count().then(rs=> console.log(rs)).catch(err => console.log(err))
        
-      // Last version
-      
-    //     const dirPath = path.join(__dirname, '../uploads/Urgance');
-    //  fs.readdir(dirPath, (err, files) => {
-    //   if (err) {
-    //     return res.status(500).send('Error reading directory');
-    //   }
-    //   const imageFiles = files.filter(file => file.endsWith('.png') || file.endsWith('.jpg')  || file.endsWith('.gif')  || file.endsWith('.jpeg'));
-    //   const imagePromises = imageFiles.map(file => new Promise((resolve, reject) => {
-    //     fs.readFile(path.join(dirPath, file), (err, data) => {
-    //       if (err) {
-    //         reject(err);
-    //       } else {
-    //         resolve({ filename: file, data: data.toString('base64') });
-    //       }
-    //     });
-    //   }));
-    //   Promise.all(imagePromises).then(  async images => {
-    //     const urgances = [] ;
-    //     // Urgance.find().then(result => res.status(200).json({ response : result , length : images.length})).catch(err => {console.log(err) ; res.status(400).json({ response : err}) }) ;
-    //   await  Urgance.find().then(result => { info_urgance = result  }).catch(err => {console.log(err) ; res.status(400).json({ response : err}) }) ;
-    //    for (let i = 0; i < info_urgance.length; i++) {
-    //             const obj  = new Object({
-    //            info :   info_urgance[i] , Image : images[i].data} , 
-    //        );
-    //         urgances.push(obj);        
-    //       }
-    //        res.status(200).json({urgances})
-    //    }).catch(error => {
-    //     res.status(500).send("Error reading files " + error );
-    //   });
-    // });
-    }
-  
+    }    
 
-module.exports = {addUrgance , add_Sous_urgance , add_reponse , get_urgance , register_admin , login_admin}
+    const API_get_Reponse = async function(req , res) {
+
+          await Sous_urgance.findById(req.params.id , { reponse : 1 }).then(result => res.status(200).json(result.reponse)).catch(err => console.log(err))
+ 
+    }
+ 
+     
+
+module.exports = {addUrgance   ,API_get_Reponse, API_get_sous_urgance , add_sous_Urgance , API_get_urgance,  add_reponse , get_urgance , delete_sous_urgance , get_sous_urgance , register_admin , login_admin , delete_urgance , update_urgance}

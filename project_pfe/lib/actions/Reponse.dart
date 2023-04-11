@@ -9,38 +9,31 @@ Reponse ReponseFromJson(String str) =>
 String ReponseToJson(Reponse data) => json.encode(data.toJson());
 
 class Reponse {
-  String? discription;
-  String? data_Image;
-  String? ext;
+  String? description;
+  String? url;
+  String? id;
  
 
   Reponse(
-      {required this.discription,
-      required this.data_Image,
-      required this.ext,
+      {  
+        this.description,
+        this.url,
+        this.id,
      });
 
-  Future add_Reponse() async {
-    var url = Uri.parse("http://127.0.0.1:8080/admin/add_Reponse")
-        .replace(host: "192.168.1.3");
-    var response = await http.post(url, headers: <String, String>{
-          'context-type': 'application/json;charSet=UTF-8'
-    }, body: 
-       toJson()
-     );
-  }
+ 
 
 /*++++++++++++++++++++  convert Json +++++++++++++++++++++++++*/
   factory Reponse.fromJson(Map<String, dynamic> json) => Reponse(
-        discription: json["discription"],
-        data_Image: json["data_Image"],
-        ext: json["ext"]
+        description: json["description"],
+        url: json["url"],
+        id: json["_id"]
         
       );
 
   Map<String, dynamic> toJson() => {
-        'discription': discription,
-        'data_Image': data_Image,
-        'extension': ext 
+        'description': description,
+        'url': url,
+        'id': id 
       };
 }

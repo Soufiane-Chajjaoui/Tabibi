@@ -6,6 +6,9 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:project_pfe/DB/models/user.dart';
 import 'package:project_pfe/actions/Person.dart';
+import 'package:project_pfe/actions/Reponse.dart';
+import 'package:project_pfe/actions/Sous_urgance.dart';
+import 'package:project_pfe/actions/Urgance.dart';
 
 class Patient extends Person {
   Patient(
@@ -29,36 +32,6 @@ class Patient extends Person {
         password: password ?? this.password);
   }
 
-  // static Future<void> registre_patient(String? cni, String? tele,
-  //     String? complete_name, String? password ) async {
-  //   var url = Uri.parse("http://127.0.0.1:8080/signup_patient")
-  //       .replace(host: "192.168.1.3");
-  //   var res = await http.post(url, headers: <String, String>{
-  //     'context-type': 'application/json;charSet=UTF-8'
-  //   }, body: {
-  //     'complete_name': complete_name,
-  //     'CNI': cni,
-  //     'num_tele': tele,
-  //     'password': password,
-
-  //   });
-  //   if (res.statusCode == 200) {
-  //     print(res.body);
-  //   } else {
-  //     print('A network error occurred');
-  //   }
-  //   // var req = await http.MultipartRequest(
-  //   //     'POST',
-  //   //     Uri.parse('http://127.0.0.1:8080/signup_patient')
-  //   //         .replace(host: "192.168.1.3"));
-
-  //   // req.files.add(await http.MultipartFile.fromPath('avatar', profil));
-  //   // req.fields['complete_name'] = complete_name!;
-  //   // req.fields['CNI'] = cni!;
-  //   // req.fields['num_tele'] = tele!;
-  //   // req.fields['password'] = password!;
-  //   // var res = await req.send();
-  // }
   static Future<void> registre_patient(
       String? cni,
       String? tele,
@@ -83,6 +56,62 @@ class Patient extends Person {
     } else {
       print('A network error occurred');
     }
+  }
+
+  static getUrgance() async {
+    List<Urgance> list = [];
+    var url = Uri.parse('http://192.168.1.4:8080/API/get_urgance');
+
+    var res = await http.get(url);
+    if (res.statusCode == 200) {
+      var data = jsonDecode(res.body);
+      //  print(data);
+      data.forEach((value) => {
+            list.add(Urgance(
+                libell: value['libell'],
+                id: value['_id'],
+                url: value['name_Image']['url']))
+          });
+      return list;
+    }
+    return [];
+  }
+ 
+
+  static get_sous_urgance(String id) async {
+    List<Sous_urgance> list = [];
+
+    var url = Uri.parse("http://192.168.1.4:8080/API/get_sous_urgance/${id}");
+
+    var response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      print(data);
+      data.forEach((element) => {list.add(Sous_urgance.fromJson(element))});
+      return list;
+    } else {
+      return [];
+    }
+  }
+
+  static get_reponse(String id) async {
+    List<Reponse> list = [];
+    var url = Uri.parse("http://192.168.1.4:8080/API/get_reponse/${id}");
+
+    var rep = await http.get(url);
+
+    if (rep.statusCode == 200) {
+      var data = jsonDecode(rep.body);
+      data.forEach((element) {
+        list.add(Reponse(
+            description: element['description'],
+            url: element['name_Image']['url']));
+      });
+      list.add(Reponse(description: '', url: ''));
+      return list;
+    } else
+      return [];
   }
 
   static Future<bool> login_patient(String? tele, String? password) async {
