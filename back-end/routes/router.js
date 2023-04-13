@@ -25,6 +25,8 @@ const Uploader = require('../Tools/multer')
     res.render('auth/register') ;
   }) ;
 
+
+
   router.get('/admin/dashboard' , (req ,res) => {
     res.render('admin/dashboard') ;
   })
@@ -40,9 +42,10 @@ const Uploader = require('../Tools/multer')
 
   /*      Action Admin       */
 
-   router.post('/admin/register' ,  AdminController.register_admin) ;
+  router.post('/admin/register' ,  AdminController.register_admin) ;
   router.post('/admin/login' ,  AdminController.login_admin) ;
- 
+
+  router.get('/admin-get_Patients' , AdminController.getAllPatients) ;
 
   // CRUD URGANCE
   router.post('/admin-add_Urgance' , Uploader.single('image') , AdminController.addUrgance);
@@ -71,6 +74,8 @@ router.post('/login_patient' , PatientController.login_patient) ;
 router.get('/API/get_urgance' , AdminController.API_get_urgance) ;
 router.get('/API/get_sous_urgance/:id' , AdminController.API_get_sous_urgance) ;
 router.get('/API/get_reponse/:id' , AdminController.API_get_Reponse) ;
+router.get('/API/get-Profil/:id' , PatientController.profilPage) ;
+router.post('/API/demandDoctor' , AdminController.demandDoctor) ;
 
 
  router.get('/images' ,  (req, res) => {

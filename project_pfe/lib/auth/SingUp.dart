@@ -22,69 +22,42 @@ class SingUp extends StatefulWidget {
 
 class _SingUpState extends State<SingUp> {
   final _formkey = GlobalKey<FormState>();
-  late Map<String, dynamic> filename = {'base64': 'vide', 'extension': 'vide'};
-  var file;
-  File? imagefile;
-  void _opengallery() async {
-    file = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (file != null) {
-      setState(() {
-        imagefile = File(file.path);
-      });
-    }
-    UploadImage();
-  }
-
-  void _opencamera() async {
-    file = await ImagePicker().pickImage(source: ImageSource.camera);
-    if (file != null) {
-      setState(() {
-        imagefile = File(file.path);
-      });
-    }
-    UploadImage();
-  }
-
-  void UploadImage() async {
-    if (imagefile == null) return;
-    Uint8List fileBYtes = await imagefile!.readAsBytesSync();
-    String base_file = base64.encode(fileBYtes);
-
-    String extension = file.path.split('.').last;
-    filename
-        .addAll({'base64': base_file, 'extension': file.path.split('.').last});
-  }
-
-  // String? image_based;
-  // String? extension;
-  // File? image;
-  // var _image;
-
-  // // Map<String, dynamic>? filename;
-
-  // var pickedimage = ImagePicker();
-
-  // setimage() async {
-  //   _image = await pickedimage.getImage(source: ImageSource.gallery);
-  //   if (_image != null) {
+  // late Map<String, dynamic> filename = {'base64': 'vide', 'extension': 'vide'};
+  // var file;
+  // File? imagefile;
+  // void _opengallery() async {
+  //   file = await ImagePicker().pickImage(source: ImageSource.gallery);
+  //   if (file != null) {
   //     setState(() {
-  //       image = File(_image.path);
+  //       imagefile = File(file.path);
   //     });
-  //     image_based = base64Encode(_image.readAsBytes());
-  //     print(image_based);
-  //     extension = _image.path.split('/').last;
-  //     print(extension);
   //   }
+  //   UploadImage();
   // }
 
-  // Future<void> basecodePicture() async {
-  //   if (image != null) {
-  //     String base64 = base64Encode(image!.readAsBytesSync());
-  //     String nameImage = image!.path.split('/').last;
-  //     filename?.addAll({'base64': base64, 'nameImage': nameImage});
+  // void _opencamera() async {
+  //   file = await ImagePicker().pickImage(source: ImageSource.camera);
+  //   if (file != null) {
+  //     setState(() {
+  //       imagefile = File(file.path);
+  //     });
   //   }
+  //   UploadImage();
   // }
 
+  // void UploadImage() async {
+  //   if (imagefile == null) return;
+  //   Uint8List fileBYtes = await imagefile!.readAsBytesSync();
+  //   String base_file = base64.encode(fileBYtes);
+
+  //   String extension = file.path.split('.').last;
+  //   filename
+  //       .addAll({'base64': base_file, 'extension': file.path.split('.').last});
+  // }
+
+  
+
+  
   static final RegExp nameRegExp = RegExp('[a-zA-Z]');
   // data for doctor passing to page number 2
   late final Map<String, dynamic> data = {};
@@ -101,8 +74,7 @@ class _SingUpState extends State<SingUp> {
         'cni': controller_cni.text,
         'tele': controller_tele.text,
         'password': controller_password.text,
-        "data": filename
-      });
+       });
     });
   }
 
@@ -178,104 +150,104 @@ class _SingUpState extends State<SingUp> {
                                 key: _formkey,
                                 child: Column(
                                   children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 20, bottom: 12),
-                                      child: Stack(
-                                        clipBehavior: Clip.none,
-                                        children: [
-                                          InkWell(
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                              radius: 60,
-                                              onTap: () {
-                                                showModalBottomSheet(
-                                                    shape: RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius.vertical(
-                                                                top: Radius
-                                                                    .circular(
-                                                                        20))),
-                                                    context: context,
-                                                    builder: (context) {
-                                                      return Container(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                top: 10),
-                                                        height: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .height /
-                                                            5,
-                                                        child: Row(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .center,
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceAround,
-                                                          children: [
-                                                            Column(
-                                                              children: [
-                                                                IconButton(
-                                                                    onPressed:
-                                                                        () {
-                                                                      _opencamera();
-                                                                    },
-                                                                    icon: Icon(Icons
-                                                                        .camera_alt_rounded)),
-                                                                Text('Camera')
-                                                              ],
-                                                            ),
-                                                            Column(
-                                                              children: [
-                                                                IconButton(
-                                                                    onPressed:
-                                                                        () {
-                                                                      _opengallery();
-                                                                    },
-                                                                    icon: Icon(Icons
-                                                                        .photo_album_rounded)),
-                                                                Text('gallery')
-                                                              ],
-                                                            )
-                                                          ],
-                                                        ),
-                                                      );
-                                                    });
-                                              },
-                                              child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        300.0),
-                                                child: file == null
-                                                    ? Image.asset(
-                                                        'images/pngwing.png',
-                                                        width: 100,
-                                                        height: 100,
-                                                        fit: BoxFit.cover,
-                                                      )
-                                                    : Image.file(
-                                                        width: 100,
-                                                        height: 100,
-                                                        File(imagefile!.path),
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                              )),
-                                          Positioned(
-                                              top: 50,
-                                              left: 60,
-                                              child: IconButton(
-                                                  onPressed: () {},
-                                                  icon: Icon(
-                                                    Icons.camera,
-                                                    size: 30,
-                                                    color: Color.fromARGB(
-                                                        255, 64, 57, 98),
-                                                  ))),
-                                        ],
-                                      ),
-                                    ),
+                                    // Padding(
+                                    //   padding: const EdgeInsets.only(
+                                    //       top: 20, bottom: 12),
+                                    //   child: Stack(
+                                    //     clipBehavior: Clip.none,
+                                    //     children: [
+                                    //       InkWell(
+                                    //           borderRadius:
+                                    //               BorderRadius.circular(20),
+                                    //           radius: 60,
+                                    //           onTap: () {
+                                    //             showModalBottomSheet(
+                                    //                 shape: RoundedRectangleBorder(
+                                    //                     borderRadius:
+                                    //                         BorderRadius.vertical(
+                                    //                             top: Radius
+                                    //                                 .circular(
+                                    //                                     20))),
+                                    //                 context: context,
+                                    //                 builder: (context) {
+                                    //                   return Container(
+                                    //                     padding:
+                                    //                         EdgeInsets.only(
+                                    //                             top: 10),
+                                    //                     height: MediaQuery.of(
+                                    //                                 context)
+                                    //                             .size
+                                    //                             .height /
+                                    //                         5,
+                                    //                     child: Row(
+                                    //                       crossAxisAlignment:
+                                    //                           CrossAxisAlignment
+                                    //                               .center,
+                                    //                       mainAxisAlignment:
+                                    //                           MainAxisAlignment
+                                    //                               .spaceAround,
+                                    //                       children: [
+                                    //                         Column(
+                                    //                           children: [
+                                    //                             IconButton(
+                                    //                                 onPressed:
+                                    //                                     () {
+                                    //                                   _opencamera();
+                                    //                                 },
+                                    //                                 icon: Icon(Icons
+                                    //                                     .camera_alt_rounded)),
+                                    //                             Text('Camera')
+                                    //                           ],
+                                    //                         ),
+                                    //                         Column(
+                                    //                           children: [
+                                    //                             IconButton(
+                                    //                                 onPressed:
+                                    //                                     () {
+                                    //                                   _opengallery();
+                                    //                                 },
+                                    //                                 icon: Icon(Icons
+                                    //                                     .photo_album_rounded)),
+                                    //                             Text('gallery')
+                                    //                           ],
+                                    //                         )
+                                    //                       ],
+                                    //                     ),
+                                    //                   );
+                                    //                 });
+                                    //           },
+                                    //           child: ClipRRect(
+                                    //             borderRadius:
+                                    //                 BorderRadius.circular(
+                                    //                     300.0),
+                                    //             child: file == null
+                                    //                 ? Image.asset(
+                                    //                     'images/pngwing.png',
+                                    //                     width: 100,
+                                    //                     height: 100,
+                                    //                     fit: BoxFit.cover,
+                                    //                   )
+                                    //                 : Image.file(
+                                    //                     width: 100,
+                                    //                     height: 100,
+                                    //                     File(imagefile!.path),
+                                    //                     fit: BoxFit.cover,
+                                    //                   ),
+                                    //           )),
+                                    //       Positioned(
+                                    //           top: 50,
+                                    //           left: 60,
+                                    //           child: IconButton(
+                                    //               onPressed: () {},
+                                    //               icon: Icon(
+                                    //                 Icons.camera,
+                                    //                 size: 30,
+                                    //                 color: Color.fromARGB(
+                                    //                     255, 64, 57, 98),
+                                    //               ))),
+                                    //     ],
+                                    //   ),
+                                    // ),
                                     Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 15, vertical: 4),
@@ -494,7 +466,7 @@ class _SingUpState extends State<SingUp> {
                                                           if (type ==
                                                               'doctor') {
                                                             passingto2();
-                                                            print(filename);
+                                                            // print(filename);
                                                             Navigator.of(context).push(
                                                                 MaterialPageRoute(
                                                                     builder:
@@ -554,10 +526,14 @@ class _SingUpState extends State<SingUp> {
                                                 controller_tele.text,
                                                 controller_name.text,
                                                 controller_password.text,
-                                                filename['base64'],
-                                                filename['extension']);
+                                                // filename['base64'],
+                                                // filename['extension']
+                                                );
                                             Navigator.of(context)
                                                 .push(MaterialPageRoute(
+                                                  settings: RouteSettings( arguments: {
+                                                    'person' : 'patient'
+                                                  }),
                                               builder: (BuildContext context) {
                                                 return Log_in();
                                               },

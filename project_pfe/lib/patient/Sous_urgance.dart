@@ -36,14 +36,19 @@ class _Sous_urgance_widgetState extends State<Sous_urgance_widget> {
 
   Card card_Sous_urg(Sous_urgance sous) {
     return Card(
+      elevation: 3,
       child: ListTile(
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(
-            settings: RouteSettings(arguments: {'id': sous.id , 'libell' : sous.libell}),
+            settings: RouteSettings(
+                arguments: {'id': sous.id, 'libell': sous.libell}),
             builder: (context) => Reponse_page(),
           ));
         },
-        title: Text("${sous.libell}"),
+        title: Text(
+          "${sous.libell}",
+          style: TextStyle(fontFamily: 'Poppins_SemiBoldItalic'),
+        ),
         leading: Image.network("${sous.url}"),
         trailing: IconButton(
           icon: Icon(Icons.navigate_next_rounded),

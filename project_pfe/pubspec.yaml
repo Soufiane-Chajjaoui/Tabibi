@@ -49,6 +49,9 @@ dependencies:
   sqflite: ^2.2.6
   lottie: ^2.3.0
   objectid: ^2.1.0
+  flutter_tts: ^3.6.3
+  easy_localization: ^3.0.1
+  awesome_snackbar_content: ^0.1.2
   
 dev_dependencies:
   flutter_test:
@@ -100,6 +103,9 @@ flutter:
      - family: Poppins_Reguler
        fonts:
         - asset: fonts/Poppins-Regular.ttf
+     - family: Poppins_SemiBoldItalic
+       fonts:
+        - asset: fonts/Poppins-SemiBoldItalic.ttf
      - family: PoppinsExtraLight
        fonts:
         - asset: fonts/Poppins-ExtraLight.ttf

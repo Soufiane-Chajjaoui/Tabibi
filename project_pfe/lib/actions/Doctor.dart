@@ -74,8 +74,7 @@ class Doctor extends Person {
       String? speciality,
       String? image,
       String? extension) async {
-    var url = Uri.parse("http://127.0.0.1:8080/signup_doctor")
-        .replace(host: "192.168.1.3");
+    var url = Uri.parse("http://192.168.1.4:8080/signup_doctor");
     var res = await http.post(url, headers: <String, String>{
       'context-type': 'application/json;charSet=UTF-8'
     }, body: {
@@ -96,9 +95,9 @@ class Doctor extends Person {
     var response = jsonDecode(res.body);
     return response['response'];
   }
-    static Future<bool> login_doctor(String? email, String? password) async {
-    var url = Uri.parse("http://127.0.0.1:8080/login_doctor")
-        .replace(host: "192.168.1.3");
+
+  static Future<bool> login_doctor(String? email, String? password) async {
+    var url = Uri.parse("http://192.168.1.4:8080/login_doctor");
     var response = await http.post(url, headers: <String, String>{
       'context-type': 'application/json;charSet=UTF-8'
     }, body: {

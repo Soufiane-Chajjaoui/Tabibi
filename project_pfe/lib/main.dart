@@ -1,8 +1,8 @@
-// ignore_for_file: unused_import, prefer_const_constructors
+// ignore_for_file: unused_import, prefer_const_constructors, unused_element
 
 import 'package:flutter/material.dart';
 // import 'package:project_pfe/start_Screen.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart'; 
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:project_pfe/auth/SingUp.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:project_pfe/auth/auth_doctor/signUp_two.dart';
@@ -21,7 +21,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
-  final showhome = prefs.getBool('showhome') ?? false;
+  bool showhome = false;
+  if (prefs.getString('patient') != null) {
+    showhome = true;
+  }
   runApp(MyApp(showhome: showhome));
 }
 
@@ -67,6 +70,7 @@ class MyApp extends StatelessWidget {
       //     );
       //   },
       // ),
+      // home: showhome ? homepage() :StartPage() ,
       home: homepage(),
       debugShowCheckedModeBanner: false,
     );

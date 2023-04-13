@@ -5,10 +5,12 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:project_pfe/DB/models/user.dart';
+import 'package:project_pfe/actions/Demand.dart';
 import 'package:project_pfe/actions/Person.dart';
 import 'package:project_pfe/actions/Reponse.dart';
 import 'package:project_pfe/actions/Sous_urgance.dart';
 import 'package:project_pfe/actions/Urgance.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Patient extends Person {
   Patient(
@@ -33,14 +35,14 @@ class Patient extends Person {
   }
 
   static Future<void> registre_patient(
-      String? cni,
-      String? tele,
-      String? complete_name,
-      String? password,
-      String? image,
-      String? extension) async {
-    var url = Uri.parse("http://127.0.0.1:8080/signup_patient")
-        .replace(host: "192.168.1.3");
+    String? cni,
+    String? tele,
+    String? complete_name,
+    String? password,
+  ) async {
+    var url = Uri.parse("http://192.168.1.4:8080/signup_patient")
+        // .replace(host: "192.168.1.3")
+        ;
     var res = await http.post(url, headers: <String, String>{
       'context-type': 'application/json;charSet=UTF-8'
     }, body: {
@@ -48,8 +50,6 @@ class Patient extends Person {
       'CNI': cni,
       'num_tele': tele,
       'password': password,
-      'avatar': image ?? 'vide',
-      'extension': extension ?? 'vide'
     });
     if (res.statusCode == 200) {
       print(res.body);
@@ -76,7 +76,6 @@ class Patient extends Person {
     }
     return [];
   }
- 
 
   static get_sous_urgance(String id) async {
     List<Sous_urgance> list = [];
@@ -87,7 +86,7 @@ class Patient extends Person {
 
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
-      print(data);
+
       data.forEach((element) => {list.add(Sous_urgance.fromJson(element))});
       return list;
     } else {
@@ -114,9 +113,11 @@ class Patient extends Person {
       return [];
   }
 
-  static Future<bool> login_patient(String? tele, String? password) async {
-    var url = Uri.parse("http://127.0.0.1:8080/login_patient")
-        .replace(host: "192.168.1.3");
+  static Future<Map<String, dynamic>> login_patient(
+      String? tele, String? password) async {
+    var url = Uri.parse("http://192.168.1.4:8080/login_patient")
+        // .replace(host: "192.168.1.3")
+        ;
     var response = await http.post(url, headers: <String, String>{
       'context-type': 'application/json;charSet=UTF-8'
     }, body: {
@@ -124,7 +125,27 @@ class Patient extends Person {
       'password': password,
     });
     var decode = jsonDecode(response.body);
-    return decode['message'];
+    return decode;
+  }
+
+  static getProfil(String? id) async {
+    var url = Uri.parse("http://192.168.1.4:8080/API/get-Profil/${id}");
+    var response = await http.get(url);
+    var data = jsonDecode(response.body);
+
+    return Patient.fromjson(data);
+  }
+
+  static demandDoctor(Demand domand) async {
+    var url = Uri.parse("http://192.168.1.4:8080/API/demandDoctor");
+    var response = await http.post(url,
+        headers: <String, String>{
+          'context-type': 'application/json;charSet=UTF-8'
+        },
+        body: domand.toJson());
+
+    // var done = jsonDecode(response.body);
+    // return done['reponse'];
   }
 
   Map<String, dynamic> toJson() => {

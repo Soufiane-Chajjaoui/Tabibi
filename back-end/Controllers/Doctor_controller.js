@@ -23,17 +23,17 @@ const register_doctor = (req , res) => {
                            
                         }
                        )
-                       if(req.body.avatar == 'vide'){
-                        doctor.avatar = "1678653984379.jpg" ;
-                       }
-                       else { 
-                        patient.avatar = namefile ; 
-                        const readfile = Buffer.from(req.body.avatar , 'base64') ;
+                    //    if(req.body.avatar == 'vide'){
+                    //     doctor.avatar = "1678653984379.jpg" ;
+                    //    }
+                    //    else { 
+                    //     patient.avatar = namefile ; 
+                    //     const readfile = Buffer.from(req.body.avatar , 'base64') ;
                          
-                        fs.writeFileSync('./uploads/Person/doctors/'+namefile,readfile);
+                    //     fs.writeFileSync('./uploads/Person/doctors/'+namefile,readfile);
                 
                     
-                       }
+                    //    }
                      doctor.save().then((result) => {res.json({'response' : true})  ;
                      console.log('doctor has been added')}
                      )

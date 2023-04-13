@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unused_local_variable
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unused_local_variable, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:project_pfe/actions/Doctor.dart';
@@ -45,7 +45,6 @@ class _Log_inState extends State<Log_in> {
   @override
   Widget build(BuildContext context) {
     dynamic email = ModalRoute.of(context)?.settings.arguments;
-    print(email);
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -110,7 +109,9 @@ class _Log_inState extends State<Log_in> {
                                           ? TextInputType.emailAddress
                                           : TextInputType.phone,
                                       validator: (value) =>
-                                       email['person'] == 'doctor' ? validateEmail(value!) : validatetele(value!),
+                                          email['person'] == 'doctor'
+                                              ? validateEmail(value!)
+                                              : validatetele(value!),
                                       controller: controller_tele,
                                       cursorHeight: 30,
                                       decoration: InputDecoration(
@@ -227,12 +228,19 @@ class _Log_inState extends State<Log_in> {
                                     onPressed: () async {
                                       if (_formKey.currentState!.validate()) {
                                         if (email['person'] != 'doctor') {
-                                          if (await Patient.login_patient(
-                                              controller_tele.text,
-                                              controller_password.text)) {
+                                          var result =
+                                              await Patient.login_patient(
+                                                  controller_tele.text,
+                                                  controller_password.text);
+                                          if (result['message']) {
                                             Navigator.pushReplacement(
                                                 context,
                                                 MaterialPageRoute(
+                                                    settings: RouteSettings(
+                                                        arguments: {
+                                                          'patient':
+                                                              result['patient'],
+                                                        }),
                                                     builder: ((context) =>
                                                         homepage())));
                                           } else {

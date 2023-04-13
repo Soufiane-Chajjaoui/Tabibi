@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:project_pfe/actions/Demand.dart';
 import 'package:project_pfe/actions/Patient.dart';
 import 'package:project_pfe/actions/Reponse.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Reponse_page extends StatefulWidget {
   const Reponse_page({super.key});
@@ -11,12 +13,13 @@ class Reponse_page extends StatefulWidget {
 
 class _Reponse_pageState extends State<Reponse_page> {
   final contolllerScroll = ScrollController();
-
+  String? id_urgance;
   double? height;
   PageController pc = PageController();
   @override
   Widget build(BuildContext context) {
     dynamic get_urgance = ModalRoute.of(context)?.settings.arguments;
+    id_urgance = get_urgance['id'];
     height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
@@ -44,13 +47,13 @@ class _Reponse_pageState extends State<Reponse_page> {
           rep.url == ''
               ? Center(child: etatUrgance(context))
               : Align(
-                alignment: Alignment.topCenter,
-                child: Image.network(
-                  "${rep.url}",
-                  fit: BoxFit.fitWidth,
-                  height: height! / 2,
+                  alignment: Alignment.topCenter,
+                  child: Image.network(
+                    "${rep.url}",
+                    fit: BoxFit.fitWidth,
+                    height: height! / 2,
+                  ),
                 ),
-              ),
           Align(
             alignment: Alignment.bottomCenter,
             child: rep.description == ''
@@ -128,14 +131,33 @@ class _Reponse_pageState extends State<Reponse_page> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              ElevatedButton.icon(
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.black54,
+                      backgroundColor: Color.fromARGB(141, 200, 207, 207)),
                   onPressed: () {},
-                  icon: const Icon(Icons.confirmation_num_outlined),
-                  label: const Text('Yes')),
-              ElevatedButton.icon(
-                  onPressed: () {},
-                  icon: const Icon(Icons.not_interested),
-                  label: const Text('No')),
+                  child: const Text(
+                    'Yes',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Poppins_SemiBoldItalic'),
+                  )),
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.black54,
+                      backgroundColor: Color.fromARGB(141, 193, 205, 203)),
+                  onPressed: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    var id_user = prefs.getString('_id');
+                    Patient.demandDoctor(
+                        Demand(id_patient: id_user, id_urgance: id_urgance ));
+                  },
+                  child: const Text(
+                    'No',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Poppins_SemiBoldItalic'),
+                  )),
             ],
           ),
           Expanded(flex: 3, child: Container()),

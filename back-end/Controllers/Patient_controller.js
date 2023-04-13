@@ -14,13 +14,13 @@ const register_patient = async (req , res)=>  {
             num_tele : req.body.num_tele ,
         }
        )
-       if(req.body.avatar == 'vide'){
-        patient.avatar = "1678653984379.jpg" ;
-       }
-       else { 
-        patient.avatar = namefile ; 
-        const readfile = Buffer.from(req.body.avatar , 'base64') ;
-        fs.writeFileSync('./uploads/Person/patients/'+namefile,readfile);
+    //    if(req.body.avatar == 'vide'){
+    //     patient.avatar = "1678653984379.jpg" ;
+    //    }
+    //    else { 
+    //     patient.avatar = namefile ; 
+    //     const readfile = Buffer.from(req.body.avatar , 'base64') ;
+    //     fs.writeFileSync('./uploads/Person/patients/'+namefile,readfile);
 
           // console.log(readfile);
       // const imgdata = req.body.avatar;
@@ -31,7 +31,7 @@ const register_patient = async (req , res)=>  {
     //   fs.writeFile(time + req.body.extension  , readfile);
 
     //     res.send("OK");
-       }
+      // }
 
     patient.save().then( result =>  {res.status(200).json({response : 'patient has been added'})  
      console.log('patient has been added')}
@@ -51,14 +51,18 @@ const login_patient = function(req , res){
                 res.json(err)
             }
                else if (patient != null){
-                     res.json({'message' : true}) ;
+                     res.json({'message' : true , 'patient' : patient}) ;
                     }
                else { 
-                 res.json({'message' : false}) ;
+                 res.json({'message' : false }) ;
                 }
             })
 }
+  const profilPage = (req , res) => {
+
+    Patient.findById( req.params.id ).then((result)=>res.status(200).json(result)) .catch((err)=> console.log(err))
+  }
 
 
 
-module.exports = { register_patient , login_patient }
+module.exports = { register_patient ,profilPage , login_patient }

@@ -33,12 +33,12 @@ class _StartPageState extends State<StartPage> {
                   children: [
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(40)),
-                        backgroundColor: Color.fromARGB(
-                            175, 174, 157, 157), // background (button) color
-                        // foreground (text) color
-                      ),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(40)),
+                          backgroundColor: Color.fromARGB(175, 174, 157, 157),
+                          // background (button) color
+                          // foreground (text) color
+                          foregroundColor: Color.fromARGB(255, 131, 176, 210)),
                       onPressed: () {
                         Navigator.of(context).pushReplacementNamed('Log_in');
                       },
@@ -48,7 +48,10 @@ class _StartPageState extends State<StartPage> {
                         height: 56,
                         child: Text(
                           "Log in",
-                          style: TextStyle(fontSize: 30, fontFamily: 'Poppins'),
+                          style: TextStyle(
+                            fontSize: 30,
+                            fontFamily: 'Poppins',
+                          ),
                         ),
                       ),
                     ),
@@ -75,7 +78,10 @@ class _StartPageState extends State<StartPage> {
                         height: 56,
                         child: Text(
                           "Ceate account",
-                          style: TextStyle(fontSize: 30, fontFamily: 'Poppins'),
+                          style: TextStyle(
+                              fontSize: 30,
+                              fontFamily: 'Poppins',
+                              color: Color.fromARGB(213, 172, 176, 173)),
                         ),
                       ),
                     )

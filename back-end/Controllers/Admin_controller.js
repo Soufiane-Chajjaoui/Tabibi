@@ -1,11 +1,12 @@
 
-  const path = require('path') 
- const { Admin } = require('../models/Person_Model')
+const path = require('path') 
+const { Admin, Patient } = require('../models/Person_Model')
 const {Urgance } = require('../models/Urgance');
 const {Reponse } = require('../models/Reponse');
 const { cloudinary } = require('../Tools/Cloudinary')
 const Sous_urgance =  require('../models/SousUrgance') ;
 const { exit } = require('process');
+const Demand = require('../models/Demand') ;
 
 const register_admin = (req , res )=>{
     Admin.findOne({         
@@ -54,7 +55,8 @@ const login_admin = (req , res )=>{
         }
            else {
             if (admin == null) {
-                res.json({response : false})
+                // res.json({response : 'ddddd'});
+                  res.redirect('/login') ;
             }
              else if(admin != null){
                 
@@ -191,6 +193,13 @@ const delete_sous_urgance = async (req , res) => {
 
     }
 
+    const getAllPatients = async (req ,res) => {
+
+       await Patient.find().then((all)=>{
+                   res.status(200).render( 'admin/Patients',{Patients : all}) ;
+                    }).catch((err)=> console.log(err))
+            }
+
 
     //    API
     const API_get_urgance =   (req , res) => {
@@ -201,6 +210,8 @@ const delete_sous_urgance = async (req , res) => {
         .catch(err => console.log(err))
 
         }
+
+        
     const API_get_sous_urgance = async  (req ,res) =>  {
 
 
@@ -229,7 +240,17 @@ const delete_sous_urgance = async (req , res) => {
           await Sous_urgance.findById(req.params.id , { reponse : 1 }).then(result => res.status(200).json(result.reponse)).catch(err => console.log(err))
  
     }
+
+    const demandDoctor = async (req ,res)=>{
+        
+      console.log(req.body);
+        const demand = new Demand( {
+            idPatient : req.body.id_patient ,
+            Urgance_name : req.body.Urgance_name
+        } )
+        await demand.save();
+    }
  
      
 
-module.exports = {addUrgance   ,API_get_Reponse, API_get_sous_urgance , add_sous_Urgance , API_get_urgance,  add_reponse , get_urgance , delete_sous_urgance , get_sous_urgance , register_admin , login_admin , delete_urgance , update_urgance}
+module.exports = {addUrgance , demandDoctor ,getAllPatients  ,API_get_Reponse, API_get_sous_urgance , add_sous_Urgance , API_get_urgance,  add_reponse , get_urgance , delete_sous_urgance , get_sous_urgance , register_admin , login_admin , delete_urgance , update_urgance}

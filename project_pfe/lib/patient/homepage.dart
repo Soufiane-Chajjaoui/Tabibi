@@ -9,7 +9,8 @@ import 'package:project_pfe/patient/Profile.dart';
 import 'package:project_pfe/patient/Sous_urgance.dart';
 import 'package:project_pfe/patient/search_page.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter_tts/flutter_tts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: camel_case_types
 class homepage extends StatefulWidget {
@@ -20,6 +21,25 @@ class homepage extends StatefulWidget {
 }
 
 class _homepageState extends State<homepage> {
+  void getID(BuildContext context) async {
+    // Patient patient;
+    final _prefs = await SharedPreferences.getInstance();
+    dynamic person = await ModalRoute.of(context)?.settings.arguments;
+    // patient = Patient(cni: cni, tele: tele, complete_name: complete_name, password: password)
+    // print(person['patient']["_id"]);
+    if (await _prefs.getString('_id') == null) {
+      await _prefs.setString("_id", person['patient']["_id"]);
+    } else
+      print(await _prefs.getString('_id'));
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    getID(context);
+    super.initState();
+  }
+
   int pageIndex = 0;
 
   final pages = [
@@ -151,6 +171,7 @@ class accueil extends StatefulWidget {
 
 class _accueilState extends State<accueil> {
   List<dynamic> _images = [];
+  final FlutterTts flutterTts = FlutterTts();
 
   @override
   void initState() {
@@ -169,6 +190,11 @@ class _accueilState extends State<accueil> {
   //     // Handle error
   //   }
   // }
+  speak(String libell) async {
+    await flutterTts.setLanguage("en-AR"); //ar-MO //fr-MA
+    await flutterTts.setPitch(1);
+    await flutterTts.speak(libell);
+  }
 
   _callNumber() async {
     const number = '15'; //set the number here
@@ -251,22 +277,26 @@ class _accueilState extends State<accueil> {
                       : GridView.count(
                           crossAxisCount: 2,
                           children: List.generate(list!.length, (index) {
-                            Map<String , dynamic> UrganceUrl = {};
+                            Map<String, dynamic> UrganceUrl = {};
                             return IconButton(
                               highlightColor: Colors.transparent,
                               onPressed: () {
-                                UrganceUrl.addAll({"id" : list[index].id , "urgance_libell" : list[index].libell });
+                                UrganceUrl.addAll({
+                                  "id": list[index].id,
+                                  "urgance_libell": list[index].libell
+                                });
                                 Navigator.of(context).push(MaterialPageRoute(
-                                    settings: RouteSettings( arguments: UrganceUrl)  ,
+                                    settings:
+                                        RouteSettings(arguments: UrganceUrl),
                                     builder: (BuildContext context) {
-                                  return Sous_urgance_widget();
-                                }));
+                                      return Sous_urgance_widget();
+                                    }));
                               },
                               icon: Card(
                                 child: Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(12),
-                                    color: Color.fromARGB(255, 199, 106, 106),
+                                    color: Color.fromARGB(255, 186, 162, 162),
                                   ),
                                   child: Column(
                                     mainAxisAlignment:
@@ -276,6 +306,7 @@ class _accueilState extends State<accueil> {
                                         borderRadius: BorderRadius.vertical(
                                             top: Radius.circular(12)),
                                         child: Stack(
+                                          clipBehavior: Clip.none,
                                           children: [
                                             Align(
                                               alignment: Alignment.bottomCenter,
@@ -288,10 +319,19 @@ class _accueilState extends State<accueil> {
                                             Align(
                                               alignment: Alignment.topRight,
                                               child: IconButton(
+                                                style: IconButton.styleFrom(
+                                                  backgroundColor:
+                                                      Color.fromARGB(190, 135, 130, 113),
+                                                  foregroundColor:
+                                                      Color.fromARGB(
+                                                          250, 113, 60, 14),
+                                                ),
                                                 icon: Icon(Icons
                                                     .record_voice_over_rounded),
                                                 onPressed: () {
-                                                 },
+                                                  speak(
+                                                      "${list[index].libell}");
+                                                },
                                               ),
                                             ),
                                           ],

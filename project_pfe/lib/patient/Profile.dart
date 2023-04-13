@@ -1,7 +1,12 @@
-// ignore_for_file: unused_local_variable, non_constant_identifier_names, prefer_const_constructors, prefer_const_literals_to_create_immutables, unnecessary_string_interpolations
+// ignore_for_file: unused_local_variable, non_constant_identifier_names, prefer_const_constructors, prefer_const_literals_to_create_immutables, unnecessary_string_interpolations, await_only_futures
+
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
+import 'package:project_pfe/actions/Patient.dart';
 import 'package:project_pfe/patient/EditProfil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Profil extends StatefulWidget {
   const Profil({super.key});
@@ -11,6 +16,29 @@ class Profil extends StatefulWidget {
 }
 
 class _ProfilState extends State<Profil> {
+  late String? patientJson;
+  Patient? patient;
+
+  var name;
+  getProfil() async {
+    final prefs = await SharedPreferences.getInstance();
+    patientJson = await prefs.getString('_id');
+    print(patientJson);
+    patient = await Patient.getProfil(patientJson);
+    setState(() {
+      name = patient!.complete_name;
+    });
+    print(patient!.complete_name);
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    getProfil();
+    super.initState();
+  }
+
+  // widgets
   Padding listechoixe(IconData? icon, String TitleList, bool islink) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
@@ -42,7 +70,7 @@ class _ProfilState extends State<Profil> {
     );
   }
 
-  Padding cardstatus(String? Height, String? taille) {
+  Padding cardstatus(BuildContext context, String? Height, String? taille) {
     var size = MediaQuery.of(context).size.width;
     return Padding(
       padding: const EdgeInsets.all(4),
@@ -95,7 +123,7 @@ class _ProfilState extends State<Profil> {
     );
   }
 
-  Padding blood(String? Height, String? taille) {
+  Padding blood(BuildContext context, String? Height, String? taille) {
     var size = MediaQuery.of(context).size.width;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
@@ -176,7 +204,7 @@ class _ProfilState extends State<Profil> {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 5),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       // OutlinedButton(
                       //     style: OutlinedButton.styleFrom(
@@ -186,12 +214,13 @@ class _ProfilState extends State<Profil> {
                       //             borderRadius: BorderRadius.circular(70))),
                       //     onPressed: () {},
                       //     child: Icon(Icons.arrow_back_ios_new)),
+
                       IconButton(
-                          onPressed: () {
-                            print('test');
-                          },
-                          icon: Icon(Icons.arrow_back_ios_new)),
-                      IconButton(
+                          style: IconButton.styleFrom(
+                              backgroundColor:
+                                  Color.fromARGB(179, 102, 80, 148),
+                              foregroundColor:
+                                  Color.fromARGB(184, 246, 229, 229)),
                           onPressed: () {
                             Navigator.of(context).push(MaterialPageRoute(
                               builder: (BuildContext context) {
@@ -216,7 +245,7 @@ class _ProfilState extends State<Profil> {
                       ),
                     ),
                     Text(
-                      'Soufiane Chajjaoui',
+                      "${name}",
                       style: TextStyle(fontFamily: 'Poppins'),
                     ),
                     Row(
@@ -240,12 +269,12 @@ class _ProfilState extends State<Profil> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                cardstatus('Height', "187 cm"),
-                cardstatus('Weight', "78 kg"),
+                cardstatus(context, 'Height', "187 cm"),
+                cardstatus(context, 'Weight', "78 kg"),
                 Column(
                   children: [
-                    blood('Blood', "O+"),
-                    blood('Blood Cells', "1260 g/dl"),
+                    blood(context, 'Blood', "O+"),
+                    blood(context, 'Blood Cells', "1260 g/dl"),
                   ],
                 )
               ],
