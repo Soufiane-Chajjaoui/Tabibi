@@ -1,10 +1,16 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unused_local_variable, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:project_pfe/API/api.dart';
 import 'package:project_pfe/actions/Doctor.dart';
 import 'package:project_pfe/actions/Patient.dart';
-import 'package:project_pfe/auth/validations.dart';
+import 'package:project_pfe/authScreen/Auth.dart';
+import 'package:project_pfe/authScreen/Widget/Widget.dart';
+import 'package:project_pfe/authScreen/validations.dart';
 import 'package:project_pfe/patient/homepage.dart';
+
+import '../API/signin.dart';
+import '../Agent/screens/homePage.dart';
 // import 'package:project_pfe/Person.dart';
 
 // ignore: camel_case_types
@@ -20,27 +26,6 @@ class _Log_inState extends State<Log_in> {
 
   var controller_password = TextEditingController();
   var controller_tele = TextEditingController();
-  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> snack(
-      BuildContext context) {
-    return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      backgroundColor: Colors.cyan[300],
-      content: const Text(
-        "Password incorrect. try again Or click 'Forget Password'",
-        style: TextStyle(
-            color: Color.fromARGB(255, 88, 63, 112),
-            fontWeight: FontWeight.w200,
-            fontFamily: 'Poppins'),
-      ),
-      duration: const Duration(milliseconds: 3000),
-      width: 280.0, // Width of the SnackBar.
-      padding: const EdgeInsets.all(15 // Inner padding for SnackBar content.
-          ),
-      behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-    ));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +67,7 @@ class _Log_inState extends State<Log_in> {
                   child: Column(
                     children: [
                       Container(
-                        margin: const EdgeInsets.only(top: 20),
+                        padding: const EdgeInsets.symmetric(vertical: 9),
                         child: Column(children: [
                           Text(
                             'Walcome to Back !',
@@ -105,14 +90,15 @@ class _Log_inState extends State<Log_in> {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 15, vertical: 10),
                                     child: TextFormField(
-                                      keyboardType: email['person'] == 'doctor'
-                                          ? TextInputType.emailAddress
-                                          : TextInputType.phone,
-                                      validator: (value) =>
-                                          email['person'] == 'doctor'
-                                              ? validateEmail(value!)
-                                              : validatetele(value!),
+                                      //   keyboardType: email['person'] == 'doctor'
+                                      // ? TextInputType.emailAddress
+                                      // : TextInputType.phone,
+                                      // validator: (value) =>
+                                      //     email['person'] == 'doctor'
+                                      //         ? validateEmail(value!)
+                                      //         : validatetele(value!),
                                       controller: controller_tele,
+                                      keyboardType: TextInputType.emailAddress,
                                       cursorHeight: 30,
                                       decoration: InputDecoration(
                                           enabledBorder: OutlineInputBorder(
@@ -158,6 +144,8 @@ class _Log_inState extends State<Log_in> {
                                         horizontal: 15, vertical: 5),
                                     child: TextFormField(
                                       obscureText: true,
+                                      keyboardType:
+                                          TextInputType.visiblePassword,
                                       validator: (value) =>
                                           validatePassword(value!),
                                       controller: controller_password,
@@ -227,41 +215,30 @@ class _Log_inState extends State<Log_in> {
                                     ),
                                     onPressed: () async {
                                       if (_formKey.currentState!.validate()) {
-                                        if (email['person'] != 'doctor') {
-                                          var result =
-                                              await Patient.login_patient(
-                                                  controller_tele.text,
-                                                  controller_password.text);
-                                          if (result['message']) {
-                                            Navigator.pushReplacement(
-                                                context,
-                                                MaterialPageRoute(
-                                                    settings: RouteSettings(
-                                                        arguments: {
-                                                          'patient':
-                                                              result['patient'],
-                                                        }),
-                                                    builder: ((context) =>
-                                                        homepage())));
-                                          } else {
-                                            snack(context);
-                                          }
-                                        } else {
-                                          if (await Doctor.login_doctor(
-                                              controller_tele.text,
-                                              controller_password.text)) {
-                                            Navigator.pushReplacement(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: ((context) =>
-                                                        homepage())));
-                                          } else
-                                            snack(context);
-                                          print('do');
-                                        }
+                                        showDialog(
+                                            context: context,
+                                            barrierDismissible: false,
+                                            builder: (context) => Center(
+                                                  child:
+                                                      CircularProgressIndicator(),
+                                                ));
+                                        String? result = await SigninChecked(
+                                            controller_tele.text,
+                                            controller_password.text,
+                                            context);
+                                        if (result == 'patient') {
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      Auth()));
+                                        } else if (result == 'doctor') {
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      Auth()));
+                                        } else
+                                          snackbar(resultMessage: result);
                                       }
-
-                                      ;
                                     },
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
@@ -304,7 +281,11 @@ class _Log_inState extends State<Log_in> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               IconButton(
-                                  onPressed: () {},
+                                  onPressed: () async {
+                                    final user = await APIs.auth.currentUser;
+                                    await user?.updateDisplayName('chajjaoui');
+                                    // print(user?.di);
+                                  },
                                   icon:
                                       Image.asset('add_Icons/google-plus.png')),
                               IconButton(

@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
+import 'package:project_pfe/API/api.dart';
 import 'package:project_pfe/actions/Patient.dart';
 import 'package:project_pfe/patient/EditProfil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,17 +17,17 @@ class Profil extends StatefulWidget {
 }
 
 class _ProfilState extends State<Profil> {
-  late String? patientJson;
+  String? id;
   Patient? patient;
 
-  var name;
+  String name = 'user name';
   getProfil() async {
     final prefs = await SharedPreferences.getInstance();
-    patientJson = await prefs.getString('_id');
-    print(patientJson);
-    patient = await Patient.getProfil(patientJson);
+    id = await prefs.getString('_id');
+    print(id);
+    patient = await Patient.getProfil(id);
     setState(() {
-      name = patient!.complete_name;
+      name = patient!.complete_name!;
     });
     print(patient!.complete_name);
   }
@@ -34,8 +35,13 @@ class _ProfilState extends State<Profil> {
   @override
   void initState() {
     // TODO: implement initState
-    getProfil();
+    // getProfil();
     super.initState();
+    final user = APIs.auth.currentUser;
+    print(user);
+    setState(() {
+      name = "${user?.displayName.toString()}";
+    });
   }
 
   // widgets
@@ -288,7 +294,11 @@ class _ProfilState extends State<Profil> {
                   Icons.account_circle_rounded, 'Contact Details', true),
               listechoixe(Icons.history_rounded, 'Emergency Historic', true),
               listechoixe(Icons.help_outlined, 'Helps & Support', false),
-              listechoixe(Icons.logout_rounded, 'Logout', false)
+              IconButton(
+                  onPressed: () {
+                    APIs.auth.signOut();
+                  },
+                  icon: listechoixe(Icons.logout_rounded, 'Logout', false))
             ],
           )
         ],

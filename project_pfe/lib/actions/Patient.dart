@@ -40,7 +40,7 @@ class Patient extends Person {
     String? complete_name,
     String? password,
   ) async {
-    var url = Uri.parse("http://192.168.1.4:8080/signup_patient")
+    var url = Uri.parse("http://192.168.1.3:8080/signup_patient")
         // .replace(host: "192.168.1.3")
         ;
     var res = await http.post(url, headers: <String, String>{
@@ -60,18 +60,19 @@ class Patient extends Person {
 
   static getUrgance() async {
     List<Urgance> list = [];
-    var url = Uri.parse('http://192.168.1.4:8080/API/get_urgance');
+    var url = Uri.parse('http://192.168.1.3:8080/API/get_urgance');
 
     var res = await http.get(url);
     if (res.statusCode == 200) {
       var data = jsonDecode(res.body);
-      //  print(data);
+      print(data);
       data.forEach((value) => {
             list.add(Urgance(
                 libell: value['libell'],
                 id: value['_id'],
                 url: value['name_Image']['url']))
           });
+      print(list);
       return list;
     }
     return [];
@@ -80,7 +81,7 @@ class Patient extends Person {
   static get_sous_urgance(String id) async {
     List<Sous_urgance> list = [];
 
-    var url = Uri.parse("http://192.168.1.4:8080/API/get_sous_urgance/${id}");
+    var url = Uri.parse("http://192.168.1.3:8080/API/get_sous_urgance/${id}");
 
     var response = await http.get(url);
 
@@ -96,7 +97,7 @@ class Patient extends Person {
 
   static get_reponse(String id) async {
     List<Reponse> list = [];
-    var url = Uri.parse("http://192.168.1.4:8080/API/get_reponse/${id}");
+    var url = Uri.parse("http://192.168.1.3:8080/API/get_reponse/${id}");
 
     var rep = await http.get(url);
 
@@ -115,7 +116,7 @@ class Patient extends Person {
 
   static Future<Map<String, dynamic>> login_patient(
       String? tele, String? password) async {
-    var url = Uri.parse("http://192.168.1.4:8080/login_patient")
+    var url = Uri.parse("http://192.168.1.3:8080/login_patient")
         // .replace(host: "192.168.1.3")
         ;
     var response = await http.post(url, headers: <String, String>{
@@ -129,7 +130,7 @@ class Patient extends Person {
   }
 
   static getProfil(String? id) async {
-    var url = Uri.parse("http://192.168.1.4:8080/API/get-Profil/${id}");
+    var url = Uri.parse("http://192.168.1.3:8080/API/get-Profil/${id}");
     var response = await http.get(url);
     var data = jsonDecode(response.body);
 
@@ -137,15 +138,15 @@ class Patient extends Person {
   }
 
   static demandDoctor(Demand domand) async {
-    var url = Uri.parse("http://192.168.1.4:8080/API/demandDoctor");
+    var url = Uri.parse("http://192.168.1.3:8080/API/demandDoctor");
     var response = await http.post(url,
         headers: <String, String>{
           'context-type': 'application/json;charSet=UTF-8'
         },
         body: domand.toJson());
 
-    // var done = jsonDecode(response.body);
-    // return done['reponse'];
+    var done = jsonDecode(response.body);
+    return done['Urgance_name'];
   }
 
   Map<String, dynamic> toJson() => {
@@ -157,7 +158,7 @@ class Patient extends Person {
 
   static Patient fromjson(Map<String, dynamic> json) {
     return Patient(
-        cni: json['id'],
+        cni: json['CNI'],
         tele: json['tele'],
         complete_name: json['complete_name'],
         password: json['password']);

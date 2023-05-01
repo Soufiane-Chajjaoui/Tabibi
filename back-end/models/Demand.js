@@ -5,21 +5,27 @@ const mongoose = require('mongoose') ;
 
 const SchemaDemand = new mongoose.Schema({
 
-    idPatient : {
-        type : String ,
-        require : true
-    } ,
-    accepted : {
-        type : Boolean ,
-        require : true ,
-        default : false
-    },
-    Urgance_name : {
-        type : String ,
-        require : true
-    }
-    } , {timestamps : true})
+            idPatient : {
+                type : mongoose.ObjectId,
+                require : true
+            } ,
+            accepted : {
+                type : Boolean ,
+                require : true ,
+                default : false
+            },
+            Urgance_name : {
+                type : String ,
+                require : true
+            }
+            ,
+            createAt : {
+                type : Date ,
+                default: new Date()
+            } , 
+        }
+    )
 
-    const Demand = mongoose.model('Invitation' , SchemaDemand) ;
+    const Demand = mongoose.model('Demand' , SchemaDemand) ;
 
-    module.exports = Demand ;
+    module.exports = {Demand} ;

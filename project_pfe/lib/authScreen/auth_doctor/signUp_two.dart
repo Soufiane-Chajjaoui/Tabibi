@@ -1,10 +1,14 @@
-// ignore_for_file: prefer_const_constructors
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:project_pfe/API/registre.dart';
 import 'package:project_pfe/actions/Doctor.dart';
-import 'package:project_pfe/auth/Log_in.dart';
-import 'package:project_pfe/auth/validations.dart';
+import 'package:project_pfe/authScreen/Auth.dart';
+import 'package:project_pfe/authScreen/Log_in.dart';
+import 'package:project_pfe/authScreen/Widget/Widget.dart';
+import 'package:project_pfe/authScreen/validations.dart';
+
+import '../../Agent/screens/homePage.dart';
 
 class SignUp_two extends StatefulWidget {
   const SignUp_two({super.key});
@@ -59,16 +63,17 @@ class _SignUp_twoState extends State<SignUp_two> {
                   child: Column(
                     children: [
                       Container(
-                        padding: const EdgeInsets.only(top: 1, bottom: 20),
+                        padding: const EdgeInsets.only(top: 11, bottom: 14),
                         child: Column(children: [
                           Text(
-                            fromPageOne['name'] + 'Choisissez votre Speciality',
+                            fromPageOne['name'] +
+                                ' Choisissez votre Speciality',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 color: Color(0xFF034277),
-                                fontFamily: 'Poppins',
-                                fontWeight: FontWeight.w700,
-                                fontSize: 32),
+                                fontFamily: 'Poppins_Reguler',
+                                fontWeight: FontWeight.bold,
+                                fontSize: 22),
                           ),
                         ]),
                       ),
@@ -79,54 +84,6 @@ class _SignUp_twoState extends State<SignUp_two> {
                               key: _formkey,
                               child: Column(
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 15, vertical: 10),
-                                    child: TextFormField(
-                                      keyboardType: TextInputType.emailAddress,
-                                      validator: (value) =>
-                                          validateEmail(value!),
-                                      controller: controller_email,
-                                      cursorHeight: 30,
-                                      decoration: InputDecoration(
-                                          enabledBorder: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(16),
-                                              borderSide: BorderSide(
-                                                  color: Color(0xFF034277))),
-                                          focusedBorder: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(16),
-                                              borderSide: BorderSide(
-                                                  color: Colors.blue)),
-                                          errorBorder: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(16),
-                                              borderSide: BorderSide(
-                                                  color: Colors.red)),
-                                          focusedErrorBorder:
-                                              OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(16),
-                                                  borderSide: BorderSide(
-                                                      color: Colors.red)),
-                                          prefixIcon: Icon(
-                                              Icons.alternate_email_outlined),
-                                          prefixIconColor: Color(0xFF034277),
-                                          contentPadding: EdgeInsets.all(10),
-                                          label: Text(
-                                            'Email',
-                                            style: TextStyle(
-                                                color: Color(0xFF034277),
-                                                fontFamily: 'PoppinsExtraLight',
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w600),
-                                          ),
-                                          border: OutlineInputBorder(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(20)))),
-                                    ),
-                                  ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 10, horizontal: 15),
@@ -177,7 +134,6 @@ class _SignUp_twoState extends State<SignUp_two> {
                                         // print(value.runtimeType);
                                         fromPageOne
                                             .addAll({'speciality': value});
-                                        print(fromPageOne['speciality']);
                                       },
                                       buttonStyleData: const ButtonStyleData(
                                         height: 60,
@@ -222,67 +178,32 @@ class _SignUp_twoState extends State<SignUp_two> {
                                           onPressed: () async {
                                             if (_formkey.currentState!
                                                 .validate()) {
-                                              if (await Doctor.registre_doctor(
-                                                  fromPageOne['cni'],
-                                                  fromPageOne['tele'],
-                                                  fromPageOne['name'],
-                                                  fromPageOne['password'],
-                                                  controller_email.text,
-                                                  fromPageOne['speciality'],
-                                                  fromPageOne['base64'],
-                                                  fromPageOne['extension'])) {
-                                                AwesomeDialog(
+                                              showDialog(
                                                   context: context,
-                                                  animType: AnimType.leftSlide,
-                                                  headerAnimationLoop: false,
-                                                  dialogType:
-                                                      DialogType.success,
-                                                  showCloseIcon: true,
-                                                  title: 'Succes',
-                                                  desc:
-                                                      'Walcome to Your Hospital',
-                                                  btnOkOnPress: () {
-                                                    Navigator.of(context).push(
-                                                        MaterialPageRoute(
-                                                            builder:
-                                                                (BuildContext
-                                                                    context) {
-                                                              return Log_in();
-                                                            },
-                                                            settings:
-                                                                RouteSettings(
-                                                                    arguments: {
-                                                                  'person':
-                                                                      'doctor'
-                                                                })));
-                                                  },
-                                                  btnOkIcon: Icons.check_circle,
-                                                  onDismissCallback: (type) {
-                                                    debugPrint(
-                                                        'Dialog Dissmiss from callback $type');
-                                                  },
-                                                ).show();
-                                              } else {
-                                                AwesomeDialog(
-                                                  context: context,
-                                                  dialogType:
-                                                      DialogType.warning,
-                                                  headerAnimationLoop: false,
-                                                  animType: AnimType.topSlide,
-                                                  showCloseIcon: false,
-                                                  closeIcon: const Icon(Icons
-                                                      .close_fullscreen_outlined),
-                                                  title: 'Warning',
-                                                  desc:
-                                                      'This email is Already exist',
-                                                  btnCancelOnPress: () {},
-                                                  onDismissCallback: (type) {
-                                                    debugPrint(
-                                                        'Dialog Dismiss from callback $type');
-                                                  },
-                                                  btnOkOnPress: () {},
-                                                ).show();
-                                              }
+                                                  barrierDismissible: false,
+                                                  builder: (context) => Center(
+                                                        child:
+                                                            CircularProgressIndicator(),
+                                                      ));
+                                              final result =
+                                                  regiterUserwithName(
+                                                fromPageOne['email'],
+                                                fromPageOne['password'],
+                                                fromPageOne['name'],
+                                                'doctor',
+                                                fromPageOne['speciality'],
+                                              );
+                                              if (result != 'success') {
+                                                snackbar(
+                                                  resultMessage:
+                                                      result.toString(),
+                                                );
+                                              }else 
+                                              {Navigator.of(context)
+                                                  .pushReplacement(
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              Auth()));}
                                             }
                                           },
                                           child: Text(

@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors, use_build_context_synchronously, non_constant_identifier_names
-import 'package:project_pfe/auth/SingUp.dart';
+import 'package:project_pfe/API/signin.dart';
+import 'package:project_pfe/authScreen/Auth.dart';
+import 'package:project_pfe/authScreen/SingUp.dart';
 import 'package:project_pfe/patient/homepage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
@@ -82,11 +84,12 @@ class _choise_typeState extends State<choise_type> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-          child: Container(
+      body: Container(
         decoration: BoxDecoration(
             image: DecorationImage(
                 image: AssetImage('images/background_Image.jpg'),
+                colorFilter: ColorFilter.mode(
+                    Color.fromARGB(253, 25, 16, 16), BlendMode.difference),
                 fit: BoxFit.fitHeight)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -115,14 +118,17 @@ class _choise_typeState extends State<choise_type> {
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(40)),
-                      backgroundColor:
-                          Color(0xff3279B6), // background (button) color
+                      backgroundColor: Color.fromARGB(133, 174, 157, 157),
+                      // background (button) color
+                      // foreground (text) color
+                      foregroundColor: Color.fromARGB(
+                          255, 189, 206, 219), // background (button) color
                       // foreground (text) color
                     ),
                     onPressed: () async {
                       if (selected != null) {
-                        final prefs = await SharedPreferences.getInstance();
-                        prefs.setBool('showhome', true);
+                        // final prefs = await SharedPreferences.getInstance();
+                        // prefs.setBool('showhome', true);
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (BuildContext context) {
                               return SingUp();
@@ -162,38 +168,39 @@ class _choise_typeState extends State<choise_type> {
                       ),
                     ),
                   ),
-                  // SizedBox(
-                  //   height: 10,
-                  // ),
-                  // ElevatedButton(
-                  //   style: ElevatedButton.styleFrom(
-                  //     primary: Color(0xff0E3E67),
-                  //     side: BorderSide(
-                  //         color: Color.fromARGB(255, 208, 199, 197), width: 1),
-                  //     shape: RoundedRectangleBorder(
-                  //         borderRadius: BorderRadius.circular(40)),
-                  //     // background (button) color
-                  //     // foreground (text) color
-                  //   ),
-                  //   onPressed: () {
-                  //     Navigator.of(context).pushReplacementNamed('Sing_up');
-                  //   },
-                  //   child: Container(
-                  //     alignment: Alignment.center,
-                  //     width: 264,
-                  //     height: 50,
-                  //     child: Text(
-                  //       "Previous",
-                  //       style: TextStyle(fontSize: 25, fontFamily: 'Poppins'),
-                  //     ),
-                  //   ),
-                  // )
+                  SizedBox(
+                    height: 10,
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Color(0xff0E3E67),
+
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(40)),
+                      // background (button) color
+                      // foreground (text) color
+                    ),
+                    onPressed: () {
+                      signinAnonymose();
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => Auth()));
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      width: 264,
+                      height: 50,
+                      child: Text(
+                        "SKEP",
+                        style: TextStyle(fontSize: 25, fontFamily: 'Poppins'),
+                      ),
+                    ),
+                  )
                 ],
               ),
             )
           ],
         ),
-      )),
+      ),
     );
   }
 }

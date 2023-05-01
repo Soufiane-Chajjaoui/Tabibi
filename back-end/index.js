@@ -20,12 +20,14 @@ const port = 8080 || process.env.port ;
 
 
 mongoose.set('strictQuery', true);
-
+// mongoose.disconnect(); disconnect connection with DATABASE 
 mongoose.connect("mongodb+srv://soufian_node:soufianch@testnode.fblmhkz.mongodb.net/project_pfe?retryWrites=true&w=majority", {
     useNewUrlParser : true ,
     useUnifiedTopology : true , 
     dbName : 'project_pfe'
-}) .then(() => app.listen(port))
+}) .then(() => app.listen(port , ()=> {
+  console.log('http://localhost:'+port)
+}))
  .catch((error) => {
    console.error('Error connecting to database: ', error);
  }); 

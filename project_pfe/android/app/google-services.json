@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "859118364242",
+    "project_id": "pfe-project-database",
+    "storage_bucket": "pfe-project-database.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:859118364242:android:e2d15a0b1da040635e218b",
+        "android_client_info": {
+          "package_name": "com.example.project_pfe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "859118364242-32qskohlpb0misj1q2m1tg560svr1536.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_A_kXRgPN3dQrfjRIbMT0rO2KeX3cQ8c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "859118364242-32qskohlpb0misj1q2m1tg560svr1536.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

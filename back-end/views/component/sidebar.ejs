@@ -38,7 +38,63 @@
   overflow-x: hidden;
   overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
 }</style>
-<header>
+ <script>
+  $(document).ready(function () {
+    $('#notification').on('click' , ()=>{
+      $.ajax({
+        url : '/API/get-notifications' ,
+        type : 'get' ,
+        success : (response) => {
+          if (response.success) {
+             var html = ''
+             
+             setTimeout(
+            function() 
+            {
+              for (let index = 0; index < response.data.length ; index++) {
+              const element = response.data[index] ;
+               html += '<li><div class="d-flex justify-content-between"><a class="dropdown-item">'+element.complete_name+'<sub>'+' '+response.data[index].urgancebyPatient.Urgance_name+'</sub>  </a>  <div class="d-flex align-items-center"><a class="dropdown-item" data-doc="'+ element._id+'"><i class="fa fa-share-square-o" style="cursor: pointer;" ></i></a></div> </div> </li>' ;
+          
+               console.log(response.data[index].urgancebyPatient.Urgance_name) ;
+             }
+             $('#listNotification').html(html) ;
+
+            }, 1000);
+             
+       
+              
+          }
+      
+
+        }
+      }) ;
+      countNotification();
+
+    })
+   countNotification();
+    function countNotification() {
+        $.ajax({
+          url : '/API/count-notifications' ,
+          type : 'GET' ,
+
+          success : (response)=>{
+               if (response.success) 
+              {
+                count = response.count
+                 
+                  $('#countNotification').html(count);
+                  
+              }
+            
+
+          }
+  })
+    }
+    
+  })
+
+</script>
+<header> 
     <!-- Sidebar -->
     <nav
          id="sidebarMenu"
@@ -111,7 +167,7 @@
                 aria-expanded="false"
                 aria-label="Toggle navigation"
                 >
-          <i class="fas fa-bars"></i>
+          <i class="fas fa-bars" ></i>
         </button>
   
         <!-- Brand -->
@@ -133,26 +189,29 @@
             <a
                class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow"
                href="#"
-               id="navbarDropdownMenuLink"
-               role="button"
+               id="notification"               role="button"
                data-mdb-toggle="dropdown"
-               aria-expanded="false"
+               aria-expanded="false" 
+               
                >
-              <i class="fas fa-bell"></i>
-              <span class="badge rounded-pill badge-notification bg-danger"
-                    >1</span
+              <i class="fas fa-bell" ></i>
+             
+               <span id="countNotification" class="badge rounded-pill badge-notification bg-danger"
+                    ></span
                 >
             </a>
             <ul
                 class="dropdown-menu dropdown-menu-end"
                 aria-labelledby="navbarDropdownMenuLink"
-                >
-              <li><a class="dropdown-item" href="#">Some news</a></li>
-              <li><a class="dropdown-item" href="#">Another news</a></li>
-              <li>
-                <a class="dropdown-item" href="#">Something else here</a>
-              </li>
-            </ul>
+                id="listNotification" >
+                   <center><div class="text-center">
+                    <div class="spinner-border spinner-border-sm" role="status">
+                      <span  class="sr-only">Loading...</span>
+                    </div>
+                  </div></center>
+            
+
+             </ul>
           </li>
   
       

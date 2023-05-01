@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_pfe/choice_type.dart';
 
 class StartPage extends StatefulWidget {
   const StartPage({super.key});
@@ -35,19 +36,20 @@ class _StartPageState extends State<StartPage> {
                       style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(40)),
-                          backgroundColor: Color.fromARGB(175, 174, 157, 157),
+                          backgroundColor: Color.fromARGB(133, 174, 157, 157),
                           // background (button) color
                           // foreground (text) color
-                          foregroundColor: Color.fromARGB(255, 131, 176, 210)),
+                          foregroundColor: Color.fromARGB(255, 189, 206, 219)),
                       onPressed: () {
-                        Navigator.of(context).pushReplacementNamed('Log_in');
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const choise_type()));
                       },
                       child: Container(
                         alignment: Alignment.center,
                         width: 264,
                         height: 56,
                         child: Text(
-                          "Log in",
+                          "Next",
                           style: TextStyle(
                             fontSize: 30,
                             fontFamily: 'Poppins',
@@ -58,33 +60,33 @@ class _StartPageState extends State<StartPage> {
                     SizedBox(
                       height: 10,
                     ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.transparent,
-                        side: BorderSide(
-                            color: Color.fromARGB(255, 208, 199, 197),
-                            width: 1),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(40)),
-                        // background (button) color
-                        // foreground (text) color
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pushReplacementNamed('Sing_up');
-                      },
-                      child: Container(
-                        alignment: Alignment.center,
-                        width: 264,
-                        height: 56,
-                        child: Text(
-                          "Ceate account",
-                          style: TextStyle(
-                              fontSize: 30,
-                              fontFamily: 'Poppins',
-                              color: Color.fromARGB(213, 172, 176, 173)),
-                        ),
-                      ),
-                    )
+                    // ElevatedButton(
+                    //   style: ElevatedButton.styleFrom(
+                    //     primary: Colors.transparent,
+                    //     side: BorderSide(
+                    //         color: Color.fromARGB(255, 208, 199, 197),
+                    //         width: 1),
+                    //     shape: RoundedRectangleBorder(
+                    //         borderRadius: BorderRadius.circular(40)),
+                    //     // background (button) color
+                    //     // foreground (text) color
+                    //   ),
+                    //   onPressed: () {
+                    //     Navigator.of(context).pushReplacementNamed('Sing_up');
+                    //   },
+                    //   child: Container(
+                    //     alignment: Alignment.center,
+                    //     width: 264,
+                    //     height: 56,
+                    //     child: Text(
+                    //       "Ceate account",
+                    //       style: TextStyle(
+                    //           fontSize: 30,
+                    //           fontFamily: 'Poppins',
+                    //           color: Color.fromARGB(213, 172, 176, 173)),
+                    //     ),
+                    //   ),
+                    // )
                   ],
                 )
               ],

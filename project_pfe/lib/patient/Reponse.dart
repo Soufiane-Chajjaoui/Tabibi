@@ -19,7 +19,7 @@ class _Reponse_pageState extends State<Reponse_page> {
   @override
   Widget build(BuildContext context) {
     dynamic get_urgance = ModalRoute.of(context)?.settings.arguments;
-    id_urgance = get_urgance['id'];
+    id_urgance = get_urgance['libell'];
     height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
@@ -50,6 +50,7 @@ class _Reponse_pageState extends State<Reponse_page> {
                   alignment: Alignment.topCenter,
                   child: Image.network(
                     "${rep.url}",
+                    // semanticLabel: 'such as title in html',
                     fit: BoxFit.fitWidth,
                     height: height! / 2,
                   ),
@@ -149,8 +150,12 @@ class _Reponse_pageState extends State<Reponse_page> {
                   onPressed: () async {
                     final prefs = await SharedPreferences.getInstance();
                     var id_user = prefs.getString('_id');
-                    Patient.demandDoctor(
-                        Demand(id_patient: id_user, id_urgance: id_urgance ));
+                    if (await Patient.demandDoctor(Demand(
+                            id_patient: id_user, id_urgance: id_urgance)) !=
+                        null) {
+                      snack(context);
+                    }
+                    ;
                   },
                   child: const Text(
                     'No',
@@ -163,4 +168,25 @@ class _Reponse_pageState extends State<Reponse_page> {
           Expanded(flex: 3, child: Container()),
         ],
       );
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> snack(
+      BuildContext context) {
+    return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      backgroundColor: Colors.cyan[300],
+      content: const Text(
+        "Votre Demand ete bien enregistrer ,Please attend Reponse par Doctor",
+        style: TextStyle(
+            color: Color.fromARGB(255, 88, 63, 112),
+            fontWeight: FontWeight.w200,
+            fontFamily: 'Poppins'),
+      ),
+      duration: const Duration(seconds: 1),
+      width: 280.0, // Width of the SnackBar.
+      padding: const EdgeInsets.all(15 // Inner padding for SnackBar content.
+          ),
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+    ));
+  }
 }

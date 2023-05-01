@@ -52,6 +52,11 @@ const Uploader = require('../Tools/multer')
   router.get('/admin-get_urgance' , AdminController.get_urgance) ;
   router.post('/admin-update_urgance' ,  Uploader.single('image_up') , AdminController.update_urgance) ;
   router.delete('/delete-Urgance' , AdminController.delete_urgance) ;
+  
+  
+      // GESTION NOTIFICATIONS
+  router.get('/API/get-notifications' , AdminController.get_notification) 
+  router.get('/API/count-notifications' , AdminController.count_notifications) 
 
   // CRUD SOUSURGANCE
   router.post('/admin-add_Sous_Urgance' , Uploader.single('image') , AdminController.add_sous_Urgance);
@@ -71,14 +76,13 @@ router.post('/login_doctor' , DoctorController.login_doctor) ;
 /*      Router Patient       */
 router.post('/signup_patient' , PatientController.register_patient) ;
 router.post('/login_patient' , PatientController.login_patient) ;
-router.get('/API/get_urgance' , AdminController.API_get_urgance) ;
-router.get('/API/get_sous_urgance/:id' , AdminController.API_get_sous_urgance) ;
-router.get('/API/get_reponse/:id' , AdminController.API_get_Reponse) ;
+router.get('/API/get_urgance' , PatientController.API_get_urgance) ;
+router.get('/API/get_sous_urgance/:id' , PatientController.API_get_sous_urgance) ;
+router.get('/API/get_reponse/:id' , PatientController.API_get_Reponse) ;
 router.get('/API/get-Profil/:id' , PatientController.profilPage) ;
-router.post('/API/demandDoctor' , AdminController.demandDoctor) ;
+router.post('/API/demandDoctor' , PatientController.demandDoctor) ;
 
-
- router.get('/images' ,  (req, res) => {
+ router.get('/images'  ,  (req, res) => {
   //   const dirPath = path.join(__dirname, '../uploads/Person');
   //    fs.readdir(dirPath, (err, files) => {
   //     if (err) {

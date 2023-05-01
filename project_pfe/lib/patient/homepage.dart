@@ -1,16 +1,17 @@
-// ignore_for_file: prefer_const_constructors, camel_case_types, unused_local_variable, sort_child_properties_last
+// ignore_for_file: prefer_const_constructors, camel_case_types, unused_local_variable, sort_child_properties_last, curly_braces_in_flow_control_structures
 import 'dart:convert';
 import 'package:lottie/lottie.dart';
 import 'package:flutter/material.dart';
 import 'package:project_pfe/actions/Patient.dart';
 import 'package:project_pfe/actions/Urgance.dart';
-import 'package:project_pfe/auth/Log_in.dart';
+import 'package:project_pfe/authScreen/Log_in.dart';
 import 'package:project_pfe/patient/Profile.dart';
 import 'package:project_pfe/patient/Sous_urgance.dart';
 import 'package:project_pfe/patient/search_page.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:badges/badges.dart' as badges;
 
 // ignore: camel_case_types
 class homepage extends StatefulWidget {
@@ -27,16 +28,18 @@ class _homepageState extends State<homepage> {
     dynamic person = await ModalRoute.of(context)?.settings.arguments;
     // patient = Patient(cni: cni, tele: tele, complete_name: complete_name, password: password)
     // print(person['patient']["_id"]);
-    if (await _prefs.getString('_id') == null) {
-      await _prefs.setString("_id", person['patient']["_id"]);
-    } else
-      print(await _prefs.getString('_id'));
+    if (person != null) {
+      if (await _prefs.getString('_id') == null) {
+        await _prefs.setString("_id", person['patient']["_id"]);
+      } else
+        print(await _prefs.getString('_id'));
+    }
   }
 
   @override
   void initState() {
     // TODO: implement initState
-    getID(context);
+    // getID(context);
     super.initState();
   }
 
@@ -176,6 +179,7 @@ class _accueilState extends State<accueil> {
   @override
   void initState() {
     super.initState();
+    Patient.getUrgance();
   }
 
   // test get images from server
@@ -204,29 +208,49 @@ class _accueilState extends State<accueil> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(208, 227, 245, 245),
-      body: SafeArea(
-        child: NestedScrollView(
+        backgroundColor: Color.fromARGB(208, 227, 245, 245),
+        // appBar: AppBar(
+        //   bottomOpacity: 0.5,
+        //   title: Text('Urgence'),
+        //   centerTitle: true,
+        //   actions: [
+        //     IconButton(onPressed: () => print(3), icon: Icon(Icons.notifications))
+        //   ],
+        // ),
+        // appBar: StreamBuilder<Object>(
+        //   stream: null,
+        //   builder: (context, snapshot) {
+        //     return AppBar(
+        //       title: Text(
+        //         'Emergency',
+        //         style: TextStyle(fontFamily: 'Poppins_SemiBoldItalic'),
+        //       ),
+        //       centerTitle: true,
+        //       backgroundColor: Color.fromARGB(255, 236, 193, 193),
+        //       actions: [
+        //         badges.Badge(
+        //           position: badges.BadgePosition.topEnd(top: 10, end: 10),
+        //           child: IconButton(
+        //             icon: Icon(Icons.notifications_none_rounded),
+        //             onPressed: () {},
+        //           ),
+        //         )
+        //       ],
+        //     );
+        //   }
+        // ),
+        body: NestedScrollView(
           //floatHeaderSlivers: true,
           headerSliverBuilder: (context, innerBoxIsScrolled) => [
             SliverAppBar(
-              // shape: RoundedRectangleBorder(
-              //   borderRadius: BorderRadius.vertical(
-              //     bottom: Radius.circular(40),
-              //   ),
-              // ),
-
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(
+                  bottom: Radius.circular(20),
+                ),
+              ),
               expandedHeight: 200,
               backgroundColor: Color.fromARGB(255, 236, 193, 193),
               centerTitle: true,
-              actions: [
-                IconButton(
-                    onPressed: () {},
-                    icon: Icon(
-                      Icons.notifications_none_rounded,
-                      size: 30,
-                    ))
-              ],
               forceElevated: true,
               elevation: 4,
               pinned: true,
@@ -240,14 +264,43 @@ class _accueilState extends State<accueil> {
                       //     bottomRight: Radius.circular(20)),
                       color: Colors.transparent,
                     ),
-                    child: IconButton(
-                        highlightColor: Colors.transparent,
-                        onPressed: () => _callNumber(),
-                        icon: Icon(
-                          color: Colors.black,
-                          Icons.call_outlined,
-                          size: 60,
-                        )),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 22),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Expanded(
+                              flex: 3,
+                              child: Text(
+                                'Emergency Aid Anytime and\n Anywhere',
+                                textWidthBasis: TextWidthBasis.longestLine,
+                                style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontSize: 19,
+                                    color: Color.fromARGB(255, 255, 255, 255)),
+                              )),
+                          Expanded(
+                            flex: 1,
+                            child: ClipRRect(
+                              child: Image.asset(
+                                "images/clipart2665204.png",
+                                width: 50,
+                                height: 60,
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    // child: IconButton(
+                    //     highlightColor: Colors.transparent,
+                    //     onPressed: () => _callNumber(),
+                    //     icon: Icon(
+                    //       color: Colors.black,
+                    //       Icons.call_outlined,
+                    //       size: 60,
+                    //     )),
                   ),
                   centerTitle: true,
                   title: Text(
@@ -259,8 +312,7 @@ class _accueilState extends State<accueil> {
                   )),
             ),
           ],
-          body: Padding(
-            padding: EdgeInsetsDirectional.only(top: 2),
+          body: SafeArea(
             child: FutureBuilder(
                 future: Patient.getUrgance(),
                 builder: (context, snapshot) {
@@ -308,12 +360,39 @@ class _accueilState extends State<accueil> {
                                         child: Stack(
                                           clipBehavior: Clip.none,
                                           children: [
-                                            Align(
-                                              alignment: Alignment.bottomCenter,
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                top: 11,
+                                                left: 17,
+                                                right: 9,
+                                              ),
                                               child: Image.network(
                                                 "${list[index].url}",
+                                                alignment: Alignment.center,
                                                 fit: BoxFit.cover,
-                                                width: 100,
+                                                loadingBuilder: (context, child,
+                                                    loadingProgress) {
+                                                  if (loadingProgress == null) {
+                                                    return child;
+                                                  } else
+                                                    return Center(
+                                                      child: Positioned(
+                                                        top: 20,
+                                                        child:
+                                                            CircularProgressIndicator(
+                                                          value: loadingProgress
+                                                                      .expectedTotalBytes !=
+                                                                  null
+                                                              ? loadingProgress
+                                                                      .cumulativeBytesLoaded /
+                                                                  loadingProgress
+                                                                      .expectedTotalBytes!
+                                                              : null,
+                                                        ),
+                                                      ),
+                                                    );
+                                                },
+                                                width: 90,
                                               ),
                                             ),
                                             Align(
@@ -321,7 +400,8 @@ class _accueilState extends State<accueil> {
                                               child: IconButton(
                                                 style: IconButton.styleFrom(
                                                   backgroundColor:
-                                                      Color.fromARGB(190, 135, 130, 113),
+                                                      Color.fromARGB(
+                                                          190, 135, 130, 113),
                                                   foregroundColor:
                                                       Color.fromARGB(
                                                           250, 113, 60, 14),
@@ -342,6 +422,7 @@ class _accueilState extends State<accueil> {
                                         child: Text(
                                           "${list[index].libell}",
                                           textAlign: TextAlign.center,
+                                          overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontFamily: 'Poppins'),
@@ -358,35 +439,34 @@ class _accueilState extends State<accueil> {
                         );
                 }),
           ),
-          // body: ListView.builder(
-          //     itemCount: 40,
-          //     itemBuilder: (context, i) {
-          //       return Row(
-          //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          //         children: [
-          //           Expanded(
-          //               child: Container(
-          //             decoration: BoxDecoration(
-          //               borderRadius: BorderRadius.circular(12),
-          //               color: Color.fromARGB(255, 199, 106, 106),
-          //             ),
-          //             height: 150,
-          //             margin: EdgeInsets.all(12),
-          //           )),
-          //           Expanded(
-          //               child: Container(
-          //             decoration: BoxDecoration(
-          //               borderRadius: BorderRadius.circular(12),
-          //               color: Color.fromARGB(255, 199, 106, 106),
-          //             ),
-          //             height: 150,
-          //             margin: EdgeInsets.all(12),
-          //           )),
-          //         ],
-          //       );
-          //     }),
-        ),
-      ),
-    );
+        )
+        // body: ListView.builder(
+        //     itemCount: 40,
+        //     itemBuilder: (context, i) {
+        //       return Row(
+        //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        //         children: [
+        //           Expanded(
+        //               child: Container(
+        //             decoration: BoxDecoration(
+        //               borderRadius: BorderRadius.circular(12),
+        //               color: Color.fromARGB(255, 199, 106, 106),
+        //             ),
+        //             height: 150,
+        //             margin: EdgeInsets.all(12),
+        //           )),
+        //           Expanded(
+        //               child: Container(
+        //             decoration: BoxDecoration(
+        //               borderRadius: BorderRadius.circular(12),
+        //               color: Color.fromARGB(255, 199, 106, 106),
+        //             ),
+        //             height: 150,
+        //             margin: EdgeInsets.all(12),
+        //           )),
+        //         ],
+        //       );
+        //     }),
+        );
   }
 }

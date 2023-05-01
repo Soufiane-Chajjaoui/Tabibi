@@ -6,7 +6,9 @@ const {Reponse } = require('../models/Reponse');
 const { cloudinary } = require('../Tools/Cloudinary')
 const Sous_urgance =  require('../models/SousUrgance') ;
 const { exit } = require('process');
-const Demand = require('../models/Demand') ;
+const {Demand} = require('../models/Demand') ;
+const { count } = require('console');
+const { default: mongoose } = require('mongoose');
 
 const register_admin = (req , res )=>{
     Admin.findOne({         
@@ -202,55 +204,61 @@ const delete_sous_urgance = async (req , res) => {
 
 
     //    API
-    const API_get_urgance =   (req , res) => {
+
+
+        
+ 
  
 
-        Urgance.find()
-        .then((result) => {res.status(200).json(result)})
-        .catch(err => console.log(err))
-
-        }
-
-        
-    const API_get_sous_urgance = async  (req ,res) =>  {
 
 
-     // const result =   await   Sous_urgance.aggregate([{ $unwind :"$id_Urgance"}]).then(rs=> res.json(rs)).catch(err => console.log(err));
-        
-          await Sous_urgance.find({} , {reponse :0}).then(rs =>  {
-             
-             var list_sous = [] ;
+    const get_notification =async(req , res) =>{
+
+ // dataArray =  result.map(({idPatient})=> new mongoose.Types.ObjectId(idPatient)) ;
+                    
+                          Demand.find({ accepted : false } , {idPatient : 1 , _id : 0}).distinct('idPatient' , (err , distinct)=> {
+                            if (err) {
+                                console.log(err)
+                            }else {
+                                Patient.aggregate().lookup(
+                            
+                                    {
+                                      from : 'demands' ,
+                                      localField : '_id'  ,
+                                      foreignField : 'idPatient' , 
+                                      as : 'urgancebyPatient' ,
+                                       
+                                    }
+                              )
+                              .project({ 'complete_name' : 1 , 'urgancebyPatient' :{ $arrayElemAt: ['$urgancebyPatient', 0] } })
+                              .match({ '_id' : { $in : distinct }})
+                              .sort({  'urgancebyPatient.createdAt'  : 'asc'}) 
+                   
+                           .exec((err , result)=> {
+                      if (err) {
+                          console.log(err)
+                      }else {
+                           res.status(200).json({data : result , success : true})
+                      } ;
+                  }) ;
+                            }
+                          })
+  
+         
+                           
+              
             
-            for (let index = 0; index < rs.length; index++) {            
-             if (rs[index].id_Urgance.id_urg == req.params.id) {
-                  list_sous.push(rs[index])
-             } 
-             }
-             res.status(200).json(list_sous);
+     } 
+const count_notifications =   (req ,res )=> {
 
-           }
-        )
-           .catch(err => console.log(err)) ;
-        //await Sous_urgance.count().then(rs=> console.log(rs)).catch(err => console.log(err))
-       
-    }    
+           Demand.distinct('idPatient' , {accepted : false} , (err , data)=>{
+            if (err) {
+                console.log(err)
+            }else 
+            res.status(200).json({count : data.length  , success : true})
 
-    const API_get_Reponse = async function(req , res) {
-
-          await Sous_urgance.findById(req.params.id , { reponse : 1 }).then(result => res.status(200).json(result.reponse)).catch(err => console.log(err))
- 
-    }
-
-    const demandDoctor = async (req ,res)=>{
-        
-      console.log(req.body);
-        const demand = new Demand( {
-            idPatient : req.body.id_patient ,
-            Urgance_name : req.body.Urgance_name
-        } )
-        await demand.save();
-    }
- 
+         })
+       }
      
 
-module.exports = {addUrgance , demandDoctor ,getAllPatients  ,API_get_Reponse, API_get_sous_urgance , add_sous_Urgance , API_get_urgance,  add_reponse , get_urgance , delete_sous_urgance , get_sous_urgance , register_admin , login_admin , delete_urgance , update_urgance}
+module.exports = {addUrgance ,count_notifications  , get_notification, getAllPatients  ,  add_sous_Urgance ,   add_reponse , get_urgance , delete_sous_urgance , get_sous_urgance , register_admin , login_admin , delete_urgance , update_urgance}

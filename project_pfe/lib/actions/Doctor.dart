@@ -66,26 +66,24 @@ class Doctor extends Person {
   });
 
   static Future<bool> registre_doctor(
-      String? cni,
-      String? tele,
-      String? complete_name,
-      String? password,
-      String? email,
-      String? speciality,
-      String? image,
-      String? extension) async {
+    String? email,
+    String? complete_name,
+    String? password,
+    String? speciality,
+  ) async {
     var url = Uri.parse("http://192.168.1.4:8080/signup_doctor");
     var res = await http.post(url, headers: <String, String>{
       'context-type': 'application/json;charSet=UTF-8'
     }, body: {
-      'complete_name': complete_name,
-      'CNI': cni,
-      'num_tele': tele,
-      'mail': email,
-      'speciality': speciality,
-      'password': password,
-      'avatar': image ?? 'vide',
-      'extension': extension ?? 'vide',
+      // I use Firebase so I don't need it
+      // 'complete_name': complete_name,
+      // 'CNI': cni,
+      // 'num_tele': tele,
+      // 'mail': email,
+      // 'speciality': speciality,
+      // 'password': password,
+      // 'avatar': image ?? 'vide',
+      // 'extension': extension ?? 'vide',
     });
     // if (res.statusCode == 200) {
     //   print(res.body);
