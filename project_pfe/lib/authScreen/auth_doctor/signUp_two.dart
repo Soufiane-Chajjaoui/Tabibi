@@ -193,18 +193,12 @@ class _SignUp_twoState extends State<SignUp_two> {
                                                 'doctor',
                                                 fromPageOne['speciality'],
                                               );
-                                              if (result != 'success') {
-                                                snackbar(
-                                                  resultMessage:
-                                                      result.toString(),
-                                                );
-                                              }else 
-                                              {Navigator.of(context)
+                                              Navigator.of(context)
                                                   .pushReplacement(
                                                       MaterialPageRoute(
                                                           builder: (context) =>
                                                               Auth()));}
-                                            }
+                                          
                                           },
                                           child: Text(
                                             "Save",

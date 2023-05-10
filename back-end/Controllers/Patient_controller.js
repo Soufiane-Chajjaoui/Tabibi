@@ -45,9 +45,8 @@ const register_patient = async (req , res)=>  {
 }
 
 
-const login_patient = function(req , res){
-
-    Patient.findOne({         
+const login_patient = function(req , res){ 
+     Patient.findOne({         
             num_tele : req.body.num_tele ,
             password : req.body.password ,
             } , (err , patient)=> {

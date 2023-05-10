@@ -242,12 +242,7 @@ const delete_sous_urgance = async (req , res) => {
                       } ;
                   }) ;
                             }
-                          })
-  
-         
-                           
-              
-            
+                          })  
      } 
 const count_notifications =   (req ,res )=> {
 

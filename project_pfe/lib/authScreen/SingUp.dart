@@ -10,11 +10,14 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 import 'package:project_pfe/API/registre.dart';
+import 'package:project_pfe/API/signin.dart';
 import 'package:project_pfe/actions/Patient.dart';
 import 'package:project_pfe/authScreen/Auth.dart';
 import 'package:project_pfe/authScreen/Log_in.dart';
 import 'package:project_pfe/authScreen/auth_doctor/signUp_two.dart';
 import 'package:project_pfe/authScreen/validations.dart';
+
+import '../API/api.dart';
 
 class SingUp extends StatefulWidget {
   const SingUp({super.key});
@@ -537,18 +540,42 @@ class _SingUpState extends State<SingUp> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               IconButton(
-                                  onPressed: () {},
-                                  icon:
-                                      Image.asset('add_Icons/google-plus.png')),
-                              IconButton(
-                                  onPressed: () {},
-                                  icon: Image.asset('add_Icons/apple.png')),
-                              IconButton(
-                                  onPressed: () {},
-                                  icon: Icon(
-                                    Icons.facebook_outlined,
-                                    size: 28,
-                                  ))
+                                  onPressed: () async {
+                                    showDialog(
+                                        context: context,
+                                        barrierDismissible: false,
+                                        builder: (context) => Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            ));
+                                    UserCredential? user =
+                                        await signinWithGoogle();
+                                    if (user != null) {
+                                      print(user.user?.email);
+                                        if (await APIs.UserExist()) {
+                                      Navigator.of(context)
+                                          .pushReplacement(MaterialPageRoute(
+                                        builder: (BuildContext context) {
+                                          return Auth();
+                                        },
+                                      ));
+                                    } else {
+                                      await APIs.CreateUser();
+                                      Navigator.of(context)
+                                          .pushReplacement(MaterialPageRoute(
+                                        builder: (BuildContext context) {
+                                          return Auth();
+                                        },
+                                      ));
+                                    }
+                                
+                                    }
+                                  },
+                                  icon: Text(
+                                    'Google',
+                                    style: TextStyle(
+                                        fontSize: 18, fontFamily: 'Poppins'),
+                                  )),
                             ],
                           ),
                           Row(
@@ -581,7 +608,7 @@ class _SingUpState extends State<SingUp> {
                                     style: TextStyle(
                                         fontSize: 18,
                                         color: Colors.black,
-                                        fontFamily: 'Poppins'),
+                                        fontFamily: 'Poppins_SemiBoldItalic'),
                                   ))
                             ],
                           )

@@ -17,7 +17,7 @@ class Auth extends StatefulWidget {
 class _AuthState extends State<Auth> {
   bool isDoctor = false;
 
-    Future  check() async {
+  Future check() async {
     final CollectionReference usersCollection =
         FirebaseFirestore.instance.collection('Users');
 
@@ -28,16 +28,15 @@ class _AuthState extends State<Auth> {
     if (querySnapshot.docs.isNotEmpty) {
       DocumentSnapshot documentSnapshot = querySnapshot.docs.first;
       final userauth = documentSnapshot.data() as Map<String, dynamic>;
-      print(userauth["role"] );
+      print(userauth["role"]);
       if (userauth["role"] == 'doctor') {
-       setState(()   {
-      isDoctor = true;
-      });  
-      
+        setState(() {
+          isDoctor = true;
+        });
       }
     } else {
       print('User not found');
-     }
+    }
   }
 
   @override
@@ -51,9 +50,8 @@ class _AuthState extends State<Auth> {
   Widget build(BuildContext context) {
     return StreamBuilder(
       stream: APIs.auth.authStateChanges(),
-      builder: (context, snapshot)  {
+      builder: (context, snapshot) {
         if (snapshot.hasData) {
-         
           if (isDoctor) {
             return HomepageAgent();
           } else {

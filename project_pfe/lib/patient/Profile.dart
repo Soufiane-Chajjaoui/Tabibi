@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:project_pfe/API/api.dart';
@@ -37,6 +38,7 @@ class _ProfilState extends State<Profil> {
     // TODO: implement initState
     // getProfil();
     super.initState();
+    APIs.getSelfInfo();
     final user = APIs.auth.currentUser;
     print(user);
     setState(() {
@@ -230,7 +232,9 @@ class _ProfilState extends State<Profil> {
                           onPressed: () {
                             Navigator.of(context).push(MaterialPageRoute(
                               builder: (BuildContext context) {
-                                return EditProfil();
+                                return EditProfil(
+                                  me: APIs.me,
+                                );
                               },
                             ));
                           },
@@ -241,15 +245,19 @@ class _ProfilState extends State<Profil> {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CircleAvatar(
-                      radius: 40,
-                      child: Image.asset(
-                        "images/pngwing.png",
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.fill,
-                      ),
-                    ),
+                    ClipRRect(
+                        borderRadius: BorderRadius.circular(50),
+                        child: CachedNetworkImage(
+                          imageUrl: APIs.me.image,
+                          width: 70,
+                          height: 70,
+                          progressIndicatorBuilder: (context, url, progress) {
+                            return Container(
+                              child: CircularProgressIndicator(),
+                            );
+                          },
+                          fit: BoxFit.cover,
+                        )),
                     Text(
                       "${name}",
                       style: TextStyle(fontFamily: 'Poppins'),

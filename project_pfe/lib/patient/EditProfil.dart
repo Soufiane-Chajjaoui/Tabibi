@@ -2,11 +2,18 @@
 
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:project_pfe/API/api.dart';
+import 'package:project_pfe/Models/ChatUser.dart';
+
+import '../Agent/widgets/showbottomsheet.dart';
 
 class EditProfil extends StatefulWidget {
-  const EditProfil({super.key});
+  const EditProfil({super.key, required this.me});
+  final ChatUser me;
 
   @override
   State<EditProfil> createState() => _EditProfilState();
@@ -15,15 +22,38 @@ class EditProfil extends StatefulWidget {
 class _EditProfilState extends State<EditProfil> {
   File? image;
 
-  final pickedimage =  ImagePicker();
-
-  setimage() async {
-    var _image = await pickedimage.getImage(source: ImageSource.camera);
-    if (_image != null) {
+  var file;
+  File? imagefile;
+  _opengallery() async {
+    file = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (file != null) {
       setState(() {
-        image = File(_image.path);
+        imagefile = File(file.path);
       });
     }
+  }
+
+  _opencamera() async {
+    file = await ImagePicker().pickImage(source: ImageSource.camera);
+    if (file != null) {
+      setState(() {
+        imagefile = File(file.path);
+      });
+    }
+  }
+
+  TextEditingController _controllerName = TextEditingController();
+  TextEditingController _controllerAbout = TextEditingController();
+
+  final _formkey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      _controllerName.text = "${widget.me.name}".toString();
+      _controllerAbout.text = "${widget.me.about}".toString();
+    });
   }
 
   @override
@@ -32,104 +62,123 @@ class _EditProfilState extends State<EditProfil> {
       backgroundColor: Color(0xff99d8d7),
       body: SafeArea(
         child: ListView(children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  icon: Icon(Icons.arrow_back_ios_rounded)),
+              TextButton(
+                  onPressed: () {
+                    if (_formkey.currentState!.validate()) {
+                      _formkey.currentState!.save();
+                      APIs.EditProfil(
+                          _controllerName.text, _controllerAbout.text);
+                      // APIs.getSelfInfo();
+                    }
+                  },
+                  child: Text(
+                    'save',
+                    style: TextStyle(
+                        fontFamily: 'Poppins_SemiBoldItalic', fontSize: 22),
+                  ))
+            ],
+          ),
+          SizedBox(
+            height: 6,
+          ),
           Padding(
-            padding: const EdgeInsets.only(top: 6),
-            child: Stack(
-              alignment: Alignment.topCenter,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        icon: Icon(Icons.arrow_back_ios_rounded)),
-                    TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          'save',
-                          style: TextStyle(fontFamily: 'Poppins'),
-                        ))
-                  ],
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 12),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            padding: EdgeInsets.symmetric(horizontal: 12),
+            child: Form(
+              key: _formkey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SizedBox(
+                    height: 40,
+                  ),
+                  Stack(
+                    clipBehavior: Clip.none,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20, bottom: 12),
-                        child: Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            InkWell(
-                                borderRadius: BorderRadius.circular(20),
-                                radius: 60,
-                                onTap: () {
-                                  setimage();
-                                },
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(300.0),
-                                  child: image == null
-                                      ? Image.asset(
-                                          'images/pngwing.png',
-                                          width: 100,
-                                          height: 100,
-                                          fit: BoxFit.cover,
-                                        )
-                                      : Image.file(
-                                          width: 100,
-                                          height: 100,
-                                          image!,
-                                          fit: BoxFit.cover,
-                                        ),
-                                )),
-                            Positioned(
-                                top: 50,
-                                left: 60,
-                                child: IconButton(
-                                    onPressed: () {},
-                                    icon: Icon(
-                                      Icons.camera,
-                                      size: 30,
-                                      color: Color.fromARGB(255, 64, 57, 98),
-                                    ))),
-                          ],
-                        ),
-                      ),
-                      input('label'),
-                      input('label'),
-                      input('label'),
-                      input('label'),
-                      input('label'),
-                      input('label'),
-                      input('label'),
-                      input('label'),
-                      input('label')
+                      InkWell(
+                          borderRadius: BorderRadius.circular(70),
+                          onTap: () {
+                            // setimage();
+                          },
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(85.0),
+                            child: image == null
+                                ? CachedNetworkImage(
+                                    progressIndicatorBuilder:
+                                        (context, url, progress) {
+                                      return Container(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    },
+                                    fit: BoxFit.cover,
+                                    height: 170,
+                                    width: 170,
+                                    imageUrl: "${widget.me.image}")
+                                : Image.file(
+                                    image!,
+                                    height: 170,
+                                    width: 170,
+                                    fit: BoxFit.cover,
+                                  ),
+                          )),
+                      Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: IconButton(
+                              style: IconButton.styleFrom(
+                                  backgroundColor: Colors.white),
+                              onPressed: () {
+                                // setimage();
+                                MyBottomSheet(
+                                  onAlbumPressed: _opengallery(),
+                                  onCameraPressed: _opencamera(),
+                                );
+                              },
+                              icon: Icon(
+                                Icons.edit,
+                                size: 25,
+                                color: Colors.blue,
+                              ))),
                     ],
                   ),
-                ),
-              ],
+                  SizedBox(
+                    height: 40,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 4),
+                    child: TextFormField(
+                      onSaved: (newValue) => APIs.me.name = newValue ?? '',
+                      controller: _controllerName,
+                      decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.person),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(9))),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 4),
+                    child: TextFormField(
+                      onSaved: (newValue) => APIs.me.about = newValue ?? '',
+                      controller: _controllerAbout,
+                      decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.abc),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(9))),
+                    ),
+                  )
+                ],
+              ),
             ),
           )
         ]),
-      ),
-    );
-  }
-
-  Padding input(String label) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 4),
-      child: TextFormField(
-        initialValue: label,
-        decoration: InputDecoration(
-            enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-                borderSide: BorderSide(color: Colors.cyan.shade600)),
-            border: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(20)))),
       ),
     );
   }

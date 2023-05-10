@@ -2,6 +2,7 @@
 import 'dart:convert';
 import 'package:lottie/lottie.dart';
 import 'package:flutter/material.dart';
+import 'package:project_pfe/API/api.dart';
 import 'package:project_pfe/actions/Patient.dart';
 import 'package:project_pfe/actions/Urgance.dart';
 import 'package:project_pfe/authScreen/Log_in.dart';
@@ -13,7 +14,6 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:badges/badges.dart' as badges;
 
-// ignore: camel_case_types
 class homepage extends StatefulWidget {
   const homepage({super.key});
 
@@ -22,6 +22,12 @@ class homepage extends StatefulWidget {
 }
 
 class _homepageState extends State<homepage> {
+  @override
+  void initState() {
+    super.initState();
+    APIs.getSelfInfo();
+  }
+
   void getID(BuildContext context) async {
     // Patient patient;
     final _prefs = await SharedPreferences.getInstance();
@@ -36,13 +42,7 @@ class _homepageState extends State<homepage> {
     }
   }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    // getID(context);
-    super.initState();
-  }
-
+ 
   int pageIndex = 0;
 
   final pages = [
@@ -275,8 +275,10 @@ class _accueilState extends State<accueil> {
                                 'Emergency Aid Anytime and\n Anywhere',
                                 textWidthBasis: TextWidthBasis.longestLine,
                                 style: TextStyle(
-                                    fontFamily: 'Poppins',
+                                    overflow: TextOverflow.fade,
+                                    fontFamily: 'Poppins_SemiBoldItalic',
                                     fontSize: 19,
+                                    fontWeight: FontWeight.bold,
                                     color: Color.fromARGB(255, 255, 255, 255)),
                               )),
                           Expanded(
@@ -306,6 +308,7 @@ class _accueilState extends State<accueil> {
                   title: Text(
                     'Emergency help needed?',
                     style: TextStyle(
+                        overflow: TextOverflow.ellipsis,
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
                         fontFamily: 'Poppins'),
@@ -319,8 +322,8 @@ class _accueilState extends State<accueil> {
                   List<Urgance>? list = snapshot.data as List<Urgance>?;
                   return !snapshot.hasData
                       ? Center(
-                          child: Lottie.network(
-                          'https://assets4.lottiefiles.com/packages/lf20_x62chJ.json',
+                          child: Lottie.asset(
+                          'assets/sendLetter.json',
                           width: 200,
                           height: 230,
                         ))

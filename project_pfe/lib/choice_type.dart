@@ -62,7 +62,7 @@ class _choise_typeState extends State<choise_type> {
                       color: Color.fromARGB(255, 171, 175, 182),
                     )),
           Positioned(
-              top: 160,
+              bottom: 6,
               left: 25,
               child: selected != index
                   ? Text(
@@ -182,7 +182,7 @@ class _choise_typeState extends State<choise_type> {
                     ),
                     onPressed: () {
                       signinAnonymose();
-                      Navigator.of(context).push(
+                      Navigator.of(context).pushReplacement(
                           MaterialPageRoute(builder: (context) => Auth()));
                     },
                     child: Container(

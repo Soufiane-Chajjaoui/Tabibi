@@ -21,6 +21,8 @@ import 'package:project_pfe/start_Screen.dart';
 import 'package:project_pfe/testshowImage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'patient/EditProfil.dart';
+
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -76,7 +78,7 @@ class MyApp extends StatelessWidget {
       //   },
       // ),
       // home: showhome ? homepage() :StartPage() ,
-      home: Auth(),
+      home: HomepageAgent(),
       debugShowCheckedModeBanner: false,
     );
   }

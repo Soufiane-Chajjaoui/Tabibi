@@ -1,27 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:project_pfe/actions/Patient.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import '../../Models/ChatUser.dart';
 
 class UserCard extends StatelessWidget {
-  const UserCard({super.key});
-
+  const UserCard({super.key, required this.chatUser});
+  final ChatUser chatUser;
   @override
   Widget build(BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
       margin: EdgeInsets.only(bottom: 3),
       child: ListTile(
-        title: Text('Soufian chajjaoui'),
-        subtitle: Text('last Message'),
-        leading: CircleAvatar(
-          radius: 25,
-          child: Image.asset(
-            'images/pngwing.png',
-            height: 30,
-            width: 30,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.blueGrey,
+        title: Text(
+          '${chatUser.name}',
+          overflow: TextOverflow.ellipsis,
         ),
-        trailing: Text('11:00'),
+        subtitle: Text(
+          '${chatUser.about}',
+          overflow: TextOverflow.ellipsis,
+        ),
+        leading: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: CachedNetworkImage(
+              fit: BoxFit.cover,
+              imageUrl:
+                  "https://lh3.googleusercontent.com/a/AGNmyxbGce06sdAnZyhjghs_z1VvkZP2Lm3U0IbiZuhP=s96-c",
+              //  placeholder: (context, url) => CircularProgressIndicator(),
+              errorWidget: (context, url, error) => Icon(Icons.person)),
+        ),
+        trailing: CircleAvatar(
+          radius: 7,
+          backgroundColor: Colors.green,
+        ),
       ),
     );
   }
