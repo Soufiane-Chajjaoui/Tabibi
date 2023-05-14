@@ -21,23 +21,26 @@ class EditProfil extends StatefulWidget {
 
 class _EditProfilState extends State<EditProfil> {
   File? image;
-
+  late String _image;
   var file;
-  File? imagefile;
   _opengallery() async {
-    file = await ImagePicker().pickImage(source: ImageSource.gallery);
+    file = await ImagePicker().pickImage(source: ImageSource.gallery , imageQuality: 80);
     if (file != null) {
-      setState(() {
-        imagefile = File(file.path);
+      setState(() async {
+        image = File(file.path);
+        _image = file.path;
+        await APIs.updatePictureUser(File(_image));
       });
     }
   }
 
   _opencamera() async {
-    file = await ImagePicker().pickImage(source: ImageSource.camera);
+    file = await ImagePicker().pickImage(source: ImageSource.camera , imageQuality: 80);
     if (file != null) {
       setState(() {
-        imagefile = File(file.path);
+        image = File(file.path);
+        _image = file.path;
+        APIs.updatePictureUser(File(_image));
       });
     }
   }
@@ -112,16 +115,21 @@ class _EditProfilState extends State<EditProfil> {
                             borderRadius: BorderRadius.circular(85.0),
                             child: image == null
                                 ? CachedNetworkImage(
-                                    progressIndicatorBuilder:
-                                        (context, url, progress) {
-                                      return Container(
-                                        child: CircularProgressIndicator(),
-                                      );
-                                    },
+                                    imageUrl: widget.me.image,
                                     fit: BoxFit.cover,
                                     height: 170,
                                     width: 170,
-                                    imageUrl: "${widget.me.image}")
+                                    placeholder: (context, url) => Container(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                    errorWidget: (context, url, error) =>
+                                        Image.asset(
+                                      'images/user.png',
+                                      fit: BoxFit.cover,
+                                      height: 170,
+                                      width: 170,
+                                    ),
+                                  )
                                 : Image.file(
                                     image!,
                                     height: 170,
@@ -137,9 +145,36 @@ class _EditProfilState extends State<EditProfil> {
                                   backgroundColor: Colors.white),
                               onPressed: () {
                                 // setimage();
-                                MyBottomSheet(
-                                  onAlbumPressed: _opengallery(),
-                                  onCameraPressed: _opencamera(),
+                                showModalBottomSheet(
+                                  context: context,
+                                  builder: (Context) => Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 13),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        IconButton(
+                                            style: IconButton.styleFrom(
+                                                backgroundColor: Colors.black87,
+                                                foregroundColor:
+                                                    Colors.white70),
+                                            onPressed: () => _opencamera(),
+                                            iconSize: 40,
+                                            icon: const Icon(
+                                                Icons.camera_enhance)),
+                                        IconButton(
+                                            style: IconButton.styleFrom(
+                                                backgroundColor: Colors.black87,
+                                                foregroundColor:
+                                                    Colors.white70),
+                                            onPressed: () => _opengallery(),
+                                            iconSize: 40,
+                                            icon: Icon(
+                                                Icons.photo_album_rounded)),
+                                      ],
+                                    ),
+                                  ),
                                 );
                               },
                               icon: Icon(

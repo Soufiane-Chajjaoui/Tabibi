@@ -462,36 +462,15 @@ class _SingUpState extends State<SingUp> {
                                                 onPressed: () async {
                                                   if (_formkey.currentState!
                                                       .validate()) {
-                                                    showDialog(
-                                                        context: context,
-                                                        barrierDismissible:
-                                                            false,
-                                                        builder: (context) =>
-                                                            Center(
-                                                              child:
-                                                                  CircularProgressIndicator(),
-                                                            ));
-                                                    final result =
-                                                        regiterUserwithName(
-                                                            controller_email
-                                                                .text
-                                                                .trim(),
-                                                            controller_password
-                                                                .text
-                                                                .trim(),
-                                                            controller_name.text
-                                                                .trim(),
-                                                            type,
-                                                            '');
-                                                    print(result);
-
-                                                    Navigator.of(context)
-                                                        .push(MaterialPageRoute(
-                                                      builder: (BuildContext
-                                                          context) {
-                                                        return Log_in();
-                                                      },
-                                                    ));
+                                                    regiterUserwithName(
+                                                        controller_email.text
+                                                            .trim(),
+                                                        controller_password.text
+                                                            .trim(),
+                                                        controller_name.text
+                                                            .trim(),
+                                                        type,
+                                                        '' , context);
                                                   }
                                                 },
                                                 child: Padding(
@@ -552,23 +531,22 @@ class _SingUpState extends State<SingUp> {
                                         await signinWithGoogle();
                                     if (user != null) {
                                       print(user.user?.email);
-                                        if (await APIs.UserExist()) {
-                                      Navigator.of(context)
-                                          .pushReplacement(MaterialPageRoute(
-                                        builder: (BuildContext context) {
-                                          return Auth();
-                                        },
-                                      ));
-                                    } else {
-                                      await APIs.CreateUser();
-                                      Navigator.of(context)
-                                          .pushReplacement(MaterialPageRoute(
-                                        builder: (BuildContext context) {
-                                          return Auth();
-                                        },
-                                      ));
-                                    }
-                                
+                                      if (await APIs.UserExist()) {
+                                        Navigator.of(context)
+                                            .pushReplacement(MaterialPageRoute(
+                                          builder: (BuildContext context) {
+                                            return Auth();
+                                          },
+                                        ));
+                                      } else {
+                                        await APIs.CreateUser();
+                                        Navigator.of(context)
+                                            .pushReplacement(MaterialPageRoute(
+                                          builder: (BuildContext context) {
+                                            return Auth();
+                                          },
+                                        ));
+                                      }
                                     }
                                   },
                                   icon: Text(

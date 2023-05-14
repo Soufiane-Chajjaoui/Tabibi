@@ -71,6 +71,12 @@ class _HomepageAgentState extends State<HomepageAgent>
                           Center(
                         child: CircularProgressIndicator(),
                       ),
+                      errorWidget: (context, url, error) => Image.asset(
+                        'images/user.png',
+                        fit: BoxFit.cover,
+                        height: 170,
+                        width: 170,
+                      ),
                     ),
                   ),
                   accountName: Text(

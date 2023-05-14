@@ -249,14 +249,18 @@ class _ProfilState extends State<Profil> {
                         borderRadius: BorderRadius.circular(50),
                         child: CachedNetworkImage(
                           imageUrl: APIs.me.image,
-                          width: 70,
                           height: 70,
-                          progressIndicatorBuilder: (context, url, progress) {
-                            return Container(
-                              child: CircularProgressIndicator(),
-                            );
-                          },
-                          fit: BoxFit.cover,
+                          width: 70,
+                          progressIndicatorBuilder: (context, url, progress) =>
+                              Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                          errorWidget: (context, url, error) => Image.asset(
+                            'images/user.png',
+                            fit: BoxFit.cover,
+                            height: 170,
+                            width: 170,
+                          ),
                         )),
                     Text(
                       "${name}",

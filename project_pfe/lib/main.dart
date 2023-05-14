@@ -21,6 +21,7 @@ import 'package:project_pfe/start_Screen.dart';
 import 'package:project_pfe/testshowImage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'Agent/screens/InvidualChat.dart';
 import 'patient/EditProfil.dart';
 
 void main() async {
@@ -78,7 +79,7 @@ class MyApp extends StatelessWidget {
       //   },
       // ),
       // home: showhome ? homepage() :StartPage() ,
-      home: HomepageAgent(),
+      home: ScreenChat(),
       debugShowCheckedModeBanner: false,
     );
   }

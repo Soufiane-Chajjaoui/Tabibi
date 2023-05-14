@@ -178,26 +178,17 @@ class _SignUp_twoState extends State<SignUp_two> {
                                           onPressed: () async {
                                             if (_formkey.currentState!
                                                 .validate()) {
-                                              showDialog(
-                                                  context: context,
-                                                  barrierDismissible: false,
-                                                  builder: (context) => Center(
-                                                        child:
-                                                            CircularProgressIndicator(),
-                                                      ));
-                                              final result =
+                                            
+                                               
                                                   regiterUserwithName(
                                                 fromPageOne['email'],
                                                 fromPageOne['password'],
                                                 fromPageOne['name'],
                                                 'doctor',
                                                 fromPageOne['speciality'],
+                                                context
                                               );
-                                              Navigator.of(context)
-                                                  .pushReplacement(
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              Auth()));}
+                                       }
                                           
                                           },
                                           child: Text(

@@ -26,12 +26,12 @@ class _AuthState extends State<Auth> {
         .get();
 
     if (querySnapshot.docs.isNotEmpty) {
-      DocumentSnapshot documentSnapshot = querySnapshot.docs.first;
+      DocumentSnapshot documentSnapshot = await querySnapshot.docs.first;
       final userauth = documentSnapshot.data() as Map<String, dynamic>;
       print(userauth["role"]);
       if (userauth["role"] == 'doctor') {
-        setState(() {
-          isDoctor = true;
+        setState(()  {
+         isDoctor = true;
         });
       }
     } else {
