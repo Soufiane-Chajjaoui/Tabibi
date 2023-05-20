@@ -3,11 +3,14 @@
 <html lang="en">
 <head>
     <title>Urgance</title>
+     
+  <!-- Include required CSS and JavaScript files -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
 
-    <%- include('../component/navbar') %>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+     <%- include('../component/navbar') %>
 
+ 
     <style>
 
 
@@ -80,37 +83,31 @@
         </div>
       </div> 
       <hr>
-      <div class="row ">
-     
-      <% if ( Patients.length > 0) {  %>
-        
-      <% Patients.forEach(element => {  %>
-        <div class="col-3 p-2" >
-          <div class="card " id="filterSearch" style="background-color:#cfcfcf;">
-             
-          
-           <div class="card-body">
-             <h5 class="card-title text-center"><%= element.complete_name %></h5>
-               <div class="dropdown" style="float:right;">
-              <button class="dropbtn"><img src="../assets/planning.png" width="30px" alt=""></button>
-              <div class="dropdown-content">
-              
-                
-              </div> 
-            </div>
-           </div>
-         </div>
-         </div>
-      <%  }); %>
-       
-       
-       <% }  else { %>
-        <div style='position:relative; padding-top:calc(15% + 30px)' class="d-flex justify-content-center mt-4"> 
-          <p>  </p>
-         </div>
-       
-      <% } %>
-      </div> 
+      <table id="example"  class="py-2"  style="width:100%">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Position</th>
+                <th>Office</th>
+                <th>Age</th>
+                <th>Start date</th>
+                <th>Salary</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>Name</th>
+                <th>Position</th>
+                <th>Office</th>
+                <th>Age</th>
+                <th>Start date</th>
+                <th>Salary</th>
+            </tr>
+        </tfoot>
+    </table>
       <!-- Modals -->
 
         <!-- Modal -->
@@ -202,57 +199,28 @@
   </main>
   <!--Main layout-->
 </body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 <script>
-
-
-  function update(args) {
-
-    document.getElementById('urganceId').value = args[0] ;
-    document.getElementById('libell_up').value = args[1] ;
-    document.getElementById('updatemodal').onclick ;
-    
-  }
-  function sousUrgance(args) {
-    document.getElementById('exampleModalLabel').innerHTML = 'Sous urgance de ' + args[1] ;
-    document.getElementById('id_urgance').value = args[0] ;
-    document.getElementById('libell__Urgance').value =   args[1] ;
-
-    document.getElementById('Fork').onclick ;
-
-  }
-  
+ 
 
   $(document).ready(function () {
-    $("#close-alert").on('click' , function(){
-      $('#alert').remove() ;
-    })
-
-     $("#search-input").on("keyup" , function () {
-      var value = $(this).val().toLowerCase() ;
-      $("#filterSearch ").filter(function() {
-      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    $('#example').DataTable({
+      'processing' : true,
+      'serverSide' : true,
+      'serverMethod' : 'GET',
+      'ajax' :{
+        'url' : 'searchPatient'
+      },
+      'aaStoring' : [],
+      'columns' : [
+        { data : 'patientName'},
+        { data : 'patientEmail'} ,
+        { data : 'patientOnline'},
+        { data : 'patientInscreptionDate'}
+      ]
     });
-    })
-    $('.delete').on('click' , function () {
-       var urganceId =  $(this).attr("data-doc") ;
-       var id_image = $(this).attr("data-img") ;
-       console.log(urganceId) ;
-       var obj = $(this) ; 
-      $.ajax({
-        url : "/delete-Urgance" ,
-        type : "delete" ,
-        data : { "id" : urganceId  , 'id_image' : id_image} ,
-        success : function (response) {
-           if (response.success == true) {
-
-            $(obj).parent().parent().parent().parent().remove() ;
-             $('#alert').css("display" , "block") ;
-             $('#libell_delete').html( response.message ) ;
-           }else alert('false tahaja mkhdama') ;
-        }
-      })
-      
-    })
+ 
   })
 
 

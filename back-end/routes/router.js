@@ -15,13 +15,13 @@ const Uploader = require('../Tools/multer')
     /* links */
 
   router.get('/login' , (req ,res) => {
-    const username = req.session.username;
-    console.log(`Username: ${username}`);
-    res.render('auth/login') ;
+    // const username = req.session.username;
+    // console.log(`Username: ${username}`);
+     res.render('auth/login') ;
   }) ;
 
   router.get('/register' , (req ,res) => {
-    req.session.username = 'John'; 
+    // req.session.username = 'John'; 
     res.render('auth/register') ;
   }) ;
 

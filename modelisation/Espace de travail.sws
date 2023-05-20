@@ -4,7 +4,7 @@
 
 <Workspace>
 	<Local Expanded="Yes">
-		<Model Expanded="Yes" ID="{8079AD53-0D03-46A2-A637-ABA22522C58A}" Loaded="No" Name="ModeleConceptuelDonnees_1" Type="{1E597170-9350-11D1-AB3C-0020AF71E433}" URL="file:///%_HOME%/Project_flutter/PFE/modelisation/ModeleConceptuelDonnees_1.mcd"/>
+		<Model Expanded="Yes" ID="{8079AD53-0D03-46A2-A637-ABA22522C58A}" Loaded="No" Name="first meeting" Type="{1E597170-9350-11D1-AB3C-0020AF71E433}" URL="file:///%_HOME%/Project_flutter/PFE/modelisation/ModeleConceptuelDonnees_1.mcd"/>
 		<Model ID="{8079AD53-0D03-46A2-A637-ABA22522C58A}" Loaded="No" Name="first meeting" Type="{1E597170-9350-11D1-AB3C-0020AF71E433}" URL="file:///%_HOME%/Project_flutter/PFE/modelisation/ModeleConceptuelDonnees_1.mcd"/>
 		<Model Expanded="Yes" ID="{371B05B5-1D47-4B06-8AA9-AFB9A5A568CC}" Loaded="No" Name="first meeting" Type="{5F45F978-C4F3-4E35-A3FC-AF3318663A0F}" URL="file:///C|/Users/DELL/Desktop/rapport pfe/first meeting.mld"/>
 		<Model Expanded="Yes" ID="{8079AD53-0D03-46A2-A637-ABA22522C58A}" Loaded="No" Name="first meeting" Type="{1E597170-9350-11D1-AB3C-0020AF71E433}" URL="file:///%_HOME%/Project_flutter/PFE/modelisation/ModeleConceptuelDonnees_1.mcd"/>
@@ -12,7 +12,12 @@
 		<Model Expanded="Yes" ID="{8079AD53-0D03-46A2-A637-ABA22522C58A}" Loaded="No" Name="first meeting" Type="{1E597170-9350-11D1-AB3C-0020AF71E433}" URL="file:///%_HOME%/Project_flutter/PFE/modelisation/ModeleConceptuelDonnees_1.mcd"/>
 		<Model Expanded="Yes" ID="{8079AD53-0D03-46A2-A637-ABA22522C58A}" Loaded="No" Name="first meeting" Type="{1E597170-9350-11D1-AB3C-0020AF71E433}" URL="file:///%_HOME%/Project_flutter/PFE/modelisation/ModeleConceptuelDonnees_1.mcd"/>
 		<Model Expanded="Yes" ID="{8079AD53-0D03-46A2-A637-ABA22522C58A}" Loaded="No" Name="first meeting" Type="{1E597170-9350-11D1-AB3C-0020AF71E433}" URL="file:///%_HOME%/Project_flutter/PFE/modelisation/ModeleConceptuelDonnees_1.mcd"/>
-		<Model Expanded="Yes" ID="{8079AD53-0D03-46A2-A637-ABA22522C58A}" Name="first meeting" Selected="Yes" Type="{1E597170-9350-11D1-AB3C-0020AF71E433}" URL="file:///%_HOME%/Project_flutter/PFE/modelisation/ModeleConceptuelDonnees_1.mcd"/>
+		<Model Expanded="Yes" ID="{8079AD53-0D03-46A2-A637-ABA22522C58A}" Loaded="No" Name="first meeting" Type="{1E597170-9350-11D1-AB3C-0020AF71E433}" URL="file:///%_HOME%/Project_flutter/PFE/modelisation/ModeleConceptuelDonnees_1.mcd"/>
+		<Model Expanded="Yes" ID="{95910B18-013D-4D6F-8796-F2D96D18043B}" Loaded="No" Name="conception mcd projet stagee" Type="{1E597170-9350-11D1-AB3C-0020AF71E433}" URL="file:///%_HOME%/Stage/conception mcd projet stagee.mcd"/>
+		<Model Expanded="Yes" ID="{2451C8E5-4465-4D61-973C-D2C25BF67696}" Loaded="No" Name="conception mcd projet stagee" Type="{5F45F978-C4F3-4E35-A3FC-AF3318663A0F}" URL="file:///%_HOME%/Stage/conception mcd projet stagee.mld"/>
+		<Model Expanded="Yes" ID="{95910B18-013D-4D6F-8796-F2D96D18043B}" Loaded="No" Name="conception mcd projet stagee" Type="{1E597170-9350-11D1-AB3C-0020AF71E433}" URL="file:///%_HOME%/Stage/conception mcd projet stagee.mcd"/>
+		<Model Expanded="Yes" ID="{95910B18-013D-4D6F-8796-F2D96D18043B}" Loaded="No" Name="conception mcd projet stagee" Type="{1E597170-9350-11D1-AB3C-0020AF71E433}" URL="file:///%_HOME%/Stage/MCDstage.mcd"/>
+		<Model Expanded="Yes" ID="{95910B18-013D-4D6F-8796-F2D96D18043B}" Name="conception mcd projet stagee" Selected="Yes" Type="{1E597170-9350-11D1-AB3C-0020AF71E433}" URL="file:///%_HOME%/Stage/MCDstage.mcd"/>
 	</Local>
 	<BrowserModule Name="Référentiel"/>
 </Workspace>

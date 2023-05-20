@@ -1,6 +1,6 @@
  const { default: mongoose } = require('mongoose');
  const extendSchema = require('mongoose-extend-schema');
-
+ const bcrypt = require('bcrypt');
    /*+++++++++++++++++++++++++++++++++++ Person Schema Model Parent +++++++++++++++++++++++++++++++++++++++*/
 
 const PersonSchema = new mongoose.Schema({
@@ -10,19 +10,21 @@ const PersonSchema = new mongoose.Schema({
   } ,
   CNI : {
       type : String ,
-      require : true
-   },
+      require : true ,
+    },
   complete_name : {
       type : String ,
       require : true
   },
   num_tele : {
       type : Number ,
-      require : true
+      require : true ,
+      length : 10
   },
   password : {
       type : String ,
-      require : true
+      required: [true, 'Please enter a password'],
+      minlength:[6  , ' must be at least'] ,
   },
   gender  : {
       type : String ,
@@ -55,7 +57,8 @@ const PersonSchema = new mongoose.Schema({
     const AdminSchema = extendSchema(PersonSchema , {
         mail : {
             type : String ,
-            require : true
+            unique : [true , 'Your Email is already in use'] ,
+            require : [true , 'Email is required']
         },
         avatar : {
             name: { type: String, required: true , default : 'ceceeecc'  },
@@ -63,10 +66,43 @@ const PersonSchema = new mongoose.Schema({
           }
       } , {timestamps : true}) ;
 
+
+      AdminSchema.pre('save', async function (next) {
+        console.log(this.mail, this.password);
+        const salt =  bcrypt.genSaltSync(10);
+        this.password = await bcrypt.hash(this.password, salt);
+        next();
+      });
+      
+
+      AdminSchema.statics.login = async function(email  , password){
+    
+        console.log( email , password); // {email : 'soufian@gmail.com'}
+       const userCheck = await this.findOne({mail : email});
+               if (!userCheck) {
+                   throw new Error('Admin not registered');
+               }else {
+                  const auth = await bcrypt.compare(password, userCheck.password) ;
+                  console.log(auth , userCheck.mail)
+                  if (!auth) {
+                      throw new Error('Invalid password');
+                  }else {
+                      return userCheck ;
+                  }
+               }
+           }
   const Person = mongoose.model('Person',PersonSchema)
   const Doctor = mongoose.model('Doctor',DoctorSchema)
   const Patient = mongoose.model('Patient' , PatientSchema)
   const Admin = mongoose.model('Admin' , AdminSchema)
 
+  AdminSchema.pre('save' ,async (next) =>{
+    console.log(this.mail , this.password );
+    const salt = await bcrypt.salt();
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  }) ;
+
+ 
 
   module.exports = { Doctor , Patient , Admin} ;

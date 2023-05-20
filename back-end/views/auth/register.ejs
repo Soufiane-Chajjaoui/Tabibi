@@ -3,16 +3,22 @@
 <head>
   <%- include('../component/navbar') %>
   <title>Register</title>
+  <link rel="stylesheet" href="css/Spinner.css">
+  <link rel="stylesheet" href="css/backgrounImage.css">
    <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,500&family=Righteous&display=swap');
     </style>
 </head>
-<body class="bg-dark">
-    <div class="container">
-        <section >
-            <div class="container p-5 ">
-              <div class="row d-flex justify-content-center align-items-center ">
-                <div class="col">
+<body >
+    <div class="container">  
+      
+      <div id="alertContainer" ></div>               
+
+       <section >
+        <div class="container m-0">
+              
+            <div class="row d-flex justify-content-center align-items-center ">
+                <div class="col">   
                   <div class="card card-registration my-4">
                     <div class="row g-0">
                       <div class="col-xl-6 d-none d-xl-block">
@@ -21,24 +27,28 @@
                           style="height: 100%;object-fit: cover;filter: grayscale(100%);
                           border-top-left-radius: .50rem; border-bottom-left-radius: .50rem;" />
                       </div>
+                      <div id="spinnerContainer" class="spinner-container">
+                        <div class="spinner"></div>
+                      </div>
+                      
                       <div class="col-xl-6">
                         <div class="card-body p-md-5 text-black ">
                             <div class="row">
                          <center> <h3 class="mb-2 pb-2 text-uppercase" style="font-family: 'Righteous', cursive;
                           ">ADMIN Register</h3></center>
                            </div>
-                        <form action="admin/register" onsubmit="return Form_validation()" method="post">
+                        <form id="registerForm" >
                           <div class="row">
                             <div class="col-md-6 mb-3">
                               <div class="form-outline">
-                                <input type="text" id="form3Example1m" class="form-control form-control-lg" name="prenom" />
-                                <label class="form-label" for="form3Example1m">Prénom </label>
+                                <input type="text" id="prenom" class="form-control form-control-lg" name="prenom" />
+                                <label class="form-label" for="prenom">Prénom </label>
                               </div>
                             </div>
                             <div class="col-md-6 mb-3">
                               <div class="form-outline">
-                                <input type="text" id="form3Example1n" class="form-control form-control-lg" name="nom" />
-                                <label class="form-label" for="form3Example1n">Nom</label>
+                                <input type="text" id="nom" class="form-control form-control-lg" name="nom" />
+                                <label class="form-label" for="nom">Nom</label>
                               </div>
                             </div>
                           </div>
@@ -46,14 +56,14 @@
                           <div class="row">
                             <div class="col-md-6 mb-3">
                               <div class="form-outline">
-                                <input type="tele" id="form3Example1m1" class="form-control form-control-lg" name="tele"/>
-                                <label class="form-label" for="form3Example1m1">Numéro Télé</label>
+                                <input type="tele" id="tele" class="form-control form-control-lg" name="tele"/>
+                                <label class="form-label" for="tele">Numéro Télé</label>
                               </div>
                             </div>
                             <div class="col-md-6 mb-3">
                               <div class="form-outline">
-                                <input type="text" id="form3Example1n1" class="form-control form-control-lg" name="cni" />
-                                <label class="form-label" for="form3Example1n1">CNI</label>
+                                <input type="text" id="cni" class="form-control form-control-lg" name="cni" />
+                                <label class="form-label" for="cni">CNI</label>
                               </div>
                             </div>
                           </div>
@@ -65,19 +75,19 @@
                             <h6 class="mb-0 ms-3">Gender : </h6>
           
                             <div class="form-check form-check-inline mb-0 ms-2">
-                              <input class="form-check-input" type="radio" name="gender" id="femaleGender"
+                              <input class="form-check-input" type="radio" name="gender"  
                                 value="Female" />
                               <label class="form-check-label" for="femaleGender">Female</label>
                             </div>
           
                             <div class="form-check form-check-inline mb-0 ms-2">
-                              <input class="form-check-input" type="radio" name="gender" id="maleGender"
+                              <input class="form-check-input" type="radio" name="gender" 
                                 value="Male" />
                               <label class="form-check-label" for="maleGender">Male</label>
                             </div>
           
                             <div class="form-check form-check-inline mb-0">
-                              <input disabled class="form-check-input" type="radio" name="gender" id="otherGender"
+                              <input disabled class="form-check-input" type="radio" name="gender"  
                                 value="Other" />
                               <label class="form-check-label" for="otherGender">Other</label>
                             </div>
@@ -85,8 +95,8 @@
                           </div>
 
                           <div class="form-outline mb-3">
-                            <input type="email" id="form3Example99" class="form-control form-control-lg" name="email" />
-                            <label class="form-label" for="form3Example99">Email</label>
+                            <input type="email" id="email" class="form-control form-control-lg" name="email" />
+                            <label class="form-label" for="email">Email</label>
                           </div>
           
                           <div class="form-outline mb-2">
@@ -94,7 +104,7 @@
                             <label class="form-label" for="Password">Password</label>
                           </div>
                           <div class="form-outline mb-2">
-                            <input type="password" id="ConfirmPassword" onkeyup="Form_validation()" class="form-control form-control-lg" name="confpassword" />
+                            <input type="password" id="ConfirmPassword"  class="form-control form-control-lg" name="confpassword" />
                             <label class="form-label" for="ConfirmPassword">Password confirme</label>
                           </div>
                           <div style="margin-left: 8px; color: red;" id="CheckPasswordMatch"></div>
@@ -114,25 +124,5 @@
           </section>
     </div>
 </body>
-<script>
- function Form_validation(){
-   var pwd = document.getElementById('Password').value ;
-  var cpwd = document.getElementById('ConfirmPassword').value ;
-  var element  = document.getElementById("CheckPasswordMatch") ;
-   if (pwd.length > 10) {
-    if (pwd == cpwd) {
-      element.innerHTML = "**Password has been match !";
-      return true ;
-    }else{
-      element.innerHTML = "**Password does not match !";
-      return false ;
-    }
-  }else {
-    element.innerHTML = "**Password length must not exceed 10 characters";  
-    element.style.fontFamily = '  Arial, Helvetica, sans-serif;'
-     return false ;
-  }
-  
- }
- </script>
+ <script  src="js/auth/register.js"></script>
 </html>

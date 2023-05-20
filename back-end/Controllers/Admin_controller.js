@@ -8,68 +8,170 @@ const Sous_urgance =  require('../models/SousUrgance') ;
 const { exit } = require('process');
 const {Demand} = require('../models/Demand') ;
 const { count } = require('console');
-const { default: mongoose } = require('mongoose');
+const {db} = require('../Tools/Firebase');
+const jwt = require('jsonwebtoken');
 
-const register_admin = (req , res )=>{
-    Admin.findOne({         
-        mail : req.body.email ,
-        password : req.body.password ,
-        } , (err , admin)=> {
-           if(err)  { 
-            console.log(err) ;
-            res.json(err)
-        }
-           else {
-            if (admin == null) {
-                const admin_create = new Admin({
-                    complete_name: req.body.prenom + ' ' + req.body.nom   ,
-                    password : req.body.password ,
-                    mail : req.body.email ,
-                    CNI : req.body.cni ,
-                    num_tele : req.body.tele ,
-                    gender : req.body.gender
-                })
-                 admin_create.save().then((result) => { res.render('auth/login')}).catch((err)=>{
+
+// const register_admin = (req , res )=>{
+//     Admin.findOne({         
+//         mail : req.body.email ,
+//         password : req.body.password ,
+//         } , (err , admin)=> {
+//            if(err)  { 
+//             console.log(err) ;
+//             res.json(err)
+//         }
+//            else {
+//             if (admin == null) {
+//                 const admin_create = new Admin({
+//                     complete_name: req.body.prenom + ' ' + req.body.nom   ,
+//                     password : req.body.password ,
+//                     mail : req.body.email ,
+//                     CNI : req.body.cni ,
+//                     num_tele : req.body.tele ,
+//                     gender : req.body.gender
+//                 })
+//                  admin_create.save().then((result) => { res.render('auth/login')}).catch((err)=>{
                     
-                    res.json({'test':err})
-                 })  ;
-                //  res.json({'message' : 'has been register' , 'data' : admin_create}) ;
-                //  console.log({'message' : 'has been register'}) ;
+//                     res.json({'test':err})
+//                  })  ;
+//                 //  res.json({'message' : 'has been register' , 'data' : admin_create}) ;
+//                 //  console.log({'message' : 'has been register'}) ;
      
-            }
-             else if(admin != null){
-                res.json({'message' : 'deja existe please try again'}) ;
-               }
+//             }
+//              else if(admin != null){
+//                 res.json({'message' : 'deja existe please try again'}) ;
+//                }
         
-           }
-        })
-}
+//            }
+//         })
+// }
 
-const login_admin = (req , res )=>{
+// const login_admin = (req , res )=>{
  
-     Admin.findOne({         
-        mail : req.body.email ,
-        password : req.body.password ,
-        } , (err , admin)=> {
-           if(err)  { 
-            console.log(err) ;
-            //res.json(err)
-        }
-           else {
-            if (admin == null) {
-                // res.json({response : 'ddddd'});
-                  res.redirect('/login') ;
-            }
-             else if(admin != null){
+//      Admin.findOne({         
+//         mail : req.body.email ,
+//         password : req.body.password ,
+//         } , (err , admin)=> {
+//            if(err)  { 
+//             console.log(err) ;
+//             //res.json(err)
+//         }
+//            else {
+//             if (admin == null) {
+//                 // res.json({response : 'ddddd'});
+//                   res.redirect('/login') ;
+//             }
+//              else if(admin != null){
                 
-                //  res.json({response : true}) ;
+//                 //  res.json({response : true}) ;
 
-                res.redirect('/admin/dashboard') ;
-               }
+//                 res.redirect('/admin/dashboard') ;
+//                }
         
-           }
-        })
+//            }
+//         })
+// }
+// handle errors
+const handleErrors = (err) => {
+    console.log(err.message, err.code);
+    let errors = { email: '', password: '' };
+        // duplicate email error
+        if (err.code === 11000) {
+          errors.email = 'this email is already registered';
+          
+        }else if (err.message === 'Admin not registered') {
+          errors.email = 'email not registered yet';
+       }
+
+  
+      if (err.message === 'Invalid password') {
+        errors.password = 'Invalid password';
+     }
+  
+
+   
+    
+     // validation errors
+    if (err.message.includes('Admin validation failed')) {
+      // console.log(err);
+      Object.values(err.errors).forEach(({ properties }) => {
+        // console.log(val);
+        // console.log(properties);
+        errors[properties.path] = properties.message;
+      });
+    }
+  
+    return errors;
+  }
+
+  const maxAge =  60 * 60 * 24 ;
+  const createTOkens = (id) =>{
+      return jwt.sign({ id } , 'secret key hash payload' , {
+        expiresIn : maxAge
+      });
+  }
+
+const register_admin = (req , res)=>{
+    console.log(req.body)
+    const admin_create = new Admin({
+                complete_name: req.body.prenom + ' ' + req.body.nom   ,
+                password : req.body.password ,
+                mail : req.body.email ,
+                CNI : req.body.cni ,
+                num_tele : req.body.tele ,
+                gender : req.body.gender
+                 });
+
+               
+                    admin_create.save().then((admin) =>{
+
+                      const token = createTOkens(admin._id);
+
+                      res.cookie('jwt', token , { httpOnly: true  , maxAge: maxAge * 1000});
+
+                        res.status(200).json( {admin} );
+
+                    }).catch((error) =>{
+                        const err = handleErrors(error)
+                        console.log(error.message);
+                        res.status(401).json({err})
+                    });
+                  
+                 
+        //  Admin.create({
+        //     complete_name: req.body.prenom + ' ' + req.body.nom   ,
+        //     password : req.body.password ,
+        //     mail : req.body.email ,
+        //     CNI : req.body.cni ,
+        //     num_tele : req.body.tele ,
+        //     gender : req.body.gender
+        //  });        
 }
+
+const login_admin = async (req , res)=>{
+      console.log(req.body);
+      try {
+
+      const { email, password } = req.body;
+
+      const admin = await Admin.login(email , password) ;
+      
+      const token = createTOkens(admin._id);
+
+      res.cookie('jwt', token , { httpOnly: true  , maxAge: maxAge * 1000});
+
+      res.status(201).json({admin});
+        
+    } catch (error) {
+ 
+      const err = handleErrors(error);
+
+      res.status(401).json({err});
+      }
+
+    }
+ 
  const addUrgance = async (req ,res) =>{
      const urgance =new Urgance({libell :  req.body.libell});
 
@@ -111,11 +213,10 @@ const login_admin = (req , res )=>{
             console.log('urgance has been added')
                  }
        const get_urgance =   (req , res) => {
- 
-
-        Urgance.find()
-        .then((result) => {res.status(200).render('admin/Urgance' ,  { Urgances : result})
-                            res.json(result)})
+         Urgance.find()
+        .then((result) => {
+           res.status(200).render('admin/Urgance' ,  { Urgances : result})
+                            })
         .catch(err => console.log(err))
 
         }
@@ -254,6 +355,29 @@ const count_notifications =   (req ,res )=> {
 
          })
        }
+
+ const get_Patients = (req, res) => {
+
+      const collectionRef = db.collection('Users');
+      collectionRef.get().then((result )=>{
+        var data = [] ;
+        result.forEach(user => {
+            const datauser = user.data() ;
+            const itemUser = {
+              id : user.id,
+              ...datauser
+            }
+            console.log(datauser)
+            data.push(itemUser)
+        })
+         
+        res.render('admin/Patients' ,{Patients : data});
+      }).catch((err) => {
+      console.log(err)
+      })
+
+
+ }
      
 
-module.exports = {addUrgance ,count_notifications  , get_notification, getAllPatients  ,  add_sous_Urgance ,   add_reponse , get_urgance , delete_sous_urgance , get_sous_urgance , register_admin , login_admin , delete_urgance , update_urgance}
+module.exports = {addUrgance ,get_Patients ,count_notifications  , get_notification, getAllPatients  ,  add_sous_Urgance ,   add_reponse , get_urgance , delete_sous_urgance , get_sous_urgance , register_admin , login_admin , delete_urgance , update_urgance}

@@ -20,8 +20,9 @@ class ChatUser {
   late String email;
   late String pushToken;
 
-   ChatUser.fromJson(Map<String, dynamic> json) {
-    image = json['image'] ?? '';
+  ChatUser.fromJson(Map<String, dynamic> json) {
+    image = json['image'] ??
+        'https://e7.pngegg.com/pngimages/81/570/png-clipart-profile-logo-computer-icons-user-user-blue-heroes.png';
     about = json['about'] ?? '';
     name = json['name'] ?? '';
     createdAt = json['created_at'] ?? '';

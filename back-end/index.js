@@ -1,26 +1,30 @@
 const extendSchema = require('mongoose-extend-schema');
-const { default: mongoose } = require('mongoose');
-const {Doctor, Patient} = require('./models/Person_Model') ;
+ const {Doctor, Patient} = require('./models/Person_Model') ;
 const Sous_urgance = require('./models/SousUrgance') ;
-const { ObjectId} = require('mongodb');
 const favicon = require('serve-favicon') ;
 const express  = require('express') ;
 const path = require('path') ;
 const ejs = require('ejs');
 const cors = require('cors') ;
+const firebase = require('firebase-admin');
+const mongoose = require('mongoose');
 const bodyParse = require('body-parser') ;
+const {db} = require('./Tools/Firebase');
 const app = express()  ;
-require('dotenv').config() ;
+require('dotenv').config({path : path.join(__dirname, './.env')});
 const session = require('express-session');
 // const {checkSessionExpiration} = require('./Middelware/checkSession') ;
 const router = require('./routes/router');
+const routerFirebase = require('./routes/routerFirebase');
 // const fileUpload = require('express-fileupload');
 
-const port = 8080 || process.env.port ;
+const port = process.env.Port  || 8080 ;
+
 
 
 mongoose.set('strictQuery', true);
 // mongoose.disconnect(); disconnect connection with DATABASE 
+
 mongoose.connect("mongodb+srv://soufian_node:soufianch@testnode.fblmhkz.mongodb.net/project_pfe?retryWrites=true&w=majority", {
     useNewUrlParser : true ,
     useUnifiedTopology : true , 
@@ -57,7 +61,15 @@ app.use(cors()) ;
 app.use(bodyParse.urlencoded({extended : true , limit: '25mb'})) ;
 app.set('view engine','ejs') ;
 app.use(bodyParse.json({limit: '25mb'})) ;
+app.get('/addTest',async (req, res)=>{
+  const test = db.collection('test').doc('person');
+  const result = await test.set({
+      'name': 'soufian'
+  });
+}) ;
 app.use('/' , router) ; 
+app.use('/users' , routerFirebase) ; 
+
  
 
 
