@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Urgance</title>
+    <title>Patiens</title>
      
   <!-- Include required CSS and JavaScript files -->
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
@@ -86,27 +86,35 @@
       <table id="example"  class="py-2"  style="width:100%">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Position</th>
-                <th>Office</th>
+                <th>Complete nom</th>
+                <th>Email</th>
+                <th>en linge</th>
                 <th>Age</th>
-                <th>Start date</th>
-                <th>Salary</th>
             </tr>
         </thead>
         <tbody>
-            
+           <% Patients.forEach(element => { %>
+             <tr>
+                <td><%=element.name%></td>
+                <td><%=element.email%></td>
+                <td><%=element.is_online%></td>
+                <td>
+                  <% if (element.create_at) { %>
+                    <% const timestamp = parseInt(element.create_at); %>
+                    <% if (!isNaN(timestamp)) { %>
+                      <% const date = new Date(timestamp); %>
+                      <%= date.toLocaleString() %>
+                    <% } else { %>
+                      Invalid timestamp
+                    <% } %>
+                  <% } else { %>
+                    No timestamp available
+                  <% } %>
+                </td>
+             </tr>
+           <% }) %>
         </tbody>
-        <tfoot>
-            <tr>
-                <th>Name</th>
-                <th>Position</th>
-                <th>Office</th>
-                <th>Age</th>
-                <th>Start date</th>
-                <th>Salary</th>
-            </tr>
-        </tfoot>
+     
     </table>
       <!-- Modals -->
 
@@ -205,21 +213,23 @@
  
 
   $(document).ready(function () {
-    $('#example').DataTable({
-      'processing' : true,
-      'serverSide' : true,
-      'serverMethod' : 'GET',
-      'ajax' :{
-        'url' : 'searchPatient'
-      },
-      'aaStoring' : [],
-      'columns' : [
-        { data : 'patientName'},
-        { data : 'patientEmail'} ,
-        { data : 'patientOnline'},
-        { data : 'patientInscreptionDate'}
-      ]
-    });
+    $('#example').DataTable(
+    //   {
+    //   'processing' : true,
+    //   'serverSide' : true,
+    //   'serverMethod' : 'GET',
+    //   'ajax' :{
+    //     'url' : 'searchPatient'
+    //   },
+    //   'aaStoring' : [],
+    //   'columns' : [
+    //     { data : 'patientName'},
+    //     { data : 'patientEmail'} ,
+    //     { data : 'patientOnline'},
+    //     { data : 'patientInscreptionDate'}
+    //   ]
+    // }
+    );
  
   })
 

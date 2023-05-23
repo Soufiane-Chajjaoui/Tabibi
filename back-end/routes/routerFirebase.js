@@ -6,6 +6,7 @@ const AdminController = require('../Controllers/Admin_controller');
 
 FirebaseRouter.get('/patients' , AdminController.get_Patients) ;
 
+FirebaseRouter.get('/doctors' , AdminController.get_Doctors) ;
 
 
 

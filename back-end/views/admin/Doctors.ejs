@@ -2,12 +2,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Urgances</title>
+    <title>Doctors</title>
+     
+  <!-- Include required CSS and JavaScript files -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
 
-    <%- include('../component/navbar') %>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-    <link rel="stylesheet" href="css/Spinner.css">
+     <%- include('../component/navbar') %>
+
+ 
     <style>
 
 
@@ -80,51 +83,39 @@
         </div>
       </div> 
       <hr>
-
-      <div class="row ">
+      <table id="example"  class="py-2"  style="width:100%">
+        <thead>
+            <tr>
+                <th>Complete nom</th>
+                <th>Email</th>
+                <th>en linge</th>
+                <th>Age</th>
+            </tr>
+        </thead>
+        <tbody>
+           <% Patients.forEach(element => { %>
+             <tr>
+                <td><%=element.name%></td>
+                <td><%=element.email%></td>
+                <td><%=element.is_online%></td>
+                <td>
+                  <% if (element.create_at) { %>
+                    <% const timestamp = parseInt(element.create_at); %>
+                    <% if (!isNaN(timestamp)) { %>
+                      <% const date = new Date(timestamp); %>
+                      <%= date.toLocaleString() %>
+                    <% } else { %>
+                      Invalid timestamp
+                    <% } %>
+                  <% } else { %>
+                    No timestamp available
+                  <% } %>
+                </td>
+             </tr>
+           <% }) %>
+        </tbody>
      
-      <% if ( Urgances.length > 0) {  %>
-        
-      <% Urgances.forEach(element => {  %>
-        <div class="col-3 p-2" >
-          <div id="cardWrapper_<%= element._id %>">
-
-          <div class="card " id="filterSearch" style="background-color:#cfcfcf;">
-              <center><img src="<%= element.name_Image.url %>" class="img-fluid" width="100%" height="100%" /></center>
-            
-          
-           <div class="card-body">
-             <h5 class="card-title text-center"><%= element.libell %></h5>
-               <div class="dropdown" style="float:right;">
-              <button class="dropbtn"><img src="../assets/planning.png" width="30px" alt=""></button>
-              <div class="dropdown-content">
-               
-                <a href="#"  data-mdb-toggle="modal"
-                data-mdb-target="#Fork"
-                data-mdb-whatever="@mdo" onclick="sousUrgance([ '<%= element._id %>' , '<%= element.libell %>'])""><i class="fa fa-code-fork fa-fw me-2" aria-hidden="true"></i>
-                  Fork</a>
-                <a href="#" data-mdb-toggle="modal"
-                data-mdb-target="#updatemodal"
-                data-mdb-whatever="@mdo" onclick="update([ '<%= element._id %>' , '<%= element.libell %>'  , '<%= element.name_Image.url %>'])"><i class="fa fa-pencil-square-o fa-fw me-2" aria-hidden="true"></i>
-                    Modifie</a>
-                    <a   onclick="removeUrgance('<%= element._id %>' , '<%= element.name_Image.public_id %>')"  style="cursor: pointer;" ><i class="fa fa-trash-o fa-fw me-2" aria-hidden="true"></i>
-                      Delete</a>
-              </div> 
-            </div>
-           </div>
-         </div>
-         </div>
-         </div>
-      <%  }); %>
-       
-       
-       <% }  else { %>
-        <div style='position:relative; padding-top:calc(15% + 30px)' class="d-flex justify-content-center mt-4"> 
-          <p>There are no Urgance to display...</p>
-         </div>
-       
-      <% } %>
-      </div> 
+    </table>
       <!-- Modals -->
 
         <!-- Modal -->
@@ -153,7 +144,7 @@
                 <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">
                   Close
                 </button>
-                <button type="submit" class="btn btn-primary">add Fork</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
               </div>
             </form>
             </div>
@@ -179,7 +170,7 @@
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
-                  <input type="submit" class="btn btn-primary"  value="add Urgance" />
+                  <input type="submit" class="btn btn-primary"  value="Send message" />
                 </div>
               </form>
               </div>
@@ -216,46 +207,35 @@
   </main>
   <!--Main layout-->
 </body>
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 <script>
+ 
+
+  $(document).ready(function () {
+    $('#example').DataTable(
+    //   {
+    //   'processing' : true,
+    //   'serverSide' : true,
+    //   'serverMethod' : 'GET',
+    //   'ajax' :{
+    //     'url' : 'searchPatient'
+    //   },
+    //   'aaStoring' : [],
+    //   'columns' : [
+    //     { data : 'patientName'},
+    //     { data : 'patientEmail'} ,
+    //     { data : 'patientOnline'},
+    //     { data : 'patientInscreptionDate'}
+    //   ]
+    // }
+    );
+ 
+  })
 
 
-  function update(args) {
 
-    document.getElementById('urganceId').value = args[0] ;
-    document.getElementById('libell_up').value = args[1] ;
-    document.getElementById('updatemodal').onclick ;
-    
-  }
-  function sousUrgance(args) {
-    document.getElementById('exampleModalLabel').innerHTML = 'Sous urgance de ' + args[1] ;
-    document.getElementById('id_urgance').value = args[0] ;
-    document.getElementById('libell__Urgance').value =   args[1] ;
 
-    document.getElementById('Fork').onclick ;
-
-  }
-  
-
-  async function removeUrgance(arg1 , arg2) {
-    showSpinner();
-    console.log(arg1 , arg2) ;
-    const res = await fetch('/delete-urgance/'+arg1.trim()+'/'+arg1.trim() ,{
-      method : 'DELETE' ,
-      headers : { 'Content-Type': 'application/json' },
-    });
-
-    const response = await res.json();
-    if (response.success) {
-                // Remove the card wrapper from the DOM
-    const cardWrapperToRemove = document.getElementById(`cardWrapper_${arg1}`);
-    if (cardWrapperToRemove) {
-
-    cardWrapperToRemove.remove();
-             hideSpinner()  
-    }
-    }
-  }
  
 </script>
 </html>

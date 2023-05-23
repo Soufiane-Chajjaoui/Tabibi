@@ -1,4 +1,5 @@
 const { default: mongoose } = require('mongoose');
+const {Sous_Urgance_Schema} = require('../models/SousUrgance') ;
  
 
    /*+++++++++++++++++++++++++++++++++++ Urgance Schema +++++++++++++++++++++++++++++++++++++++*/
@@ -13,6 +14,8 @@ const { default: mongoose } = require('mongoose');
             type : String ,
             require : true
         },
+        Sous_urgance : [Sous_Urgance_Schema] ,
+           
         name_Image : {
          public_id : {
             type : String ,
@@ -23,7 +26,7 @@ const { default: mongoose } = require('mongoose');
             require : true
            }
         } ,
-         
+       
     }
    );
 
@@ -31,4 +34,4 @@ const { default: mongoose } = require('mongoose');
 
  const Urgance = mongoose.model('Urgance' , Urgance_Schema) ;
  
-   module.exports = {Urgance } ;
+   module.exports = { Urgance } ;

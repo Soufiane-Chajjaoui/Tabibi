@@ -51,7 +51,7 @@ const Uploader = require('../Tools/multer')
   router.post('/admin-add_Urgance' , Uploader.single('image') , AdminController.addUrgance);
   router.get('/admin-get_urgance' , AdminController.get_urgance) ;
   router.post('/admin-update_urgance' ,  Uploader.single('image_up') , AdminController.update_urgance) ;
-  router.delete('/delete-Urgance' , AdminController.delete_urgance) ;
+  router.delete('/delete-urgance/:id/:public_id' , AdminController.delete_urgance) ;
   
   
       // GESTION NOTIFICATIONS
@@ -61,9 +61,22 @@ const Uploader = require('../Tools/multer')
   // CRUD SOUSURGANCE
   router.post('/admin-add_Sous_Urgance' , Uploader.single('image') , AdminController.add_sous_Urgance);
   router.get('/admin-get_Sous_urgance' , AdminController.get_sous_urgance) ;
-  router.delete('/delete-Sous_urgance' , AdminController.delete_sous_urgance)
-  router.post('/add-reponse' , Uploader.single('image_reponse') ,  AdminController.add_reponse)
+  router.delete('/delete-sous-urgance/:id/:public_id' , AdminController.delete_sous_urgance);
+  router.post('/update-sous-urgance' , Uploader.single('image_up'), AdminController.update_sous_urgance );
+  
+  // CRUD SOUS SOUS URGANCE   
 
+  router.post('/add-sous-sous-urgance', Uploader.single('image_sous_sous')  , AdminController.add_sous_sous_urgance)
+  router.get('/get-sous-sous-urgance', AdminController.get_sous_sous_urgance);
+  router.post('/update-sous-sous-urgance', Uploader.single('image_up'), AdminController.update_sous_sous_urgance);
+  router.delete('/delete-sous-sous-urgance', AdminController.delete_sous_sous_urgance) ;
+
+     // CRUD REPONSE   
+ 
+  router.get('/get-reponses', AdminController.get_reponse);
+  router.post('/add-reponse' , Uploader.single('image_reponse') ,  AdminController.add_reponse);
+  router.post('/update-reponse' , Uploader.single('image_up') ,  AdminController.update_reponse);
+  router.delete('/delete-reponse' , AdminController.remove_reponse);
   /*     end Action Admin    */
 
 /*     end Router Admin       */

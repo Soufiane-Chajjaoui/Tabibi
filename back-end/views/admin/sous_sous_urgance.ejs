@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   
-    <title>Sous urgances</title>
+    <title>Sous Sous urgances</title>
     <%- include('../component/navbar') %>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
@@ -72,38 +72,33 @@
      
       <div class="row ">
      
-      <% if ( sous_urgance.length > 0) {  %>
+      <% if ( sous_sous_urgance.length > 0) {  %>
         
-      <% sous_urgance.forEach(element => {  %>
+      <% sous_sous_urgance.forEach(element => {  %>
         <div class="col-3 p-2" >
           <div id="cardWrapper_<%= element._id %>">
-
-           <div class="card  text-center" id="filterSearch"  style="background-color:#cfcfcf;">
-              <center><img src="<%= element.name_Image.url %>" class="img-fluid" /></center>
-            
-              
-
+           <div class="card  text-center" id="filterSearch" style="background-color:#cfcfcf;">
+              <center><img src="<%= element.image.url %>" class="img-fluid"  /></center>
            <div class="card-body">
              <h5 class="card-title"><%= element.libell %></h5>
              <div class="dropdown" style="float:right;">
               <button class="dropbtn"><img src="../assets/planning.png" width="30px" alt=""></button>
               <div class="dropdown-content">
                 <a href="#"  data-mdb-toggle="modal"
-                data-mdb-target="#SousSousUrg"
-                data-mdb-whatever="@mdo" onclick="SousSousUrg([ '<%= element._id %>' , '<%= element.libell %>'])""><i class="fa fa-code-fork fa-fw me-2" aria-hidden="true"></i>
-                  Sous Sous</a>
+                data-mdb-target="#AddReponse"
+                data-mdb-whatever="@mdo" onclick="AddReponse([ '<%= element._id %>' , '<%= element.libell %>'])""><i class="fa fa-code-fork fa-fw me-2" aria-hidden="true"></i>
+                  Reponse</a>
                 <a href="#" data-mdb-toggle="modal"
                 data-mdb-target="#updatemodal"
-                data-mdb-whatever="@mdo" onclick="update([ '<%= element._id %>' , '<%= element.libell %>'  , '<%= element.name_Image.public_id %>'])"><i class="fa fa-pencil-square-o fa-fw me-2" aria-hidden="true"></i>
+                data-mdb-whatever="@mdo" onclick="update([ '<%= element._id %>' , '<%= element.libell %>'  , '<%= element.image.public_id %>'])"><i class="fa fa-pencil-square-o fa-fw me-2" aria-hidden="true"></i>
                     Modifie</a>
-                    <a  onclick="removeSous('<%= element._id %>' ,  '<%= element.name_Image.public_id %>')" style="cursor: pointer;" class="delete"><i class="fa fa-trash-o fa-fw me-2" aria-hidden="true"></i>
+                    <a   onclick="deleteSousSous('<%= element._id %>' , '<%= element.image.public_id %>')" style="cursor: pointer;" class="delete"><i class="fa fa-trash-o fa-fw me-2" aria-hidden="true"></i>
                       Delete</a>
               </div> 
             </div>
            </div>
          </div> 
-          
-         </div>
+         </div> 
          </div>
       <%  }); %>
        
@@ -114,52 +109,61 @@
           <br>
           <!-- <p>There are no Sous Urgance to display...</p> -->
          </div>
-       
       <% } %>
       </div>   
       <!-- Modals -->
-      <div class="modal fade" id="SousSousUrg" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel"> </h5>
-              <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form  action="../add-sous-sous-urgance" method="post" enctype="multipart/form-data">
-               <input type="hidden" name="id_sous_urgance" id="id_sous_urgance">
-            <div class="modal-body">
+
+        <!-- Modal Add Reponse -->
+        <div class="modal top fade" id="AddReponse" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static" data-mdb-keyboard="false">
+          <div class="modal-dialog ">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"> </h5>
+                <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+              <form action="../add-reponse" method="post" enctype="multipart/form-data">
                 <div class="mb-3">
-                  <label for="recipient-name" class="col-form-label">Libell:</label>
-                  <input type="text" name="libell" class="form-control" required />
+                  <div class="mb-3">
+                    <label for="recipient-name" class="col-form-label">Reponse Sous Sous :</label>
+                    <textarea name="Reponse"  class="md-textarea form-control" rows="1" required ></textarea>
+                  </div>
+                  <div class="mb-3">
+                    <label for="recipient-name" class="col-form-label">Plus Details de Reponse:</label>
+                    <textarea name="MoreDetails"  class="md-textarea form-control" rows="3" required ></textarea>
+                  </div>
+                  <input type="hidden" name="id_sous_sous_urgance" id="id_sous_sous_urgance">
                 </div>
                 <div class="file-upload-wrapper">
-                  <label for="file" class="col-form-label">Image Urgance:</label>
-                  <input type="file" id="input-file-now" name="image_sous_sous"  class="form-control"  />
+                  <label for="file" class="col-form-label">Image Reponse:</label>
+                  <input type="file" id="input-file-now" name="image_reponse" id="file" accept="image/*" class="form-control" required />
                 </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">
+                  Close
+                </button>
+                <button type="submit" class="btn btn-primary">Add Reponse</button>
+              </div>
+            </form>
             </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
-              <input type="submit" class="btn btn-primary"  value="Add" />
-            </div>
-          </form>
           </div>
         </div>
-      </div>
-        <!-- Modal Update Sous Urgance-->
+          <!-- Modal Update Sous SOus Urgance -->
           <div class="modal fade" id="updatemodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">Modifier Urgance</h5>
+                  <h5 class="modal-title" id="exampleModalLabel">Modifier Sous Sous Urgance</h5>
                   <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form  action="../update-sous-urgance" method="post" enctype="multipart/form-data">
-                  <input type="hidden" name="id" id="sous_urganceId">
+                <form  action="../update-sous-sous-urgance" method="post" enctype="multipart/form-data">
+                  <input type="hidden" name="id" id="urganceId">
                   <input type="hidden" name="public_id" id="public_id">
-                <div class="modal-body">
+                 <div class="modal-body">
                     <div class="mb-3">
                       <label for="recipient-name" class="col-form-label">Libell:</label>
-                      <input type="text" name="libell_up" class="form-control" id="libell_up" required />
+                      <input type="text" name="libell" class="form-control" id="libell_up" required />
                     </div>
                     <div class="file-upload-wrapper">
                       <label for="file" class="col-form-label">Image Urgance:</label>
@@ -180,38 +184,43 @@
 </body>
 <script>
 
-  function SousSousUrg(args) {
-    document.getElementById('exampleModalLabel').innerHTML = 'Sous de ' + args[1] ;
-    document.getElementById('id_sous_urgance').value = args[0] ;
-    document.getElementById('Reponse').onclick ;
+  function AddReponse(args) {
+    document.getElementById('exampleModalLabel').innerHTML = 'Reponse de ' + args[1] ;
+    document.getElementById('id_sous_sous_urgance').value = args[0] ;
+    //document.getElementById('Reponse').onclick ;
   }
   function update(args) {
 
-    document.getElementById('sous_urganceId').value = args[0] ;
+    document.getElementById('urganceId').value = args[0] ;
     document.getElementById('libell_up').value = args[1] ;
     document.getElementById('public_id').value = args[2] ;
     document.getElementById('updatemodal').onclick ;
     
   }
-
-  async function removeSous(arg1 ,arg2) {
+  async function deleteSousSous(arg1 ,arg2) {
     showSpinner();
-    const res = await fetch('/delete-sous-urgance/'+arg1.trim()+'/'+arg1.trim() ,{
-      method : 'DELETE' ,
+    const res = await fetch('/delete-sous-sous-urgance' , {
+      method : 'DELETE',
+      body : JSON.stringify({
+        id : arg1.trim() ,
+        public_id : arg2.trim()
+      }),
       headers : { 'Content-Type': 'application/json' },
-    });
+    })
 
-    const result = await res.json();
-
-    if (result.success) {
-        // Remove the card wrapper from the DOM
+    const response = await res.json() ;
+    if (response.success) {
+                // Remove the card wrapper from the DOM
     const cardWrapperToRemove = document.getElementById(`cardWrapper_${arg1}`);
     if (cardWrapperToRemove) {
     cardWrapperToRemove.remove();
     hideSpinner()  
     }
+    }
   }
-}
- 
+
+
+
+
 </script>
 </html>

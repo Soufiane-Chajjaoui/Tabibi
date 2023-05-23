@@ -5,22 +5,23 @@ const Schema_reponse = mongoose.Schema({
 
     id_reponse : {
         type : Number ,
-        require : true
     },
     name_Image : {
-        public_id : {
-            type : String ,
-            require : true
-           } ,
-           url  : {
-            type : String ,
-            require : true
-           }
-    },
+        public_id :String ,
+        url  :  String ,
+        },
+     
     description : { 
         type : String ,
-        require : true
     },
+    moreDetails : {
+        details : String ,
+        // name_Image : {
+        //     public_id : String ,
+        //         url : String ,
+        //        }
+        },
+ 
     
 });
  const Reponse = mongoose.model('Reponse' , Schema_reponse)
