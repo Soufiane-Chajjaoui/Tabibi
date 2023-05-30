@@ -150,12 +150,7 @@ class _Reponse_pageState extends State<Reponse_page> {
                   onPressed: () async {
                     final prefs = await SharedPreferences.getInstance();
                     var id_user = prefs.getString('_id');
-                    if (await Patient.demandDoctor(Demand(
-                            id_patient: id_user, id_urgance: id_urgance)) !=
-                        null) {
-                      snack(context);
-                    }
-                    ;
+                    await Patient.demandDoctor(Demand(id_patient: id_user));
                   },
                   child: const Text(
                     'No',

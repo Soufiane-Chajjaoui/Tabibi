@@ -16,7 +16,7 @@
    var pwd = document.getElementById('Password').value ;
     var cpwd = document.getElementById('ConfirmPassword').value ;
     var element  = document.getElementById("CheckPasswordMatch") ;
-    if (pwd.length > 10) {
+    if (pwd.length >= 10) {
     if (pwd == cpwd) {
      // element.innerHTML = "**Password has been match !";
        const res = await fetch('/admin/register' ,{

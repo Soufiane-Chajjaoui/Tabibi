@@ -1,16 +1,16 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unused_local_variable, use_build_context_synchronously
 
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
-import 'package:project_pfe/API/api.dart';
+import 'package:lottie/lottie.dart';
+import 'package:project_pfe/Agent/screens/homePage.dart';
+import 'package:project_pfe/actions/Agent.dart';
 import 'package:project_pfe/actions/Doctor.dart';
 import 'package:project_pfe/actions/Patient.dart';
-import 'package:project_pfe/authScreen/Auth.dart';
-import 'package:project_pfe/authScreen/Widget/Widget.dart';
 import 'package:project_pfe/authScreen/validations.dart';
+import 'package:project_pfe/doctor/homepageDoctor.dart';
 import 'package:project_pfe/patient/homepage.dart';
 
-import '../API/signin.dart';
-import '../Agent/screens/homePage.dart';
 // import 'package:project_pfe/Person.dart';
 
 // ignore: camel_case_types
@@ -26,6 +26,12 @@ class _Log_inState extends State<Log_in> {
 
   var controller_password = TextEditingController();
   var controller_tele = TextEditingController();
+
+  List<String> types = ['Patient', 'Doctor', 'Agent'];
+
+  String? type;
+
+  late bool isSee = true;
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +104,7 @@ class _Log_inState extends State<Log_in> {
                                       //         ? validateEmail(value!)
                                       //         : validatetele(value!),
                                       controller: controller_tele,
-                                      keyboardType: TextInputType.emailAddress,
+                                      keyboardType: TextInputType.number,
                                       cursorHeight: 30,
                                       decoration: InputDecoration(
                                           enabledBorder: OutlineInputBorder(
@@ -122,12 +128,11 @@ class _Log_inState extends State<Log_in> {
                                                       BorderRadius.circular(16),
                                                   borderSide: BorderSide(
                                                       color: Colors.red)),
-                                          prefixIcon: Icon(
-                                              Icons.alternate_email_outlined),
+                                          prefixIcon: Icon(Icons.call),
                                           prefixIconColor: Color(0xFF034277),
                                           contentPadding: EdgeInsets.all(10),
                                           label: Text(
-                                            'Email',
+                                            'Telephone',
                                             style: TextStyle(
                                                 color: Color(0xFF034277),
                                                 fontFamily: 'PoppinsExtraLight',
@@ -141,16 +146,23 @@ class _Log_inState extends State<Log_in> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
-                                        horizontal: 15, vertical: 5),
+                                        horizontal: 15, vertical: 10),
                                     child: TextFormField(
-                                      obscureText: true,
-                                      keyboardType:
-                                          TextInputType.visiblePassword,
+                                      obscureText: isSee ? true : false,
+                                      keyboardType: TextInputType.text,
                                       validator: (value) =>
                                           validatePassword(value!),
                                       controller: controller_password,
                                       cursorHeight: 30,
                                       decoration: InputDecoration(
+                                          suffixIcon: IconButton(
+                                            icon: Icon(isSee
+                                                ? Icons.visibility
+                                                : Icons.visibility_off),
+                                            onPressed: () => setState(() {
+                                              isSee = !isSee;
+                                            }),
+                                          ),
                                           enabledBorder: OutlineInputBorder(
                                               borderRadius:
                                                   BorderRadius.circular(16),
@@ -190,6 +202,90 @@ class _Log_inState extends State<Log_in> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
+                                        horizontal: 15, vertical: 4),
+                                    child: DropdownButtonFormField2(
+                                      decoration: InputDecoration(
+                                        prefixIcon: Icon(
+                                          Icons.supervisor_account,
+                                          size: 26,
+                                        ),
+                                        prefixIconColor: Color(0xFF034277),
+
+                                        errorBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                          borderSide: BorderSide(
+                                            color: Color.fromARGB(
+                                                255, 210, 140, 135),
+                                            width: 0,
+                                            style: BorderStyle.solid,
+                                          ),
+                                        ),
+                                        isDense: true,
+                                        contentPadding: EdgeInsets.only(
+                                            left:
+                                                0), // Remove horizontal padding
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                        ),
+                                      ),
+                                      hint: const Text(
+                                        'Select Your Gender',
+                                        style: TextStyle(
+                                          color: Color(0xFF034277),
+                                          fontFamily: 'PoppinsExtraLight',
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      items: types
+                                          .map((item) =>
+                                              DropdownMenuItem<String>(
+                                                value: item,
+                                                child: Text(
+                                                  item,
+                                                  style: const TextStyle(
+                                                    color: Color(0xFF034277),
+                                                    fontFamily:
+                                                        'PoppinsExtraLight',
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ))
+                                          .toList(),
+                                      validator: (value) {
+                                        if (value == null) {
+                                          return 'Please select Your Type.';
+                                        }
+                                        return null;
+                                      },
+                                      onChanged: (value) {
+                                        type = value;
+                                      },
+                                      buttonStyleData: const ButtonStyleData(
+                                        height: 60,
+                                        padding: EdgeInsets.only(
+                                            left: 10, right: 10),
+                                      ),
+                                      iconStyleData: const IconStyleData(
+                                        icon: Icon(
+                                          Icons.arrow_drop_down,
+                                          color: Colors.black45,
+                                        ),
+                                        iconSize: 30,
+                                      ),
+                                      dropdownStyleData: DropdownStyleData(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
                                         horizontal: 15),
                                     child: Row(
                                         mainAxisAlignment:
@@ -219,25 +315,62 @@ class _Log_inState extends State<Log_in> {
                                             context: context,
                                             barrierDismissible: false,
                                             builder: (context) => Center(
-                                                  child:
-                                                      CircularProgressIndicator(),
+                                                  child: Lottie.network(
+                                                      "https://assets1.lottiefiles.com/packages/lf20_gbfwtkzw.json"),
                                                 ));
-                                        String? result = await SigninChecked(
-                                            controller_tele.text,
-                                            controller_password.text,
-                                            context);
-                                        if (result == 'patient') {
-                                          Navigator.of(context).push(
+                                        if (type == "Patient") {
+                                          // String? result = await SigninChecked(
+                                          //     controller_tele.text,
+                                          //     controller_password.text,
+                                          //     context);
+                                          // if (result == 'patient') {
+                                          //   Navigator.of(context).push(
+                                          //       MaterialPageRoute(
+                                          //           builder: (context) =>
+                                          //               Auth()));
+                                          // } else if (result == 'doctor') {
+                                          //   Navigator.of(context).push(
+                                          //       MaterialPageRoute(
+                                          //           builder: (context) =>
+                                          //               Auth()));
+                                          // } else
+                                          if (await Patient.login_patient(
+                                              controller_tele.text.trim(),
+                                              controller_password.text.trim(),
+                                              context)) {
+                                            Navigator.of(context)
+                                                .pushAndRemoveUntil(
                                               MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      Auth()));
-                                        } else if (result == 'doctor') {
-                                          Navigator.of(context).push(
+                                                  builder: (_) => homepage()),
+                                              (route) => false,
+                                            );
+                                          }
+                                        } else if (type == 'Agent') {
+                                          if (await Agent.LoginAgent(
+                                              controller_tele.text,
+                                              controller_password.text , context)) {
+                                            Navigator.of(context)
+                                                .pushAndRemoveUntil(
                                               MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      Auth()));
-                                        } else
-                                          snackbar(resultMessage: result);
+                                                  builder: (_) =>
+                                                      HomepageAgent()),
+                                              (route) => false,
+                                            );
+                                          }
+                                        } else {
+                                          if (await Doctor.login_doctor(
+                                              controller_tele.text.trim(),
+                                              controller_password.text.trim(),
+                                              context)) {
+                                            Navigator.of(context)
+                                                .pushAndRemoveUntil(
+                                              MaterialPageRoute(
+                                                  builder: (_) =>
+                                                      HomepageDoctor()),
+                                              (route) => false,
+                                            );
+                                          }
+                                        }
                                       }
                                     },
                                     child: Padding(
@@ -282,8 +415,6 @@ class _Log_inState extends State<Log_in> {
                             children: [
                               IconButton(
                                   onPressed: () async {
-                                    final user = await APIs.auth.currentUser;
-                                    await user?.updateDisplayName('chajjaoui');
                                     // print(user?.di);
                                   },
                                   icon:

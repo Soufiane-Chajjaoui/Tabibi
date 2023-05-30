@@ -7,16 +7,21 @@ const { Urgance } = require('../models/Urgance')
 const  Sous_urgance  = require('../models/SousUrgance') ;
 
 const { default: mongoose } = require('mongoose');
+const { sous_sous_urgance } = require('../models/SousSousUrgance');
+const { cloudinary } = require('../Tools/Cloudinary');
 const register_patient = async (req , res)=>  {
 
-    const namefile = Date.now()  + '.' + req.body.extension ;
-
+ 
     const patient =new Patient(
         {
             complete_name:req.body.complete_name ,
             password : req.body.password ,
-            CNI : req.body.CNI ,
+            gender : req.body.gender ,
             num_tele : req.body.num_tele ,
+            avatar: {
+              url: "https://res.cloudinary.com/dw2qfkws9/image/upload/v1685028137/1946429_tctfox.png",
+              public_id: '' // Assuming you have the public_id for the avatar image
+            }
         }
        )
     //    if(req.body.avatar == 'vide'){
@@ -38,33 +43,67 @@ const register_patient = async (req , res)=>  {
     //     res.send("OK");
       // }
 
-    patient.save().then( result =>  {res.status(200).json({response : 'patient has been added'})  
+    patient.save().then( result =>  {res.status(200).json({success : true , User : result})  
      console.log('patient has been added')}
-     ).catch(err => console.log(err) )
+     ).catch(err => {
+      if (err.code === 11000 ) {
+        res.status(400).json({success : false, message : "Votre est deja enregistre vous peuvez ustilise authre numero"});
+      }
+      
+     } )
 
 }
 
 
-const login_patient = function(req , res){ 
-     Patient.findOne({         
-            num_tele : req.body.num_tele ,
-            password : req.body.password ,
-            } , (err , patient)=> {
-               if(err)  { 
-                console.log(err) ;
-                res.json(err)
-            }
-               else if (patient != null){
-                     res.json({'message' : true , 'patient' : patient}) ;
-                    }
-               else { 
-                 res.json({'message' : false }) ;
-                }
-            })
+const login_patient = async(req , res)=>{ 
+
+
+    try {
+      const patient = await Patient.login(req.body.num_tele , req.body.password);
+      if (patient) {
+        console.log(patient);
+        res.status(200).json({ User : patient , success : true }); 
+      }
+    } catch (error) {
+      res.status(400).json({success : false, error : error.message})
+    }
+
+}
+
+const updateProfil = async(req, res) => {
+    console.log(req.body)
+     try {
+      const patient = await Patient.findById(req.body.id.trim());
+     
+      if (patient) {
+            patient.complete_name = req.body.fullName.trim();
+            patient.num_tele = req.body.tele.trim();
+         if (req.file) {
+ 
+          const response = await cloudinary.uploader.upload(req.file.path , {
+            folder : 'uploads',
+          })
+          patient.avatar.public_id = response.public_id
+          patient.avatar.url = response.url
+
+         }
+         patient.save().then((result) => {res.status(200).json({ success: true, message: 'Vos donnees ont été bien modifiées' });}) 
+         .catch((error) => {
+          console.log(error)
+         })  
+        
+      } else {
+        res.status(404).json({ success: false, message: 'Patient not found' });
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ success: false, message: 'Problème survenu sur le serveur' });
+    }
+    
 }
   const profilPage = (req , res) => {
-
-    Patient.findById( req.params.id ).then((result)=>res.status(200).json(result)) .catch((err)=> console.log(err))
+    console.log(req.params);
+    Patient.findById( {_id : req.params.id.trim() }).then((result)=>res.status(200).json(result)) .catch((err)=> console.log(err))
   }
 
 
@@ -81,47 +120,76 @@ const login_patient = function(req , res){
 
 
 
-  const demandDoctor = async (req ,res)=>{
-        
-    console.log(req.body);
-      const demand = new Demand( {
-          idPatient : new mongoose.Types.ObjectId(req.body.id_patient)  ,
-          Urgance_name : req.body.Urgance_name
-      } )
-      await demand.save().then((result)=> res.json(result)).catch((err)=>console.log(err));
+    const demandDoctor = async (req, res) => {
+      try {
+        const demand = new Demand({
+          idPatient: req.body.id_patient,
+        });
+        await demand.save();
+        res.status(200).json({ success: true });
+      } catch (err) {
+         res.status(500).json({ success: false, error: err.message });
+      }
+    };
+    
+  
+
+
+  const API_get_Reponse = async function(req, res) {
+    console.log(req.params.id);
+    const urg = await Urgance.findOne({ "Sous_urgance.sous_sous_urgance._id": req.params.id });
+    urg.Sous_urgance.forEach((element) => {
+      const sous = element.sous_sous_urgance;
+      const rep = sous.find((sous_sous) => sous_sous._id.toString() === req.params.id.trim());
+      if (rep) {
+        const reponses = rep.Reponse;
+        res.json(reponses);
+        return; // Exit the loop and prevent further code execution
+      }
+    });
   }
-  const API_get_Reponse = async function(req , res) {
-
-    await Sous_urgance.findById(req.params.id , { reponse : 1 }).then(result => res.status(200).json(result.reponse)).catch(err => console.log(err))
-
-}
+  
 
 
+  const API_get_sous_sous_urgance =async (req, res) => {
+        console.log(req.params.id)
+ 
+        try {
+        const urg = await Urgance.findOne({"Sous_urgance._id" : req.params.id});
+
+       urg.Sous_urgance.forEach(element => {
+
+           if(element._id.toString() === req.params.id){
+
+          res.status(200).json(element.sous_sous_urgance);
+          }
+       });
+
+        } catch (error) {
+          console.log(error);
+        }
+
+
+ 
+  }
+
+  const get_ChatUsers = (req , res) =>{
+    
+  }
 
 const API_get_sous_urgance = async  (req ,res) =>  {
 
 
   // const result =   await   Sous_urgance.aggregate([{ $unwind :"$id_Urgance"}]).then(rs=> res.json(rs)).catch(err => console.log(err));
-     
-       await Sous_urgance.find({} , {reponse :0}).then(rs =>  {
-          
-          var list_sous = [] ;
-         
-         for (let index = 0; index < rs.length; index++) {            
-          if (rs[index].id_Urgance.id_urg == req.params.id) {
-               list_sous.push(rs[index])
-          } 
-          }
-          res.status(200).json(list_sous);
 
-        }
-     )
-        .catch(err => console.log(err)) ;
-     //await Sous_urgance.count().then(rs=> console.log(rs)).catch(err => console.log(err))
-    
+       await Urgance.findById(req.params.id ).distinct('Sous_urgance').then(result =>  {
+          res.status(200).json(result);
+         }
+      ).catch(err => console.log(err)) ;
+
  }    
 
 
 
 
-module.exports = { register_patient ,API_get_urgance ,API_get_sous_urgance , API_get_Reponse , demandDoctor,profilPage , login_patient }
+module.exports = { register_patient, updateProfil ,  API_get_sous_sous_urgance ,API_get_urgance ,API_get_sous_urgance , API_get_Reponse , demandDoctor,profilPage , login_patient }

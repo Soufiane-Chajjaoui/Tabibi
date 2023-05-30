@@ -1,10 +1,8 @@
 // ignore_for_file: camel_case_types
 import 'dart:convert';
-import 'dart:io';
-import 'package:http/http.dart' as http;
+ 
 
-Reponse ReponseFromJson(String str) =>
-    Reponse.fromJson(json.decode(str));
+Reponse ReponseFromJson(String str) => Reponse.fromJson(json.decode(str));
 
 String ReponseToJson(Reponse data) => json.encode(data.toJson());
 
@@ -12,28 +10,19 @@ class Reponse {
   String? description;
   String? url;
   String? id;
- 
+  String? moreDetails;
 
-  Reponse(
-      {  
-        this.description,
-        this.url,
-        this.id,
-     });
-
- 
+  Reponse({
+    this.description,
+    this.url,
+    this.id,
+    this.moreDetails
+  });
 
 /*++++++++++++++++++++  convert Json +++++++++++++++++++++++++*/
   factory Reponse.fromJson(Map<String, dynamic> json) => Reponse(
-        description: json["description"],
-        url: json["url"],
-        id: json["_id"]
-        
-      );
+      description: json["description"], url: json["name_Image"]["url"], id: json["_id"] , moreDetails: json["moreDetails"]["details"] , );
 
-  Map<String, dynamic> toJson() => {
-        'description': description,
-        'url': url,
-        'id': id 
-      };
+  Map<String, dynamic> toJson() =>
+      {'description': description, 'url': url, 'id': id};
 }

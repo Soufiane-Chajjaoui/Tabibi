@@ -3,15 +3,20 @@ const extendSchema = require('mongoose-extend-schema');
 const Sous_urgance = require('./models/SousUrgance') ;
 const favicon = require('serve-favicon') ;
 const express  = require('express') ;
+const cookiesParser = require('cookie-parser');
 const path = require('path') ;
 const ejs = require('ejs');
 const cors = require('cors') ;
 const firebase = require('firebase-admin');
 const mongoose = require('mongoose');
 const bodyParse = require('body-parser') ;
-const {db} = require('./Tools/Firebase');
+const {db} = require('./Tools/Firebase'); 
 const app = express()  ;
-require('dotenv').config({path : path.join(__dirname, './.env')});
+const http = require('http') ;
+const server = http.createServer(app) ;
+const { Server } = require('socket.io') ;
+const io = new Server(server) ; 
+ require('dotenv').config({path : path.join(__dirname, './.env')});
 const session = require('express-session');
 // const {checkSessionExpiration} = require('./Middelware/checkSession') ;
 const router = require('./routes/router');
@@ -20,7 +25,19 @@ const routerFirebase = require('./routes/routerFirebase');
 
 const port = process.env.Port  || 8080 ;
 
-
+var client = {} ;
+io.on('connection', (socket) => {
+  let UserId = socket.handshake.query.idSender ;
+  client[UserId] = socket ;
+  socket.on('/message' , (message) => {
+     if (client[message.idReceiver]) {
+      client[message.idReceiver].emit('/receive', message);
+    }else {
+      console.log(message) ;
+    }
+     
+  })
+});
 
 mongoose.set('strictQuery', true);
 // mongoose.disconnect(); disconnect connection with DATABASE 
@@ -29,13 +46,20 @@ mongoose.connect("mongodb+srv://soufian_node:soufianch@testnode.fblmhkz.mongodb.
     useNewUrlParser : true ,
     useUnifiedTopology : true , 
     dbName : 'project_pfe'
-}) .then(() => app.listen(port , ()=> {
-  console.log('http://localhost:'+port)
-}))
- .catch((error) => {
-   console.error('Error connecting to database: ', error);
- }); 
-
+}) .then(() => {
+  if (mongoose.connection.readyState === 1) {
+    server.listen(port, () => {
+      console.log('http://localhost:' + port);
+    });
+  } else {
+    console.error('Error connecting to database: Connection not established.');
+    return res.status(500).json({ error: 'Server failed to connect to the database.' });
+  }
+})
+.catch((error) => {
+  console.error('Error connecting to database:', error);
+  return res.status(500).json({ error: 'Server failed to connect to the database.' });
+});
   
 //Middlware
 
@@ -61,12 +85,12 @@ app.use(cors()) ;
 app.use(bodyParse.urlencoded({extended : true , limit: '25mb'})) ;
 app.set('view engine','ejs') ;
 app.use(bodyParse.json({limit: '25mb'})) ;
-app.get('/addTest',async (req, res)=>{
-  const test = db.collection('test').doc('person');
-  const result = await test.set({
-      'name': 'soufian'
-  });
-}) ;
+app.use(cookiesParser())
+
+app.get('/test' , (req , res) => {
+  res.render('testChat');
+})
+
 app.use('/' , router) ; 
 app.use('/users' , routerFirebase) ; 
 

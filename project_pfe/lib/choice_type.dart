@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, use_build_context_synchronously, non_constant_identifier_names
 import 'package:project_pfe/API/signin.dart';
 import 'package:project_pfe/authScreen/Auth.dart';
+import 'package:project_pfe/authScreen/Log_in.dart';
 import 'package:project_pfe/authScreen/SingUp.dart';
 import 'package:project_pfe/patient/homepage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -173,28 +174,34 @@ class _choise_typeState extends State<choise_type> {
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: Color(0xff0E3E67),
-
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(40)),
+                      backgroundColor: Color.fromARGB(133, 57, 115, 180),
                       // background (button) color
                       // foreground (text) color
+                      foregroundColor: Color.fromARGB(
+                          255, 189, 206, 219), // background (button) color
+                      // foreground (text) color
                     ),
-                    onPressed: () {
-                      signinAnonymose();
-                      Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(builder: (context) => Auth()));
+                    onPressed: () async {
+                      // final prefs = await SharedPreferences.getInstance();
+                      // prefs.setBool('showhome', true);
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) {
+                            return Log_in();
+                          },
+                          settings: RouteSettings(arguments: selected)));
                     },
                     child: Container(
                       alignment: Alignment.center,
                       width: 264,
                       height: 50,
                       child: Text(
-                        "SKEP",
+                        "Log In",
                         style: TextStyle(fontSize: 25, fontFamily: 'Poppins'),
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             )

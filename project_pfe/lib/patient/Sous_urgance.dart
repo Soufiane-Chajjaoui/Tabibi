@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:project_pfe/actions/Patient.dart';
 import 'package:project_pfe/actions/Sous_urgance.dart';
 import 'package:project_pfe/patient/Reponse.dart';
+import 'package:project_pfe/patient/SousSous.dart';
 
 class Sous_urgance_widget extends StatefulWidget {
   const Sous_urgance_widget({super.key});
@@ -27,7 +29,7 @@ class _Sous_urgance_widgetState extends State<Sous_urgance_widget> {
                 : ListView.builder(
                     itemCount: list!.length,
                     itemBuilder: (BuildContext context, int i) {
-                      return card_Sous_urg(list[i]);
+                      return ListTile(title: card_Sous_urg(list[i]));
                     },
                   );
           }),
@@ -37,22 +39,39 @@ class _Sous_urgance_widgetState extends State<Sous_urgance_widget> {
   Card card_Sous_urg(Sous_urgance sous) {
     return Card(
       elevation: 3,
-      child: ListTile(
-        onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(
-            settings: RouteSettings(
-                arguments: {'id': sous.id, 'libell': sous.libell}),
-            builder: (context) => Reponse_page(),
-          ));
-        },
-        title: Text(
-          "${sous.libell}",
-          style: TextStyle(fontFamily: 'Poppins_SemiBoldItalic'),
-        ),
-        leading: Image.network("${sous.url}"),
-        trailing: IconButton(
-          icon: Icon(Icons.navigate_next_rounded),
-          onPressed: () {},
+      child: Container(
+        height: 70,
+        alignment: Alignment.center,
+        child: ListTile(
+          onTap: () {
+            print(sous.id);
+            Navigator.of(context).push(MaterialPageRoute(
+              settings: RouteSettings(
+                  arguments: {'id': sous.id, 'libell': sous.libell}),
+              builder: (context) => SousSousUrgance(),
+            ));
+          },
+          title: Text(
+            "${sous.libell}",
+            style: TextStyle(
+                fontFamily: 'Poppins_SemiBoldItalic',
+                overflow: TextOverflow.ellipsis),
+          ),
+          leading: CachedNetworkImage(
+            imageUrl: "${sous.url}",
+            height: 70,
+            width: 70,
+            progressIndicatorBuilder: (context, url, progress) => Center(
+              child: CircularProgressIndicator(),
+            ),
+            errorWidget: (context, url, error) => Image.asset(
+              'images/user.png',
+              fit: BoxFit.cover,
+              height: 170,
+              width: 170,
+            ),
+          ),
+          trailing: Icon(Icons.navigate_next_rounded),
         ),
       ),
     );

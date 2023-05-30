@@ -1,6 +1,6 @@
 
 const path = require('path') 
-const { Admin, Patient } = require('../models/Person_Model') ;
+const { Admin, Patient , Agent, Doctor } = require('../models/Person_Model') ;
 const {Urgance } = require('../models/Urgance');
 const {Reponse } = require('../models/Reponse');
 const { cloudinary } = require('../Tools/Cloudinary')
@@ -67,7 +67,7 @@ const { json } = require('body-parser');
                 
 //                 //  res.json({response : true}) ;
 
-//                 res.redirect('/admin/dashboard') ;
+//                 res.redirect('/admin/Agentd , {Agents : result}ashboard') ;
 //                }
         
 //            }
@@ -78,10 +78,14 @@ const handleErrors = (err) => {
     console.log(err.message, err.code);
     let errors = { email: '', password: '' };
         // duplicate email error
-        if (err.code === 11000) {
-          errors.email = 'this email is already registered';
+        if (err.message === 'Your Number is already in used') { 
+          errors.email = 'Your Number is already in used';
           
-        }else if (err.message === 'Admin not registered') {
+        }
+        if (err.code === 11000) {  
+          errors.email = 'this email or number is already registered';
+          
+        }   else if (err.message === 'Admin not registered') {
           errors.email = 'email not registered yet';
        }
 
@@ -114,17 +118,14 @@ const handleErrors = (err) => {
   }
 
 const register_admin = (req , res)=>{
-    console.log(req.body)
-    const admin_create = new Admin({
-                complete_name: req.body.prenom + ' ' + req.body.nom   ,
-                password : req.body.password ,
-                mail : req.body.email ,
-                CNI : req.body.cni ,
-                num_tele : req.body.tele ,
-                gender : req.body.gender
-                 });
-
-               
+         const admin_create = new Admin({
+                    complete_name: req.body.prenom + ' ' + req.body.nom   ,
+                    password : req.body.password ,
+                    mail : req.body.email ,
+                    CNI : req.body.cni ,
+                    num_tele : req.body.tele ,
+                    gender : req.body.gender
+                    });              
                     admin_create.save().then((admin) =>{
 
                       const token = createTOkens(admin._id);
@@ -167,7 +168,7 @@ const login_admin = async (req , res)=>{
     } catch (error) {
  
       const err = handleErrors(error);
-
+      console.log(err);
       res.status(401).json({err});
       }
 
@@ -619,19 +620,49 @@ const login_admin = async (req , res)=>{
 
     }  
 
-   
+   const get_Agent = (req ,res) => {
+
+      Agent.find().then((result) => {
+        res.render('admin/Agent' , {Agents : result , error : null})
+      }).catch((err) => {
+        console.log(err);
+      })
+
+   }
+
+   const CreateAgent = (req, res) => { 
+    console.log(req.body);
+    console.log('ddddddd');
+    const agent = new Agent({
+      complete_name : req.body.complete_name ,
+      num_tele : req.body.tele ,
+      password : req.body.password ,
+       mail : req.body.mail ,
+
+    }) 
+    agent.save().then((result) => {
+      res.status(200).json({success : true})
+    }).catch((err) => {
+      const error = handleErrors(err);
+      console.log(error);
+      res.status(400).json({ success : false , error: error });
+    });
+   }
 
 
     const getAllPatients = async (req ,res) => {
 
        await Patient.find().then((all)=>{
-                   res.status(200).render( 'admin/Patients',{Patients : all}) ;
-                    }).catch((err)=> console.log(err))
-            }
+                   res.status(200).render('admin/Patients' , { Patients : all} ) 
+                  }).catch((err)=> console.log(err))
+                 }
+    const get_AllDoctors =async  (req ,res )=>{
+      await Doctor.find().then((all)=>{
+        res.status(200).render('admin/Doctors' ,  { Doctors : all }); 
+       }).catch((err)=> console.log(err))
+    }
 
-
-    //    API
-
+ 
 
         
  
@@ -698,7 +729,7 @@ const count_notifications =   (req ,res )=> {
             data.push(itemUser)
         })
          
-        res.render('admin/Patients' ,{Patients : data});
+        res.render('admin/AgentP , {Agents : result}atients' ,{Patients : data});
       }).catch((err) => {
       console.log(err)
       })
@@ -722,7 +753,7 @@ const count_notifications =   (req ,res )=> {
         data.push(itemUser)
     })
      
-    res.render('admin/Doctors' ,{Patients : data});
+    res.render('admin/AgentD , {Agents : result}octors' ,{Patients : data});
   }).catch((err) => {
   console.log(err)
   })
@@ -731,4 +762,4 @@ const count_notifications =   (req ,res )=> {
 }
      
 
-module.exports = {addUrgance ,get_Patients , update_sous_sous_urgance ,delete_sous_sous_urgance ,remove_reponse , update_reponse , get_reponse, get_sous_sous_urgance, add_sous_sous_urgance , get_Doctors ,count_notifications  , get_notification, getAllPatients  ,  add_sous_Urgance ,   add_reponse , get_urgance , delete_sous_urgance , update_sous_urgance , get_sous_urgance , register_admin , login_admin , delete_urgance , update_urgance}
+module.exports = {addUrgance, get_AllDoctors ,get_Patients , handleErrors , CreateAgent , get_Agent , update_sous_sous_urgance ,delete_sous_sous_urgance ,remove_reponse , update_reponse , get_reponse, get_sous_sous_urgance, add_sous_sous_urgance , get_Doctors ,count_notifications  , get_notification, getAllPatients  ,  add_sous_Urgance ,   add_reponse , get_urgance , delete_sous_urgance , update_sous_urgance , get_sous_urgance , register_admin , login_admin , delete_urgance , update_urgance}

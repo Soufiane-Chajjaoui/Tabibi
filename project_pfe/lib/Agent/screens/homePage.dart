@@ -1,15 +1,13 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:project_pfe/API/api.dart';
-import 'package:project_pfe/API/signin.dart';
 import 'package:project_pfe/Agent/widgets/cardDrawer.dart';
 import 'package:project_pfe/Agent/widgets/listNotifications.dart';
 import 'package:project_pfe/Agent/widgets/listUsers.dart';
-import 'package:project_pfe/Models/ChatUser.dart';
-import 'package:project_pfe/authScreen/Auth.dart';
+import 'package:project_pfe/actions/Agent.dart';
+import 'package:project_pfe/actions/Person.dart';
+import 'package:project_pfe/main.dart';
 import 'package:project_pfe/patient/EditProfil.dart';
 
 class HomepageAgent extends StatefulWidget {
@@ -23,15 +21,30 @@ class _HomepageAgentState extends State<HomepageAgent>
     with SingleTickerProviderStateMixin {
   late TabController _tabcontroller;
   bool isSearch = false;
+  Agent? _agent;
+  String? image;
+  String name = 'user name';
+  String? mail;
+  String? query = "";
+  getProfil() async {
+    _agent = await Agent.getProfil();
+    print(_agent);
+    setState(() {
+      image = _agent?.image!['url'];
+      name = _agent!.complete_name!;
+      mail = _agent?.mail;
+    });
+  }
 
-  String query = "";
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    APIs.CreateUser();
+    getProfil();
 
-    APIs.getSelfInfo();
+    // APIs.CreateUser();
+
+    // APIs.getSelfInfo();
     _tabcontroller = TabController(length: 2, vsync: this, initialIndex: 0);
   }
 
@@ -64,7 +77,8 @@ class _HomepageAgentState extends State<HomepageAgent>
                   currentAccountPicture: ClipRRect(
                     borderRadius: BorderRadius.circular(50),
                     child: CachedNetworkImage(
-                      imageUrl: APIs.me.image,
+                      fit: BoxFit.cover,
+                      imageUrl: "${image}",
                       height: 70,
                       width: 70,
                       progressIndicatorBuilder: (context, url, progress) =>
@@ -80,12 +94,12 @@ class _HomepageAgentState extends State<HomepageAgent>
                     ),
                   ),
                   accountName: Text(
-                    '${APIs.me.name}',
+                    '${name}',
                     style: TextStyle(
                         fontFamily: 'Poppins_SemiBoldItalic',
                         fontWeight: FontWeight.bold),
                   ),
-                  accountEmail: Text('${APIs.me.email}')),
+                  accountEmail: Text('${mail}')),
             ),
             Container(
               padding: EdgeInsets.zero,
@@ -94,9 +108,18 @@ class _HomepageAgentState extends State<HomepageAgent>
                   cardDrawer(
                       icon: Icons.person_3,
                       title: 'Profile',
-                      ontap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (_) => EditProfil(me: APIs.me)));
+                      ontap: () async {
+                        bool isBack =
+                            await Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) {
+                            return EditProfil(
+                              type: 'agent',
+                            );
+                          },
+                        ));
+                        if (isBack) {
+                          await getProfil();
+                        }
                       }),
                   cardDrawer(
                       icon: Icons.notification_important,
@@ -110,10 +133,17 @@ class _HomepageAgentState extends State<HomepageAgent>
                   cardDrawer(
                       icon: Icons.logout_outlined,
                       title: 'Deconnecte',
-                      ontap: () {
-                        SignOut();
-                        Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) => Auth()));
+                      ontap: () async {
+                        await Person.LogOut();
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => MyApp(
+                                    showhome: false,
+                                  )),
+                          (route) =>
+                              false, // Remove all previous routes from the stack
+                        );
                       })
                 ],
               ),
@@ -136,13 +166,7 @@ class _HomepageAgentState extends State<HomepageAgent>
                   icon: Icon(Icons.arrow_back),
                 ),
               )
-            : Builder(
-                builder: (_) => IconButton(
-                    onPressed: () {
-                      Scaffold.of(context).openDrawer();
-                    },
-                    icon: Icon(Icons.menu)),
-              ),
+            : null,
         title: isSearch
             ? TextFormField(
                 autofocus: true,
@@ -190,7 +214,7 @@ class _HomepageAgentState extends State<HomepageAgent>
                 ),
                 Tab(
                   child: Text(
-                    'Notifications',
+                    'Demands',
                     style: TextStyle(fontFamily: 'Poppins_Reguler'),
                   ),
                 )

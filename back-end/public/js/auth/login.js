@@ -1,4 +1,4 @@
-const Form = document.getElementById('FormLogin') ;
+const Form = document.getElementById('FormLogin');
 Form.addEventListener('submit', async (e)=>{
     e.preventDefault();
     showSpinner();
@@ -9,14 +9,14 @@ Form.addEventListener('submit', async (e)=>{
         headers: {'Content-Type': 'application/json'},
         method: 'POST' ,
         body: JSON.stringify({
-            email : mail ,
-            password : pwd
+            email : mail.trim() ,
+            password : pwd.trim()
         })
     });
     const response = await res.json();
      console.log(response.admin);
     if (response.admin) {
-         location.assign('/');
+         location.assign('/admin/dashboard');
     } else {
         setTimeout(() => {
              hideSpinner()  
@@ -49,7 +49,7 @@ function hideSpinner() {
 function showAlert(message) {
 const alert = document.createElement("div");
 alert.className = "alert alert-danger";
-
+alert.style.zIndex = "2";
 const icon = document.createElement("i");
 icon.className = "fas fa-exclamation-circle"; // Replace with the desired alert icon class
 

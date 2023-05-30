@@ -2,6 +2,8 @@
 const DoctorController = require('../Controllers/Doctor_controller');
 const PatientController = require('../Controllers/Patient_controller');
 const AdminController = require('../Controllers/Admin_controller');
+const AgentController = require('../Controllers/Agent_controller');
+const ChatController = require('../Controllers/Chat_controller');
 const Auth = require('../Controllers/Auth');
 const fs = require('fs') ;
 const path = require('path');
@@ -40,14 +42,18 @@ const Uploader = require('../Tools/multer')
  
     /* end links */
 
-  /*      Action Admin       */
+//////////////////////// Routes Admin /////////////////////////////////
 
   router.post('/admin/register' ,  AdminController.register_admin) ;
   router.post('/admin/login' ,  AdminController.login_admin) ;
-
   router.get('/admin-get_Patients' , AdminController.getAllPatients) ;
+  router.get('/admin-get_Doctors' , AdminController.get_AllDoctors) ;
 
-  // CRUD URGANCE
+///////////////////////// Agent Controller ///////////////////////////////
+  router.get('/admin-get_Agent' , AdminController.get_Agent) ;
+  router.post('/admin-create_Agent' , AdminController.CreateAgent);
+
+        // CRUD URGANCE
   router.post('/admin-add_Urgance' , Uploader.single('image') , AdminController.addUrgance);
   router.get('/admin-get_urgance' , AdminController.get_urgance) ;
   router.post('/admin-update_urgance' ,  Uploader.single('image_up') , AdminController.update_urgance) ;
@@ -79,21 +85,42 @@ const Uploader = require('../Tools/multer')
   router.delete('/delete-reponse' , AdminController.remove_reponse);
   /*     end Action Admin    */
 
-/*     end Router Admin       */
+/////////////////////////////// end Router Admin /////////////////////////////
 
-           //  API
-/*      Router Doctor       */ 
+
+///////////////////////////////  API           ///////////////////////////////
+///////////////////////////////Routes Doctor  ///////////////////////////////
 router.post('/signup_doctor' , DoctorController.register_doctor) ;
 router.post('/login_doctor' , DoctorController.login_doctor) ;
+router.get('/API/getProfil-doctor/:id' , DoctorController.getProfil) ;
+router.post('/API/update-profil-doctor', Uploader.single('imageProfil') , DoctorController.EditMyProfil) ;
 
-/*      Router Patient       */
+////////////////////////////// Routes Patient ////////////////////////////////       
 router.post('/signup_patient' , PatientController.register_patient) ;
-router.post('/login_patient' , PatientController.login_patient) ;
+router.post('/API/login_patient' , PatientController.login_patient) ;
 router.get('/API/get_urgance' , PatientController.API_get_urgance) ;
 router.get('/API/get_sous_urgance/:id' , PatientController.API_get_sous_urgance) ;
+router.get('/API/get_sous_sous_urgance/:id' , PatientController.API_get_sous_sous_urgance) ;
+router.post('/API/update-Profil', Uploader.single('imageProfil') , PatientController.updateProfil);
 router.get('/API/get_reponse/:id' , PatientController.API_get_Reponse) ;
 router.get('/API/get-Profil/:id' , PatientController.profilPage) ;
 router.post('/API/demandDoctor' , PatientController.demandDoctor) ;
+ 
+
+//////////////////////////////// Agent Routes //////////////////////////////////
+
+router.post('/API/loginAgent' , AgentController.login_agent) ;
+router.get('/API/notifications' , AgentController.get_Demand);
+router.put('/API/AccepteDemand/:id/:idAgent/:idPatient', AgentController.accept_demade)
+router.delete('/API/remove-demand/:id' , AgentController.reject_demand)
+router.get('/API/get-Patients-chat', AgentController.get_Patient_chat);
+router.get('/API/getDoctors' , AgentController.getDoctors);
+router.get('/API/getProfil-Agent/:id' , AgentController.get_Profil)
+router.post('/API/update-profil-agent' , Uploader.single('imageProfil') , AgentController.updateProfil)
+
+//////////////////////////////// Chat routes ///////////////////////////////////
+
+router.post('/API/storeMessage' ,ChatController.StoreMessage)
 
  router.get('/images'  ,  (req, res) => {
   //   const dirPath = path.join(__dirname, '../uploads/Person');

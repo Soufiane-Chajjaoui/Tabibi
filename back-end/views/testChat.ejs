@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form id="formchat">
+        <input type="text" id="content" name="content">
+        <input type="submit">
+    </form>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io('http://localhost:8080', {
+            query: {
+                sourceID: '123456' // replace with your desired sourceID value
+            }
+        });
+
+        var form = document.getElementById("formchat");
+        var input = document.getElementById("content");
+        form.addEventListener("submit", function(e) {
+            e.preventDefault();
+            socket.emit('/message', input.value);
+        });
+    </script>
+</body>
+</html>
