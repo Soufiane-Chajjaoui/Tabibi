@@ -1,9 +1,6 @@
 // ignore_for_file: prefer_const_constructors, use_build_context_synchronously, non_constant_identifier_names
-import 'package:project_pfe/API/signin.dart';
-import 'package:project_pfe/authScreen/Auth.dart';
 import 'package:project_pfe/authScreen/Log_in.dart';
 import 'package:project_pfe/authScreen/SingUp.dart';
-import 'package:project_pfe/patient/homepage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 

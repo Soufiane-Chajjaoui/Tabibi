@@ -37,10 +37,11 @@ class Agent extends Person {
     }
   }
 
-  static Future<dynamic> acceptDemand(String? id,String? idPatient) async {
+  static Future<dynamic> acceptDemand(String? id, String? idPatient) async {
     final _pref = await SharedPreferences.getInstance();
     final idAgent = await _pref.getString("_id");
-    var url = Uri.parse('http://192.168.1.3:8080/API/AccepteDemand/${id}/${idAgent}/${idPatient}');
+    var url = Uri.parse(
+        'http://192.168.1.3:8080/API/AccepteDemand/${id}/${idAgent}/${idPatient}');
     var res = await http.put(url);
     var decode = jsonDecode(res.body);
     if (res.statusCode == 200) {
@@ -58,15 +59,46 @@ class Agent extends Person {
     }
   }
 
+  static ShareWithDoctor(String idDoctor, String idPatient) async {
+    final url = Uri.parse(
+        'http://192.168.1.3:8080/API/ShareWithDoctor/${idDoctor.trim()}/${idPatient.trim()}');
+    var res = await http.get(url);
+
+    if (res.statusCode == 200) {
+      Fluttertoast.showToast(
+        msg: 'Votre demande ete bien enregistre',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 3,
+        backgroundColor: Color.fromARGB(255, 137, 144, 83),
+        textColor: Colors.white,
+        fontSize: 17.0,
+      );
+    } else {
+      Fluttertoast.showToast(
+        msg: 'Problem de connexion try again',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 3,
+        backgroundColor: Color.fromARGB(225, 218, 63, 52),
+        textColor: const Color.fromARGB(255, 235, 197, 197),
+        fontSize: 17.0,
+      );
+    }
+  }
+
   static getDoctors() async {
+    List<UserChat> DoctorsList = [];
     var url = Uri.parse("http://192.168.1.3:8080/API/getDoctors");
     var res = await http.get(url);
 
     if (res.statusCode == 200) {
       var data = jsonDecode(res.body);
       print(data);
+      data.forEach((element) => DoctorsList.add(UserChat.fromJson(element)));
+      return DoctorsList;
     } else {
-      print("vide");
+      return [];
     }
   }
 
@@ -96,6 +128,7 @@ class Agent extends Person {
       final _pref = await SharedPreferences.getInstance();
       _pref.clear();
       await _pref.setString('_id', decode['Agent']['_id']);
+      await _pref.setBool('isAgent', true);
       return true;
     } else {
       Fluttertoast.showToast(
@@ -107,7 +140,6 @@ class Agent extends Person {
         textColor: Colors.white,
         fontSize: 17.0,
       );
-      return Navigator.pop(context);
     }
   }
 

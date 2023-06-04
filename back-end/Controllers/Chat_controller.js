@@ -3,8 +3,7 @@ const Message = require('../models/Message');
 
 
 const StoreMessage = async (req ,res)=>{
-    console.log(req.body);
-     const message = new Message({
+      const message = new Message({
         idSender : req.body.idSender ,
         content : req.body.content ,
         idReceiver : req.body.idReceiver

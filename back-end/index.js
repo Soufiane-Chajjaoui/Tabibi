@@ -21,19 +21,21 @@ const session = require('express-session');
 // const {checkSessionExpiration} = require('./Middelware/checkSession') ;
 const router = require('./routes/router');
 const routerFirebase = require('./routes/routerFirebase');
-// const fileUpload = require('express-fileupload');
-
+const { AuthCurrent } = require('./middleware/Auth');
+ 
 const port = process.env.Port  || 8080 ;
 
 var client = {} ;
 io.on('connection', (socket) => {
   let UserId = socket.handshake.query.idSender ;
   client[UserId] = socket ;
+  console.log("connect :" , UserId);
   socket.on('/message' , (message) => {
-     if (client[message.idReceiver]) {
+    console.log(message) ;
+     if (client[message.idReceiver]) {     
       client[message.idReceiver].emit('/receive', message);
     }else {
-      console.log(message) ;
+
     }
      
   })
@@ -48,7 +50,7 @@ mongoose.connect("mongodb+srv://soufian_node:soufianch@testnode.fblmhkz.mongodb.
     dbName : 'project_pfe'
 }) .then(() => {
   if (mongoose.connection.readyState === 1) {
-    server.listen(port, () => {
+    server.listen(port, "192.168.1.3" ,() => {
       console.log('http://localhost:' + port);
     });
   } else {
@@ -87,10 +89,8 @@ app.set('view engine','ejs') ;
 app.use(bodyParse.json({limit: '25mb'})) ;
 app.use(cookiesParser())
 
-app.get('/test' , (req , res) => {
-  res.render('testChat');
-})
 
+app.get("*" , AuthCurrent ); 
 app.use('/' , router) ; 
 app.use('/users' , routerFirebase) ; 
 

@@ -1,6 +1,6 @@
 
 
-const { Patient } = require('../models/Person_Model') ;
+const {Doctor,Agent, Patient } = require('../models/Person_Model') ;
 const fs = require('fs');
 const { Demand } = require('../models/Demand') ;
 const { Urgance } = require('../models/Urgance')
@@ -173,8 +173,47 @@ const updateProfil = async(req, res) => {
  
   }
 
-  const get_ChatUsers = (req , res) =>{
-    
+  const get_ChatUsers = async (req , res) =>{
+    try {
+      const patientId = req.params.id; // Get the patientId from the request parameters
+  
+      const patient = await Patient.findById(patientId); // Find the patient document by ID
+  
+      if (!patient) {
+        return res.status(404).json({ error: 'Patient not found' });
+      }
+  
+      const agentDoctorIds = patient.Mychats; // Get the array of Mychats (Agent and Doctor IDs)
+  
+      // Find the Agent and Doctor documents whose IDs exist in the Mychats array
+      const agentsAndDoctors = await Promise.all([
+        Agent.find({ _id: { $in: agentDoctorIds } }),
+        Doctor.find({ _id: { $in: agentDoctorIds } })
+      ]);
+  
+      const mergedArray = [].concat(...agentsAndDoctors); // Merge the arrays
+      console.log(mergedArray);
+      return res.status(200).json(mergedArray);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+    // try {
+    //   const personId = req.params.id; // Get the personId from the request parameters
+  
+    //   // Find the Doctor and Agent documents where Mychats array contains the personId
+    //   const agentsAndDoctors = await Promise.all([
+    //     Doctor.find({ Mychats: personId }),
+    //     Agent.find({ Mychats: personId })
+    //   ]);
+  
+    //   const mergedArray = [].concat(...agentsAndDoctors); // Merge the arrays
+  
+    //   return res.status(200).json({ agentsAndDoctors: mergedArray });
+    // } catch (error) {
+    //   console.error(error);
+    //   return res.status(500).json({ error: 'Internal Server Error' });
+    // }
   }
 
 const API_get_sous_urgance = async  (req ,res) =>  {
@@ -192,4 +231,4 @@ const API_get_sous_urgance = async  (req ,res) =>  {
 
 
 
-module.exports = { register_patient, updateProfil ,  API_get_sous_sous_urgance ,API_get_urgance ,API_get_sous_urgance , API_get_Reponse , demandDoctor,profilPage , login_patient }
+module.exports = { register_patient, updateProfil , get_ChatUsers ,  API_get_sous_sous_urgance ,API_get_urgance ,API_get_sous_urgance , API_get_Reponse , demandDoctor,profilPage , login_patient }

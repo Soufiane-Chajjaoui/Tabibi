@@ -4,7 +4,6 @@ import 'package:project_pfe/actions/Doctor.dart';
 import 'package:project_pfe/authScreen/validations.dart';
 import 'package:project_pfe/doctor/homepageDoctor.dart';
 
-
 class SignUp_two extends StatefulWidget {
   const SignUp_two({super.key});
 
@@ -233,16 +232,14 @@ class _SignUp_twoState extends State<SignUp_two> {
                                                       fromPageOne[
                                                           'speciality']);
                                               if (res) {
-                                               Navigator
-                                                          .pushAndRemoveUntil(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder:
-                                                                (context) =>
-                                                                    HomepageDoctor()),
-                                                        (route) =>
-                                                            false, // Remove all previous routes from the stack
-                                                      );
+                                                Navigator.pushAndRemoveUntil(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          HomepageDoctor()),
+                                                  (route) =>
+                                                      false, // Remove all previous routes from the stack
+                                                );
                                               }
                                               // regiterUserwithName(
                                               //     fromPageOne['tele'],
@@ -290,24 +287,6 @@ class _SignUp_twoState extends State<SignUp_two> {
                                 ),
                               ),
                             ]),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              IconButton(
-                                  onPressed: () {},
-                                  icon:
-                                      Image.asset('add_Icons/google-plus.png')),
-                              IconButton(
-                                  onPressed: () {},
-                                  icon: Image.asset('add_Icons/apple.png')),
-                              IconButton(
-                                  onPressed: () {},
-                                  icon: Icon(
-                                    Icons.facebook_outlined,
-                                    size: 28,
-                                  ))
-                            ],
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,

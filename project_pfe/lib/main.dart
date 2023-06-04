@@ -79,7 +79,7 @@ class MyApp extends StatelessWidget {
       //   },
       // ),
       // home: showhome ? homepage() :StartPage() ,
-      home: choise_type(),
+      home: StartPage(),
       debugShowCheckedModeBanner: false,
     );
   }

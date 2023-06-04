@@ -2,8 +2,8 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:project_pfe/Agent/widgets/ListUsersDoctor.dart';
 import 'package:project_pfe/Agent/widgets/cardDrawer.dart';
-import 'package:project_pfe/Agent/widgets/listUsers.dart';
 import 'package:project_pfe/actions/Doctor.dart';
 import 'package:project_pfe/actions/Person.dart';
 import 'package:project_pfe/main.dart';
@@ -231,7 +231,7 @@ class _HomepageDoctorState extends State<HomepageDoctor>
         child: TabBarView(
           controller: _tabcontroller,
           children: [
-            ListUsers(
+            ListUsersDoctor(
               queryfilter: query,
             ),
           ],

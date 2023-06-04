@@ -12,6 +12,7 @@ const upload = require('../middleware/upload');
 const { cloudinary } = require('../Tools/Cloudinary')
 const router = express.Router() ;
 const Uploader = require('../Tools/multer')
+const { AuthCurrent } = require('../middleware/Auth');
 
 /*      Router Admin       */
     /* links */
@@ -41,6 +42,7 @@ const Uploader = require('../Tools/multer')
  
  
     /* end links */
+    router.get("*" , AuthCurrent ); 
 
 //////////////////////// Routes Admin /////////////////////////////////
 
@@ -90,13 +92,14 @@ const Uploader = require('../Tools/multer')
 
 ///////////////////////////////  API           ///////////////////////////////
 ///////////////////////////////Routes Doctor  ///////////////////////////////
-router.post('/signup_doctor' , DoctorController.register_doctor) ;
-router.post('/login_doctor' , DoctorController.login_doctor) ;
+router.post('/API/signup_doctor' , DoctorController.register_doctor) ;
+router.post('/API/login_doctor' , DoctorController.login_doctor) ;
 router.get('/API/getProfil-doctor/:id' , DoctorController.getProfil) ;
 router.post('/API/update-profil-doctor', Uploader.single('imageProfil') , DoctorController.EditMyProfil) ;
+router.get('/API/getChatPatients/:id' , DoctorController.getPtientschat) ;
 
 ////////////////////////////// Routes Patient ////////////////////////////////       
-router.post('/signup_patient' , PatientController.register_patient) ;
+router.post('/API/signup_patient' , PatientController.register_patient) ;
 router.post('/API/login_patient' , PatientController.login_patient) ;
 router.get('/API/get_urgance' , PatientController.API_get_urgance) ;
 router.get('/API/get_sous_urgance/:id' , PatientController.API_get_sous_urgance) ;
@@ -105,7 +108,7 @@ router.post('/API/update-Profil', Uploader.single('imageProfil') , PatientContro
 router.get('/API/get_reponse/:id' , PatientController.API_get_Reponse) ;
 router.get('/API/get-Profil/:id' , PatientController.profilPage) ;
 router.post('/API/demandDoctor' , PatientController.demandDoctor) ;
- 
+router.get('/API/getUsersChat/:id' , PatientController.get_ChatUsers) ;
 
 //////////////////////////////// Agent Routes //////////////////////////////////
 
@@ -115,9 +118,9 @@ router.put('/API/AccepteDemand/:id/:idAgent/:idPatient', AgentController.accept_
 router.delete('/API/remove-demand/:id' , AgentController.reject_demand)
 router.get('/API/get-Patients-chat', AgentController.get_Patient_chat);
 router.get('/API/getDoctors' , AgentController.getDoctors);
-router.get('/API/getProfil-Agent/:id' , AgentController.get_Profil)
-router.post('/API/update-profil-agent' , Uploader.single('imageProfil') , AgentController.updateProfil)
-
+router.get('/API/getProfil-Agent/:id' , AgentController.get_Profil);
+router.post('/API/update-profil-agent' , Uploader.single('imageProfil') , AgentController.updateProfil);
+router.get('/API/ShareWithDoctor/:idDoctor/:idPatient' , AgentController.ShareDoctorWithPatient);
 //////////////////////////////// Chat routes ///////////////////////////////////
 
 router.post('/API/storeMessage' ,ChatController.StoreMessage)

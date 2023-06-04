@@ -30,7 +30,7 @@ const getDoctors = async (req , res) => {
 
 
   await Doctor.find().then((result)=> {
-    res.status(200).json({success : true , Doctors : result})
+    res.status(200).json(result)
   }).catch((err) => {
     res.status(500).json({error : err , success : false });
   });
@@ -65,6 +65,20 @@ const get_Demand = async(req, res) => {
     }) ;
         }
   })  
+}
+
+const ShareDoctorWithPatient =async (req, res) => {
+    console.log(req.params);
+ await Doctor.findByIdAndUpdate(req.params.idDoctor , {$push : { Mychats : req.params.idPatient }}).then((doctor) => {
+
+      console.log(doctor.Mychats);
+      Patient.findByIdAndUpdate( req.params.idPatient , {$push : { Mychats : req.params.idDoctor}}).then((result)=> {
+        res.status(200).json({success : true});
+      })
+ }).catch((err) => {
+    res.status(500).json({success : false});
+ })
+
 }
 
 const get_Patient_chat = async (req , res) =>{
@@ -115,4 +129,4 @@ const reject_demand = async (req, res) => {
 }
 
 
-module.exports = {get_Demand ,updateProfil , getDoctors ,get_Patient_chat , get_Profil , login_agent , accept_demade,reject_demand}
+module.exports = {get_Demand ,updateProfil , ShareDoctorWithPatient, getDoctors ,get_Patient_chat , get_Profil , login_agent , accept_demade,reject_demand}

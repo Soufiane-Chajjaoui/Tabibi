@@ -1,11 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:project_pfe/Agent/widgets/messageUI.dart';
+import 'package:project_pfe/Agent/screens/doctors.dart';
 import 'package:project_pfe/Chat/screens/widgets/messageUI.dart';
 import 'package:project_pfe/actions/Message.dart';
-import 'package:project_pfe/actions/Person.dart';
-import 'package:project_pfe/actions/Socket.dart';
+ import 'package:project_pfe/actions/Socket.dart';
 import 'package:project_pfe/actions/UserChat.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/foundation.dart' as foundation;
@@ -30,18 +29,44 @@ class _ChatInvidualState extends State<ChatInvidual> {
   List<MessageChat> messages = [];
 
   String? idSender;
-
+  late bool isAgent = false;
   @override
   void dispose() {
     _controller.dispose();
-    focusNode_controll.dispose();
     super.dispose();
   }
 
   getIdSender() async {
     final _pref = await SharedPreferences.getInstance();
     final id = await _pref.getString("_id");
-    idSender = id;
+    idSender = id!;
+
+    isAgent = (await _pref.getBool('isAgent'))!;
+  }
+
+  void socketMethod() {
+    DateTime currentTime = DateTime.now();
+
+    Socketmanager.ConnectionSocket();
+    //   socket?.onConnectError(
+    //       (data) => print('Error connection with server socket $data'));
+    Socketmanager.socket?.on('/receive', (msg) {
+      // messages.add(MessageChat.fromJson(msg));
+
+      if (mounted) {
+        setState(() {
+          print(msg);
+          messages.add(MessageChat(
+              isMe: false,
+              content: msg['content'],
+              dateMessage: DateFormat.Hm().format(currentTime)));
+          _contollerScroller.animateTo(
+              _contollerScroller.position.maxScrollExtent,
+              duration: Duration(milliseconds: 1),
+              curve: Curves.linear);
+        });
+      }
+    });
   }
 
   @override
@@ -49,22 +74,14 @@ class _ChatInvidualState extends State<ChatInvidual> {
     // TODO: implement initState
     super.initState();
     getIdSender();
-    Socketmanager.socket?.on(
-        '/receive',
-        (msg) => {
-              setState(() {
-                messages.add(MessageChat.fromJson(msg));
-              })
-            });
+    socketMethod();
     focusNode_controll.addListener(() {
       if (focusNode_controll.hasFocus) {
         setState(() {
           emojishowing = false;
         });
-        print('focuss');
       }
     });
-    Socketmanager.ConnectionSocket();
   }
 
   @override
@@ -83,32 +100,37 @@ class _ChatInvidualState extends State<ChatInvidual> {
               overflow: TextOverflow.ellipsis,
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
             ),
-            Text(
-              "${widget.userInvidual.lastTime}",
-              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
-            ),
           ],
         ),
         leadingWidth: MediaQuery.of(context).size.width / 4.3,
         actions: [
-          PopupMenuButton(
-              splashRadius: 25,
-              onSelected: (value) {
-                print(value);
-              },
-              itemBuilder: (BuildContext context) {
-                return [
-                  PopupMenuItem(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Icon(Icons.share),
-                        Text('Share'),
-                      ],
-                    ),
-                  ),
-                ];
-              }),
+          isAgent
+              ? PopupMenuButton(
+                  splashRadius: 25,
+                  onSelected: (value) {
+                    print(value);
+                  },
+                  itemBuilder: (BuildContext context) {
+                    return [
+                      PopupMenuItem(
+                        child: InkWell(
+                          onTap: () => Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (_) => ListDoctors(),
+                                  settings: RouteSettings(
+                                      arguments: widget.userInvidual.id))),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Icon(Icons.share),
+                              Text('Share'),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ];
+                  })
+              : SizedBox.shrink(),
         ],
         backgroundColor: Colors.deepOrangeAccent[200],
         leading: InkWell(
@@ -163,9 +185,7 @@ class _ChatInvidualState extends State<ChatInvidual> {
                   itemBuilder: (BuildContext context, int index) {
                     return MessageBox(messages[index].content, context,
                         "${messages[index].dateMessage}",
-                        isMe: messages[index].idSender == idSender
-                            ? true
-                            : false);
+                        isMe: messages[index].isMe);
                   },
                 ),
               ),
@@ -202,25 +222,10 @@ class _ChatInvidualState extends State<ChatInvidual> {
                                     focusNode: focusNode_controll,
                                     textAlignVertical: TextAlignVertical.center,
                                     cursorHeight: 20,
-                                    keyboardType: TextInputType.multiline,
+                                    keyboardType: TextInputType.text,
                                     maxLines: 6,
                                     minLines: 1,
                                     decoration: InputDecoration(
-                                      suffixIcon: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          IconButton(
-                                              onPressed: () {},
-                                              splashRadius: 22,
-                                              icon: const Icon(
-                                                  Icons.attach_file)),
-                                          IconButton(
-                                              onPressed: () {},
-                                              splashRadius: 22,
-                                              icon:
-                                                  const Icon(Icons.camera_alt)),
-                                        ],
-                                      ),
                                       border: InputBorder.none,
                                       hintText: 'Message',
                                       prefixIcon: IconButton(
@@ -249,26 +254,27 @@ class _ChatInvidualState extends State<ChatInvidual> {
                                   DateTime currentTime = DateTime.now();
                                   if (_controller.text.length > 0) {
                                     Socketmanager.SendMessage(MessageChat(
+                                        isMe: true,
                                         content: _controller.text,
                                         idSender: idSender,
                                         idReceiver: widget.userInvidual.id,
                                         dateMessage: DateFormat.Hm()
                                             .format(currentTime)));
-                                    await Person.SendMessage(MessageChat(
-                                        content: _controller.text,
-                                        idSender: idSender,
-                                        idReceiver: widget.userInvidual.id,
-                                        dateMessage: DateFormat.Hm()
-                                            .format(currentTime)));
+                                    // await Person.SendMessage(MessageChat(
+                                    //     isMe: true,
+                                    //     content: _controller.text,
+                                    //     idSender: idSender,
+                                    //     idReceiver: widget.userInvidual.id,
+                                    //     dateMessage: DateFormat.Hm()
+                                    //         .format(currentTime)));
 
                                     setState(() {
                                       messages.add(MessageChat(
+                                          isMe: true,
                                           content: _controller.text,
-                                          idReceiver: widget.userInvidual.id,
-                                          idSender: idSender,
                                           dateMessage: DateFormat.Hm()
                                               .format(currentTime)));
-                                      _controller.text = '';
+                                      _controller.clear();
                                     });
                                   }
 

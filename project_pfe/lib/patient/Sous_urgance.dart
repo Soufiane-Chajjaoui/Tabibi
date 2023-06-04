@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:project_pfe/actions/Patient.dart';
 import 'package:project_pfe/actions/Sous_urgance.dart';
-import 'package:project_pfe/patient/Reponse.dart';
 import 'package:project_pfe/patient/SousSous.dart';
 
 class Sous_urgance_widget extends StatefulWidget {

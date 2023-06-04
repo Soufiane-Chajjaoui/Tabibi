@@ -13,6 +13,10 @@ const SchemaMessage = mongoose.Schema({
     idReceiver : {
         type : mongoose.Schema.Types.ObjectId,
         require : true
+    },
+    dateMessage : {
+        type : Date ,
+        default : Date.now(),
     }
     
 } , {timestamps : true}

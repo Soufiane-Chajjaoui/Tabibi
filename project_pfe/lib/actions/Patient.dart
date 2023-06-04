@@ -12,7 +12,8 @@ import 'package:project_pfe/actions/Reponse.dart';
 import 'package:project_pfe/actions/SousSousUrgance.dart';
 import 'package:project_pfe/actions/Sous_urgance.dart';
 import 'package:project_pfe/actions/Urgance.dart';
- import 'package:shared_preferences/shared_preferences.dart';
+import 'package:project_pfe/actions/UserChat.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Patient extends Person {
   Patient(
@@ -29,7 +30,7 @@ class Patient extends Person {
     String? complete_name,
     String? password,
   ) async {
-    var url = Uri.parse("http://192.168.1.3:8080/signup_patient")
+    var url = Uri.parse("http://192.168.1.3:8080/API/signup_patient")
         // .replace(host: "192.168.1.3")
         ;
     var res = await http.post(url, headers: <String, String>{
@@ -155,7 +156,6 @@ class Patient extends Person {
         textColor: Colors.white,
         fontSize: 17.0,
       );
-      return Navigator.pop(context);
     }
   }
 
@@ -230,6 +230,25 @@ class Patient extends Person {
       }
     } catch (e) {
       print(e);
+    }
+  }
+
+  static Future<dynamic> getUsersChat() async {
+    List<UserChat> usersChat = [];
+
+    final _pref = await SharedPreferences.getInstance();
+    final id = _pref.getString('_id');
+    final url = Uri.parse('http://192.168.1.3:8080/API/getUsersChat/$id');
+
+    var res = await http.get(url);
+    if (res.statusCode == 200) {
+      var decoded = jsonDecode(res.body);
+      usersChat =
+          decoded.map<UserChat>((item) => UserChat.fromJson(item)).toList();
+      print(usersChat);
+      return usersChat;
+    } else {
+      return [];
     }
   }
 

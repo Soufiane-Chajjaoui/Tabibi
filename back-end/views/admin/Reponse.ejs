@@ -78,10 +78,13 @@
             <div id="cardWrapper_<%= element._id %>">
               <div class="card" id="filterSearch" style="background-color:#cfcfcf;">
                 <center>
-                  <img src="<%= element.name_Image.url %>" class="img-fluid" />
+                  <img src="<%= element.name_Image.url %>" class="img-fluid" width="50%" />
                 </center>
                 <div class="card-body">
-                  <h5 class="card-title text-center"><%= element.description %></h5>
+                  <h5 class="card-title text-center " style="  line-height: 1.2;  
+                  height: 2.4em;  
+                  overflow: hidden;
+                  text-overflow: ellipsis;"><%= element.description %></h5>
                   <div class="dropdown" style="float:right;">
                     <button class="dropbtn">
                       <img src="../assets/planning.png" width="30px" alt="menu operation" />

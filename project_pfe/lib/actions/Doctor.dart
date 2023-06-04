@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:project_pfe/actions/Person.dart';
+import 'package:project_pfe/actions/UserChat.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Doctor extends Person {
@@ -78,7 +79,7 @@ class Doctor extends Person {
     String? email,
     String? speciality,
   ) async {
-    var url = Uri.parse("http://192.168.1.3:8080/signup_doctor");
+    var url = Uri.parse("http://192.168.1.3:8080/API/signup_doctor");
     var res = await http.post(url, headers: <String, String>{
       'context-type': 'application/json;charSet=UTF-8'
     }, body: {
@@ -112,7 +113,7 @@ class Doctor extends Person {
 
   static Future<dynamic> login_doctor(
       String? tele, String? password, context) async {
-    var url = Uri.parse("http://192.168.1.3:8080/login_doctor");
+    var url = Uri.parse("http://192.168.1.3:8080/API/login_doctor");
     var response = await http.post(url, headers: <String, String>{
       'context-type': 'application/json;charSet=UTF-8'
     }, body: {
@@ -136,7 +137,25 @@ class Doctor extends Person {
         textColor: Colors.white,
         fontSize: 17.0,
       );
-      return Navigator.pop(context);
+    }
+  }
+
+  static getChatPatient() async {
+    List<UserChat> usersChat = [];
+
+    final _pref = await SharedPreferences.getInstance();
+    final id = await _pref.getString('_id');
+    var url =
+        Uri.parse('http://192.168.1.3:8080/API/getChatPatients/${id!.trim()}');
+    var res = await http.get(url);
+    if (res.statusCode == 200) {
+      var decoded = jsonDecode(res.body);
+      usersChat =
+          decoded.map<UserChat>((item) => UserChat.fromJson(item)).toList();
+      print(usersChat);
+      return usersChat;
+    } else {
+      return [];
     }
   }
 

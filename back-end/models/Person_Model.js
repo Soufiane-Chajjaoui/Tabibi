@@ -24,7 +24,8 @@
                 minlength:[6  , ' must be at least'] ,
             },
             Mychats : [{
-                type : mongoose.Schema.Types.ObjectId 
+                type : mongoose.Schema.Types.ObjectId ,
+                ref : 'Person'
             }],
             gender  : {
                 type : String ,
@@ -155,7 +156,7 @@
         PatientSchema.statics.login = async function(numero  , password){
             
             console.log( numero , password); // {email : 'soufian@gmail.com'}
-        const userCheck = await this.findOne({num_tele : numero});
+            const userCheck = await this.findOne({num_tele : numero});
                 if (!userCheck) {
                     throw new Error('Patient not registered Yet');
                 }else {

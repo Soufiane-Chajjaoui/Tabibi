@@ -134,6 +134,7 @@ class _EditProfilState extends State<EditProfil> {
                     if (widget.type == 'doctor') {
                       await Doctor.editMyProfil(image, _controllerName.text,
                           _controllerTele.text, _controllerEmail.text);
+                      Navigator.pop(context, true);
                     } else if (widget.type == 'patient') {
                       await Patient.EditMyProfil(
                           image, _controllerName.text, _controllerTele.text);

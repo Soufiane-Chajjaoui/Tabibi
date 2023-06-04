@@ -130,7 +130,7 @@ const register_admin = (req , res)=>{
 
                       const token = createTOkens(admin._id);
 
-                      res.cookie('jwt', token , { httpOnly: true  , maxAge: maxAge * 1000});
+                      res.cookie('Tabibi', token , { httpOnly: true  , maxAge: maxAge * 1000});
 
                         res.status(200).json( {admin} );
 
@@ -161,7 +161,7 @@ const login_admin = async (req , res)=>{
       
       const token = createTOkens(admin._id);
 
-      res.cookie('jwt', token , { httpOnly: true  , maxAge: maxAge * 1000});
+      res.cookie('Tabibi', token , { httpOnly: true  , maxAge: maxAge * 1000});
 
       res.status(201).json({admin});
         

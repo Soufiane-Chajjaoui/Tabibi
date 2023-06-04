@@ -1,7 +1,7 @@
 
 
 const { cloudinary } = require('../Tools/Cloudinary');
-const { Doctor } = require('../models/Person_Model') ;
+const { Doctor, Patient } = require('../models/Person_Model') ;
 
 const register_doctor = async (req , res) => {
         console.log(req.body) ;
@@ -47,6 +47,33 @@ const login_doctor = async (req , res)=>{
    }
 }
 
+const getPtientschat =async (req, res) => { 
+  console.log(req.params)
+  try {
+    const doctorid = req.params.id; // Get the doctorid from the request parameters
+
+    const doctor = await Doctor.findById(doctorid); // Find the patient document by ID
+
+    if (!doctor) {
+      return res.status(404).json({ error: 'Patient not found' });
+    }
+
+    const agentDoctorIds = doctor.Mychats; // Get the array of Mychats (Agent and Doctor IDs)
+
+    // Find the Agent and Doctor documents whose IDs exist in the Mychats array
+    const patients = await Promise.all([
+      Patient.find({ _id: { $in: agentDoctorIds } })
+    ]);
+
+    const mergedArray = [].concat(...patients); // Merge the arrays
+    console.log(mergedArray);
+    return res.status(200).json(mergedArray);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
 const EditMyProfil =async (req, res) => {
     console.log(req.body)
     await Doctor.findById(req.body.id).then(async result => {
@@ -66,4 +93,4 @@ const EditMyProfil =async (req, res) => {
  
    
 
-module.exports = {register_doctor ,EditMyProfil ,getProfil , login_doctor }
+module.exports = {register_doctor , getPtientschat ,EditMyProfil ,getProfil , login_doctor }

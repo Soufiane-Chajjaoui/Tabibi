@@ -4,16 +4,24 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:project_pfe/actions/UserChat.dart';
 
 class UserCard extends StatelessWidget {
-  UserCard({super.key, required this.User});
-
+  UserCard({super.key, required this.User, this.selected});
+  Function? selected;
+  bool _isDoubleTap = false;
   UserChat User;
+
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => Navigator.of(context).push(MaterialPageRoute(
-          builder: (_) => ChatInvidual(
-                userInvidual: User,
-              ))),
+    return GestureDetector(
+      onDoubleTap: () {
+        _isDoubleTap = true;
+        selected?.call();
+      },
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (_) => ChatInvidual(
+                  userInvidual: User,
+                )));
+      },
       child: Card(
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
@@ -41,7 +49,7 @@ class UserCard extends StatelessWidget {
                             child: Image.network(
                                 "https://res.cloudinary.com/dw2qfkws9/image/upload/v1684929857/uploads/q1fc07m0qy1dmbggrist.jpg"),
                           ),
-                          errorWidget: (context, url, error) =>const Center(
+                          errorWidget: (context, url, error) => const Center(
                             child: CircularProgressIndicator(),
                           ),
                         ),
@@ -62,10 +70,10 @@ class UserCard extends StatelessWidget {
                       Text('last Message', overflow: TextOverflow.ellipsis)
                     ],
                   )),
-              Padding(
-                padding: const EdgeInsets.only(right: 12),
-                child: Text('12:20'),
-              )
+              // Padding(
+              //   padding: const EdgeInsets.only(right: 12),
+              //   child: Text('12:20'),
+              // )
             ],
           ),
         ),

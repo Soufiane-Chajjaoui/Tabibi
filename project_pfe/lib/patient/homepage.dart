@@ -3,6 +3,7 @@ import 'package:lottie/lottie.dart';
 import 'package:flutter/material.dart';
 import 'package:project_pfe/actions/Patient.dart';
 import 'package:project_pfe/actions/Urgance.dart';
+import 'package:project_pfe/patient/ChatSreen.dart';
 import 'package:project_pfe/patient/Profile.dart';
 import 'package:project_pfe/patient/Sous_urgance.dart';
 import 'package:project_pfe/patient/search_page.dart';
@@ -35,7 +36,7 @@ class _homepageState extends State<homepage> {
   final pages = [
     const accueil(),
     const searchPage(),
-    const Scaffold(),
+    const ChatUsersPatient(),
     const Profil(),
   ];
   @override
