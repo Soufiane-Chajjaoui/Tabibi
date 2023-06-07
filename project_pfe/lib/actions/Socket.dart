@@ -8,7 +8,7 @@ class Socketmanager {
     final _pref = await SharedPreferences.getInstance();
     final id = await _pref.getString("_id");
     socket = IO.io(
-        "http://192.168.1.3:8080",
+        "http://192.168.1.4:8080",
         IO.OptionBuilder()
             .setTransports(['websocket']).setQuery({'idSender': id}).build());
     socket!.onConnect((data) => {print('connection established')});

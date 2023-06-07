@@ -79,7 +79,7 @@ class Doctor extends Person {
     String? email,
     String? speciality,
   ) async {
-    var url = Uri.parse("http://192.168.1.3:8080/API/signup_doctor");
+    var url = Uri.parse("http://192.168.1.4:8080/API/signup_doctor");
     var res = await http.post(url, headers: <String, String>{
       'context-type': 'application/json;charSet=UTF-8'
     }, body: {
@@ -113,7 +113,7 @@ class Doctor extends Person {
 
   static Future<dynamic> login_doctor(
       String? tele, String? password, context) async {
-    var url = Uri.parse("http://192.168.1.3:8080/API/login_doctor");
+    var url = Uri.parse("http://192.168.1.4:8080/API/login_doctor");
     var response = await http.post(url, headers: <String, String>{
       'context-type': 'application/json;charSet=UTF-8'
     }, body: {
@@ -146,7 +146,7 @@ class Doctor extends Person {
     final _pref = await SharedPreferences.getInstance();
     final id = await _pref.getString('_id');
     var url =
-        Uri.parse('http://192.168.1.3:8080/API/getChatPatients/${id!.trim()}');
+        Uri.parse('http://192.168.1.4:8080/API/getChatPatients/${id!.trim()}');
     var res = await http.get(url);
     if (res.statusCode == 200) {
       var decoded = jsonDecode(res.body);
@@ -164,7 +164,7 @@ class Doctor extends Person {
     final id = await _pref.getString('_id');
     print(id);
     var url =
-        Uri.parse("http://192.168.1.3:8080/API/getProfil-doctor/${id?.trim()}");
+        Uri.parse("http://192.168.1.4:8080/API/getProfil-doctor/${id?.trim()}");
 
     var response = await http.get(url);
     print(response.body);
@@ -175,7 +175,7 @@ class Doctor extends Person {
 
   static editMyProfil(
       File? Image, String fullName, String number, String email) async {
-    var url = Uri.parse('http://192.168.1.3:8080/API/update-profil-doctor');
+    var url = Uri.parse('http://192.168.1.4:8080/API/update-profil-doctor');
 
     final _pref = await SharedPreferences.getInstance();
     final id = await _pref.getString('_id');

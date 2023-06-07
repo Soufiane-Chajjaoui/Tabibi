@@ -21,7 +21,7 @@ class Agent extends Person {
 
   static Future<List<NotificationDemand>> getNotifications() async {
     List<NotificationDemand> notifications = [];
-    var url = Uri.parse('http://192.168.1.3:8080/API/notifications');
+    var url = Uri.parse('http://192.168.1.4:8080/API/notifications');
     var res = await http.get(url);
 
     var decode = jsonDecode(res.body);
@@ -41,7 +41,7 @@ class Agent extends Person {
     final _pref = await SharedPreferences.getInstance();
     final idAgent = await _pref.getString("_id");
     var url = Uri.parse(
-        'http://192.168.1.3:8080/API/AccepteDemand/${id}/${idAgent}/${idPatient}');
+        'http://192.168.1.4:8080/API/AccepteDemand/${id}/${idAgent}/${idPatient}');
     var res = await http.put(url);
     var decode = jsonDecode(res.body);
     if (res.statusCode == 200) {
@@ -61,7 +61,7 @@ class Agent extends Person {
 
   static ShareWithDoctor(String idDoctor, String idPatient) async {
     final url = Uri.parse(
-        'http://192.168.1.3:8080/API/ShareWithDoctor/${idDoctor.trim()}/${idPatient.trim()}');
+        'http://192.168.1.4:8080/API/ShareWithDoctor/${idDoctor.trim()}/${idPatient.trim()}');
     var res = await http.get(url);
 
     if (res.statusCode == 200) {
@@ -89,7 +89,7 @@ class Agent extends Person {
 
   static getDoctors() async {
     List<UserChat> DoctorsList = [];
-    var url = Uri.parse("http://192.168.1.3:8080/API/getDoctors");
+    var url = Uri.parse("http://192.168.1.4:8080/API/getDoctors");
     var res = await http.get(url);
 
     if (res.statusCode == 200) {
@@ -104,7 +104,7 @@ class Agent extends Person {
 
   static Future<dynamic> getPatientChat() async {
     List<UserChat> listChatUsers = [];
-    var url = Uri.parse('http://192.168.1.3:8080/API/get-Patients-chat');
+    var url = Uri.parse('http://192.168.1.4:8080/API/get-Patients-chat');
     var res = await http.get(url);
 
     if (res.statusCode == 200) {
@@ -118,7 +118,7 @@ class Agent extends Person {
 
   static Future<dynamic> LoginAgent(
       String? tele, String? password, context) async {
-    var url = Uri.parse('http://192.168.1.3:8080/API/loginAgent');
+    var url = Uri.parse('http://192.168.1.4:8080/API/loginAgent');
 
     var res = await http.post(url,
         headers: {'context-Type': 'application/json;charSet=UTF-8'},
@@ -147,7 +147,7 @@ class Agent extends Person {
     final _pref = await SharedPreferences.getInstance();
     final id = _pref.getString('_id');
     print(id);
-    var url = Uri.parse('http://192.168.1.3:8080/API/getProfil-Agent/${id}');
+    var url = Uri.parse('http://192.168.1.4:8080/API/getProfil-Agent/${id}');
     var res = await http.get(url);
     var agent = jsonDecode(res.body);
     print(agent);
@@ -156,7 +156,7 @@ class Agent extends Person {
 
   static ModifyProfil(
       File? Image, String fullName, String number, String email) async {
-    var url = Uri.parse('http://192.168.1.3:8080/API/update-profil-agent');
+    var url = Uri.parse('http://192.168.1.4:8080/API/update-profil-agent');
     final _pref = await SharedPreferences.getInstance();
     final id = await _pref.getString('_id');
 
@@ -202,7 +202,7 @@ class Agent extends Person {
         gender: json['gender'],
       );
   static Future<dynamic> removeDemand(id) async {
-    var url = Uri.parse('http://192.168.1.3:8080/API/remove-demand/$id');
+    var url = Uri.parse('http://192.168.1.4:8080/API/remove-demand/$id');
     print(id);
     var res = await http.delete(url);
     var decode = jsonDecode(res.body);

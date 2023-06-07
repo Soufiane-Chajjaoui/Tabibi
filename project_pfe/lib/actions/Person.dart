@@ -27,7 +27,7 @@ class Person {
   static List<String> Genders = ['Male', 'Female'];
 
   static SendMessage(MessageChat message) async {
-    var url = Uri.parse('http://192.168.1.3:8080/API/storeMessage');
+    var url = Uri.parse('http://192.168.1.4:8080/API/storeMessage');
     print(message.idSender);
     var res = await http.post(url,
         headers: <String, String>{
