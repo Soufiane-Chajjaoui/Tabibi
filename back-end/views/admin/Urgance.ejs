@@ -2,12 +2,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Urgance</title>
+    <title>Urgances</title>
 
     <%- include('../component/navbar') %>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-
+    <link rel="stylesheet" href="css/Spinner.css">
     <style>
 
 
@@ -80,14 +80,17 @@
         </div>
       </div> 
       <hr>
+
       <div class="row ">
      
       <% if ( Urgances.length > 0) {  %>
         
       <% Urgances.forEach(element => {  %>
         <div class="col-3 p-2" >
+          <div id="cardWrapper_<%= element._id %>">
+
           <div class="card " id="filterSearch" style="background-color:#cfcfcf;">
-              <center><img src="<%= element.name_Image.url %>"  style="padding-top: 20px " class="img-fluid" width="70px" height="40px" /></center>
+              <center><img src="<%= element.name_Image.url %>" class="img-fluid" width="100%" height="100%" /></center>
             
           
            <div class="card-body">
@@ -104,11 +107,12 @@
                 data-mdb-target="#updatemodal"
                 data-mdb-whatever="@mdo" onclick="update([ '<%= element._id %>' , '<%= element.libell %>'  , '<%= element.name_Image.url %>'])"><i class="fa fa-pencil-square-o fa-fw me-2" aria-hidden="true"></i>
                     Modifie</a>
-                    <a  data-doc="<%= element._id %>" data-img="<%= element.name_Image.public_id %>" style="cursor: pointer;" class="delete"><i class="fa fa-trash-o fa-fw me-2" aria-hidden="true"></i>
+                    <a   onclick="removeUrgance('<%= element._id %>' , '<%= element.name_Image.public_id %>')"  style="cursor: pointer;" ><i class="fa fa-trash-o fa-fw me-2" aria-hidden="true"></i>
                       Delete</a>
               </div> 
             </div>
            </div>
+         </div>
          </div>
          </div>
       <%  }); %>
@@ -149,7 +153,7 @@
                 <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">
                   Close
                 </button>
-                <button type="submit" class="btn btn-primary">Save changes</button>
+                <button type="submit" class="btn btn-primary">add Fork</button>
               </div>
             </form>
             </div>
@@ -175,7 +179,7 @@
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
-                  <input type="submit" class="btn btn-primary"  value="Send message" />
+                  <input type="submit" class="btn btn-primary"  value="add Urgance" />
                 </div>
               </form>
               </div>
@@ -212,6 +216,7 @@
   </main>
   <!--Main layout-->
 </body>
+
 <script>
 
 
@@ -232,61 +237,25 @@
   }
   
 
-  $(document).ready(function () {
-    $("#close-alert").on('click' , function(){
-      $('#alert').remove() ;
-    })
-
-     $("#search-input").on("keyup" , function () {
-      var value = $(this).val().toLowerCase() ;
-      $("#filterSearch ").filter(function() {
-      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+  async function removeUrgance(arg1 , arg2) {
+    showSpinner();
+    console.log(arg1 , arg2) ;
+    const res = await fetch('/delete-urgance/'+arg1.trim()+'/'+arg1.trim() ,{
+      method : 'DELETE' ,
+      headers : { 'Content-Type': 'application/json' },
     });
-    })
-    $('.delete').on('click' , function () {
-       var urganceId =  $(this).attr("data-doc") ;
-       var id_image = $(this).attr("data-img") ;
-       console.log(urganceId) ;
-       var obj = $(this) ; 
-      $.ajax({
-        url : "/delete-Urgance" ,
-        type : "delete" ,
-        data : { "id" : urganceId  , 'id_image' : id_image} ,
-        success : function (response) {
-           if (response.success == true) {
 
-            $(obj).parent().parent().parent().parent().remove() ;
-             $('#alert').css("display" , "block") ;
-             $('#libell_delete').html( response.message ) ;
-           }else alert('false tahaja mkhdama') ;
-        }
-      })
-      
-    })
-  })
+    const response = await res.json();
+    if (response.success) {
+                // Remove the card wrapper from the DOM
+    const cardWrapperToRemove = document.getElementById(`cardWrapper_${arg1}`);
+    if (cardWrapperToRemove) {
 
-
-
-
-  // function FilterCard() {
-  //   const input = document.getElementById('search-input') ;
-  //   const cards = document.getElementById('filterSearch') ;
-  //   let filter = input.value ;
-  //   for (let i = 0; i < cards.length; i++) {
-  //       let title = cards[i].querySelector(".card-body");
-  //       if (title.innerText.indexOf(filter) > -1) {
-  //           cards[i].classList.remove("d-none")
-  //       } else {
-  //           cards[i].classList.add("d-none")
-  //       }
-  //   }
-
-  // }
-//     const searchButton = document.getElementById('search-button');
-// const searchInput = document.getElementById('search-input');
-// searchButton.addEventListener('click', () => {
-//   const inputValue = searchInput.value;
-//   alert(inputValue);
-// });
+    cardWrapperToRemove.remove();
+             hideSpinner()  
+    }
+    }
+  }
+ 
 </script>
 </html>

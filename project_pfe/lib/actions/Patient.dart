@@ -3,64 +3,66 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
-import 'package:project_pfe/DB/models/user.dart';
 import 'package:project_pfe/actions/Demand.dart';
 import 'package:project_pfe/actions/Person.dart';
 import 'package:project_pfe/actions/Reponse.dart';
+import 'package:project_pfe/actions/SousSousUrgance.dart';
 import 'package:project_pfe/actions/Sous_urgance.dart';
 import 'package:project_pfe/actions/Urgance.dart';
+import 'package:project_pfe/actions/UserChat.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Patient extends Person {
   Patient(
       {super.id,
-      required super.cni,
       required super.tele,
+      required super.gender,
       required super.complete_name,
-      required super.password});
+      required super.password,
+      required super.image});
 
-  Patient copy(
-      {int? id,
-      String? complete_name,
-      String? password,
-      String? cni,
-      String? tele}) {
-    return Patient(
-        id: id ?? this.id,
-        cni: cni ?? this.cni,
-        tele: tele ?? this.tele,
-        complete_name: complete_name ?? this.complete_name,
-        password: password ?? this.password);
-  }
-
-  static Future<void> registre_patient(
-    String? cni,
+  static Future<dynamic> registre_patient(
+    String? gender,
     String? tele,
     String? complete_name,
     String? password,
   ) async {
-    var url = Uri.parse("http://192.168.1.3:8080/signup_patient")
-        // .replace(host: "192.168.1.3")
+    var url = Uri.parse("http://192.168.1.4:8080/API/signup_patient")
+        // .replace(host: "192.168.1.4")
         ;
     var res = await http.post(url, headers: <String, String>{
       'context-type': 'application/json;charSet=UTF-8'
     }, body: {
-      'complete_name': complete_name,
-      'CNI': cni,
-      'num_tele': tele,
-      'password': password,
+      'complete_name': complete_name?.trim(),
+      'gender': gender?.trim(),
+      'num_tele': tele?.trim(),
+      'password': password?.trim(),
     });
+    var response = jsonDecode(res.body);
+
     if (res.statusCode == 200) {
-      print(res.body);
+      final _prefs = await SharedPreferences.getInstance();
+      await _prefs.clear();
+      await _prefs.setString('_id', response["User"]["_id"]);
+      return response;
     } else {
-      print('A network error occurred');
+      Fluttertoast.showToast(
+          msg: response['message'],
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Color.fromARGB(255, 219, 101, 92),
+          textColor: Colors.white,
+          fontSize: 17.0);
     }
   }
 
   static getUrgance() async {
     List<Urgance> list = [];
-    var url = Uri.parse('http://192.168.1.3:8080/API/get_urgance');
+    var url = Uri.parse('http://192.168.1.4:8080/API/get_urgance');
 
     var res = await http.get(url);
     if (res.statusCode == 200) {
@@ -81,7 +83,7 @@ class Patient extends Person {
   static get_sous_urgance(String id) async {
     List<Sous_urgance> list = [];
 
-    var url = Uri.parse("http://192.168.1.3:8080/API/get_sous_urgance/${id}");
+    var url = Uri.parse("http://192.168.1.4:8080/API/get_sous_urgance/${id}");
 
     var response = await http.get(url);
 
@@ -95,18 +97,31 @@ class Patient extends Person {
     }
   }
 
+  static get_sous_sous_urgance(String id) async {
+    List<SousSousUrganceobj> list = [];
+    var url =
+        Uri.parse("http://192.168.1.4:8080/API/get_sous_sous_urgance/${id}");
+
+    var res = await http.get(url);
+
+    if (res.statusCode == 200) {
+      var data = jsonDecode(res.body);
+      data.forEach((element) => list.add(SousSousUrganceobj.fromJson(element)));
+      return list;
+    } else
+      return [];
+  }
+
   static get_reponse(String id) async {
     List<Reponse> list = [];
-    var url = Uri.parse("http://192.168.1.3:8080/API/get_reponse/${id}");
+    var url = Uri.parse("http://192.168.1.4:8080/API/get_reponse/${id}");
 
     var rep = await http.get(url);
 
     if (rep.statusCode == 200) {
       var data = jsonDecode(rep.body);
       data.forEach((element) {
-        list.add(Reponse(
-            description: element['description'],
-            url: element['name_Image']['url']));
+        list.add(Reponse.fromJson(element));
       });
       list.add(Reponse(description: '', url: ''));
       return list;
@@ -114,10 +129,10 @@ class Patient extends Person {
       return [];
   }
 
-  static Future<Map<String, dynamic>> login_patient(
-      String? tele, String? password) async {
-    var url = Uri.parse("http://192.168.1.3:8080/login_patient")
-        // .replace(host: "192.168.1.3")
+  static Future<dynamic> login_patient(
+      String? tele, String? password, context) async {
+    var url = Uri.parse("http://192.168.1.4:8080/API/login_patient")
+        // .replace(host: "192.168.1.4")
         ;
     var response = await http.post(url, headers: <String, String>{
       'context-type': 'application/json;charSet=UTF-8'
@@ -126,19 +141,34 @@ class Patient extends Person {
       'password': password,
     });
     var decode = jsonDecode(response.body);
-    return decode;
+    if (response.statusCode == 200) {
+      final _pref = await SharedPreferences.getInstance();
+      await _pref.clear();
+      await _pref.setString('_id', decode['User']['_id']);
+      return true;
+    } else {
+      Fluttertoast.showToast(
+        msg: "${decode["error"]}",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 3,
+        backgroundColor: Color.fromARGB(255, 219, 101, 92),
+        textColor: Colors.white,
+        fontSize: 17.0,
+      );
+    }
   }
 
   static getProfil(String? id) async {
-    var url = Uri.parse("http://192.168.1.3:8080/API/get-Profil/${id}");
+    var url = Uri.parse("http://192.168.1.4:8080/API/get-Profil/${id?.trim()}");
+    print(id);
     var response = await http.get(url);
     var data = jsonDecode(response.body);
-
     return Patient.fromjson(data);
   }
 
-  static demandDoctor(Demand domand) async {
-    var url = Uri.parse("http://192.168.1.3:8080/API/demandDoctor");
+  static Future<dynamic> demandDoctor(Demand domand) async {
+    var url = Uri.parse("http://192.168.1.4:8080/API/demandDoctor");
     var response = await http.post(url,
         headers: <String, String>{
           'context-type': 'application/json;charSet=UTF-8'
@@ -146,21 +176,91 @@ class Patient extends Person {
         body: domand.toJson());
 
     var done = jsonDecode(response.body);
-    return done['Urgance_name'];
+    if (response.statusCode == 200) {
+      return Fluttertoast.showToast(
+          msg:
+              "Votre Demand ete bien enregistrer ,Please attend Reponse par Doctor",
+          backgroundColor: Color.fromARGB(255, 103, 215, 107),
+          timeInSecForIosWeb: 20);
+    } else {
+      Fluttertoast.showToast(
+          msg: done['error'],
+          backgroundColor: Color.fromARGB(255, 13, 96, 16),
+          timeInSecForIosWeb: 20);
+    }
   }
 
-  Map<String, dynamic> toJson() => {
-        PatientFields.id: id,
-        PatientFields.complete_name: complete_name,
-        PatientFields.cni: cni,
-        PatientFields.tele: tele,
-      };
+  static EditMyProfil(
+    File? Image,
+    String fullName,
+    String number,
+  ) async {
+    final _pref = await SharedPreferences.getInstance();
+    final id = await _pref.getString('_id');
+    try {
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse('http://192.168.1.4:8080/API/update-Profil'),
+      );
+
+      if (Image != null && Image.existsSync()) {
+        request.files.add(await http.MultipartFile.fromPath(
+          'imageProfil',
+          Image.path,
+        ));
+      }
+
+      request.fields['fullName'] = fullName;
+      request.fields['tele'] = number;
+      request.fields['id'] = id!;
+
+      var response = await request.send();
+      if (response.statusCode == 200) {
+        Fluttertoast.showToast(
+          msg: 'Vos donnees ete bien modifier',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 3,
+          backgroundColor: Color.fromARGB(255, 219, 101, 92),
+          textColor: Colors.white,
+          fontSize: 17.0,
+        );
+      } else {
+        print('Image upload failed. Error: ${response.statusCode}');
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  static Future<dynamic> getUsersChat() async {
+    List<UserChat> usersChat = [];
+
+    final _pref = await SharedPreferences.getInstance();
+    final id = _pref.getString('_id');
+    final url = Uri.parse('http://192.168.1.4:8080/API/getUsersChat/$id');
+
+    var res = await http.get(url);
+    if (res.statusCode == 200) {
+      var decoded = jsonDecode(res.body);
+      usersChat =
+          decoded.map<UserChat>((item) => UserChat.fromJson(item)).toList();
+      print(usersChat);
+      return usersChat;
+    } else {
+      return [];
+    }
+  }
 
   static Patient fromjson(Map<String, dynamic> json) {
     return Patient(
-        cni: json['CNI'],
-        tele: json['tele'],
-        complete_name: json['complete_name'],
-        password: json['password']);
+      complete_name: json['complete_name'].toString(),
+      password: json['password'].toString(),
+      tele: json['num_tele'].toString(),
+      gender: json['gender'].toString(),
+      image: json['avatar'] != null
+          ? json['avatar'] as Map<String, dynamic>
+          : null,
+    );
   }
 }

@@ -60,12 +60,9 @@
              $('#listNotification').html(html) ;
 
             }, 1000);
-             
-       
-              
+                                 
           }
       
-
         }
       }) ;
       countNotification();
@@ -118,7 +115,7 @@
               ><span>Statistique</span>
           </a>
           <a
-             href="#"
+             href="../admin-get_Doctors"
              class="list-group-item list-group-item-action py-2 ripple "
              ><i class="fa-solid fa-user-doctor fa-fw me-3"></i><span>Doctors</span></a
             >
@@ -128,6 +125,12 @@
              ><i class="fa-solid fa-hospital-user fa-fw me-3"></i>
              <span>Patients</span></a
             >
+            <a
+            href="../admin-get_Agent"
+            class="list-group-item list-group-item-action py-2 ripple"
+            ><i class="fa fa-user-circle-o fa-fw me-3"></i>
+            <span>Agents</span></a
+           >
           <a
              href="../admin-get_urgance"
              class="list-group-item list-group-item-action py-2 ripple"
@@ -139,8 +142,13 @@
              class="list-group-item list-group-item-action py-2 ripple"
              ><i class="fa-solid fa-link fa-fw me-3"></i><span>Sous Urgance</span></a
             >
+            <a
+            href="../get-sous-sous-urgance"
+            class="list-group-item list-group-item-action py-2 ripple"
+            ><i class="fa-solid fa-bolt fa-fw me-3"></i><span>Sous Sous Urgance</span></a
+           > 
           <a
-             href="#"
+             href="../get-reponses"
              class="list-group-item list-group-item-action py-2 ripple"
              ><i class="fa-solid fa-hand-holding-medical fa-fw me-3"></i><span>Reponse</span></a
             >
@@ -238,14 +246,17 @@
                 class="dropdown-menu dropdown-menu-end"
                 aria-labelledby="navbarDropdownMenuLink"
                 >
-              <li><a class="dropdown-item" href="#">My profile</a></li>
-              <li><a class="dropdown-item" href="#">Settings</a></li>
-              <li><a class="dropdown-item" href="#">Logout</a></li>
+              <li><a class="dropdown-item" href="../">Logout</a></li>
             </ul>
           </li>
         </ul>
       </div>
       <!-- Container wrapper -->
     </nav>
+    // Spinner container
+    <div id="spinnerContainer" class="spinner-container">
+      <div class="spinner"></div>
+    </div>
     <!-- Navbar -->
   </header>
+  <script src="js/auth/login.js"></script>

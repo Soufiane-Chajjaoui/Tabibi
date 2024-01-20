@@ -51,13 +51,13 @@ dependencies:
   lottie: ^2.3.0
   objectid: ^2.1.0
   flutter_tts: ^3.6.3
-  easy_localization: ^3.0.1
   awesome_snackbar_content: ^0.1.2
   firebase_core: ^2.10.0
-  firebase_auth: ^4.4.2
-  google_sign_in: ^6.1.0
-  cloud_firestore: ^4.5.3
-  
+  cached_network_image: ^3.2.3
+  fluttertoast: ^8.2.1
+  shimmer: ^3.0.0
+  emoji_picker_flutter: ^1.5.4
+  socket_io_client: ^2.0.2
 dev_dependencies:
   flutter_test:
     sdk: flutter

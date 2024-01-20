@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_pfe/actions/Patient.dart';
 import 'package:project_pfe/actions/Urgance.dart';
+import 'package:project_pfe/patient/Sous_urgance.dart';
 
 class searchdelegate extends SearchDelegate {
   @override
@@ -42,9 +43,19 @@ class searchdelegate extends SearchDelegate {
             : ListView.builder(
                 itemCount: filter?.length,
                 itemBuilder: (context, i) {
+                  Map<String, dynamic> UrganceUrl = {};
+
                   return InkWell(
                     onTap: () {
-                      print(filter[i].libell);
+                      UrganceUrl.addAll({
+                        "id": list![i].id,
+                        "urgance_libell": list[i].libell
+                      });
+                      Navigator.of(context).push(MaterialPageRoute(
+                          settings: RouteSettings(arguments: UrganceUrl),
+                          builder: (BuildContext context) {
+                            return Sous_urgance_widget();
+                          }));
                     },
                     child: ListTile(
                       title: Text("${filter![i].libell}"),

@@ -1,14 +1,8 @@
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
-import 'package:project_pfe/API/registre.dart';
 import 'package:project_pfe/actions/Doctor.dart';
-import 'package:project_pfe/authScreen/Auth.dart';
-import 'package:project_pfe/authScreen/Log_in.dart';
-import 'package:project_pfe/authScreen/Widget/Widget.dart';
 import 'package:project_pfe/authScreen/validations.dart';
-
-import '../../Agent/screens/homePage.dart';
+import 'package:project_pfe/doctor/homepageDoctor.dart';
 
 class SignUp_two extends StatefulWidget {
   const SignUp_two({super.key});
@@ -20,6 +14,7 @@ class SignUp_two extends StatefulWidget {
 class _SignUp_twoState extends State<SignUp_two> {
   final _formkey = GlobalKey<FormState>();
   var controller_email = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     dynamic fromPageOne = ModalRoute.of(context)?.settings.arguments;
@@ -84,6 +79,54 @@ class _SignUp_twoState extends State<SignUp_two> {
                               key: _formkey,
                               child: Column(
                                 children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15, vertical: 4),
+                                    child: TextFormField(
+                                      keyboardType: TextInputType.emailAddress,
+                                      validator: (value) =>
+                                          validateEmail(value!),
+                                      controller: controller_email,
+                                      cursorHeight: 30,
+                                      decoration: InputDecoration(
+                                          enabledBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(16),
+                                              borderSide: BorderSide(
+                                                  color: Colors.cyan.shade600)),
+                                          focusedBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(16),
+                                              borderSide: BorderSide(
+                                                  color: Colors.brown)),
+                                          errorBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(16),
+                                              borderSide: BorderSide(
+                                                  color: Colors.red)),
+                                          focusedErrorBorder:
+                                              OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(16),
+                                                  borderSide: BorderSide(
+                                                      color: Colors.red)),
+                                          prefixIcon:
+                                              Icon(Icons.email_outlined),
+                                          prefixIconColor: Color(0xFF034277),
+                                          contentPadding: EdgeInsets.all(10),
+                                          label: Text(
+                                            'Email',
+                                            style: TextStyle(
+                                                color: Colors.cyan.shade600,
+                                                fontFamily: 'PoppinsExtraLight',
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                          border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(16)))),
+                                    ),
+                                  ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 10, horizontal: 15),
@@ -178,32 +221,33 @@ class _SignUp_twoState extends State<SignUp_two> {
                                           onPressed: () async {
                                             if (_formkey.currentState!
                                                 .validate()) {
-                                              showDialog(
-                                                  context: context,
-                                                  barrierDismissible: false,
-                                                  builder: (context) => Center(
-                                                        child:
-                                                            CircularProgressIndicator(),
-                                                      ));
-                                              final result =
-                                                  regiterUserwithName(
-                                                fromPageOne['email'],
-                                                fromPageOne['password'],
-                                                fromPageOne['name'],
-                                                'doctor',
-                                                fromPageOne['speciality'],
-                                              );
-                                              if (result != 'success') {
-                                                snackbar(
-                                                  resultMessage:
-                                                      result.toString(),
+                                              bool res =
+                                                  await Doctor.registre_doctor(
+                                                      fromPageOne['tele'],
+                                                      fromPageOne['name'],
+                                                      fromPageOne['password'],
+                                                      fromPageOne['gender'],
+                                                      controller_email.text
+                                                          .trim(),
+                                                      fromPageOne[
+                                                          'speciality']);
+                                              if (res) {
+                                                Navigator.pushAndRemoveUntil(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          HomepageDoctor()),
+                                                  (route) =>
+                                                      false, // Remove all previous routes from the stack
                                                 );
-                                              }else 
-                                              {Navigator.of(context)
-                                                  .pushReplacement(
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              Auth()));}
+                                              }
+                                              // regiterUserwithName(
+                                              //     fromPageOne['tele'],
+                                              //     fromPageOne['password'],
+                                              //     fromPageOne['name'],
+                                              //     'doctor',
+                                              //     fromPageOne['speciality'],
+                                              //     context);
                                             }
                                           },
                                           child: Text(
@@ -243,24 +287,6 @@ class _SignUp_twoState extends State<SignUp_two> {
                                 ),
                               ),
                             ]),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              IconButton(
-                                  onPressed: () {},
-                                  icon:
-                                      Image.asset('add_Icons/google-plus.png')),
-                              IconButton(
-                                  onPressed: () {},
-                                  icon: Image.asset('add_Icons/apple.png')),
-                              IconButton(
-                                  onPressed: () {},
-                                  icon: Icon(
-                                    Icons.facebook_outlined,
-                                    size: 28,
-                                  ))
-                            ],
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,

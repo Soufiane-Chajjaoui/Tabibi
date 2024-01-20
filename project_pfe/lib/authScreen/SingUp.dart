@@ -4,17 +4,20 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
-import 'package:project_pfe/API/registre.dart';
 import 'package:project_pfe/actions/Patient.dart';
+import 'package:project_pfe/actions/Person.dart';
 import 'package:project_pfe/authScreen/Auth.dart';
 import 'package:project_pfe/authScreen/Log_in.dart';
 import 'package:project_pfe/authScreen/auth_doctor/signUp_two.dart';
 import 'package:project_pfe/authScreen/validations.dart';
+import 'package:project_pfe/patient/homepage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SingUp extends StatefulWidget {
   const SingUp({super.key});
@@ -63,19 +66,21 @@ class _SingUpState extends State<SingUp> {
   late final Map<String, dynamic> data = {};
 
   var controller_name = TextEditingController();
-  var controller_cni = TextEditingController();
   var controller_password = TextEditingController();
-  var controller_email = TextEditingController();
-
+  var controller_tele = TextEditingController();
+  String? gender;
   void passingto2() {
     setState(() {
       data.addAll({
         'name': controller_name.text,
-        'email': controller_email.text,
+        'tele': controller_tele.text,
         'password': controller_password.text,
+        'gender': gender
       });
     });
   }
+
+  bool isSee = true;
 
   @override
   Widget build(BuildContext context) {
@@ -121,13 +126,16 @@ class _SingUpState extends State<SingUp> {
                         padding: EdgeInsets.symmetric(vertical: 10),
                         child: Column(children: [
                           type == 'doctor'
-                              ? Text(
-                                  'do with us!',
-                                  style: TextStyle(
-                                      color: Color.fromARGB(255, 88, 63, 112),
-                                      fontFamily: 'Poppins',
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 32),
+                              ? Padding(
+                                  padding: const EdgeInsets.only(bottom: 5),
+                                  child: Text(
+                                    "Let's do it together!",
+                                    style: TextStyle(
+                                        color: Color.fromARGB(255, 88, 63, 112),
+                                        fontFamily: 'Poppins',
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 32),
+                                  ),
                                 )
                               : Text(
                                   'Register with us!',
@@ -294,15 +302,90 @@ class _SingUpState extends State<SingUp> {
                                               OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20)))),
                                     ),
                                   ),
-
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15, vertical: 4),
+                                    child: DropdownButtonFormField2(
+                                      decoration: InputDecoration(
+                                        prefixIcon: Icon(Icons.transgender),
+                                        errorBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                          borderSide: BorderSide(
+                                            color: Color.fromARGB(
+                                                255, 210, 140, 135),
+                                            width: 0,
+                                            style: BorderStyle.solid,
+                                          ),
+                                        ),
+                                        isDense: true,
+                                        contentPadding: EdgeInsets.only(
+                                            left:
+                                                0), // Remove horizontal padding
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                        ),
+                                      ),
+                                      hint: const Text(
+                                        'Select Your Gender',
+                                        style: TextStyle(
+                                          color: Color(0xFF034277),
+                                          fontFamily: 'PoppinsExtraLight',
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      items: Person.Genders.map((item) =>
+                                          DropdownMenuItem<String>(
+                                            value: item,
+                                            child: Text(
+                                              item,
+                                              style: const TextStyle(
+                                                color: Color(0xFF034277),
+                                                fontFamily: 'PoppinsExtraLight',
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          )).toList(),
+                                      validator: (value) {
+                                        if (value == null) {
+                                          return 'Please select Your Gender.';
+                                        }
+                                        return null;
+                                      },
+                                      onChanged: (value) {
+                                        gender = value;
+                                      },
+                                      buttonStyleData: const ButtonStyleData(
+                                        height: 60,
+                                        padding: EdgeInsets.only(
+                                            left: 10, right: 10),
+                                      ),
+                                      iconStyleData: const IconStyleData(
+                                        icon: Icon(
+                                          Icons.arrow_drop_down,
+                                          color: Colors.black45,
+                                        ),
+                                        iconSize: 30,
+                                      ),
+                                      dropdownStyleData: DropdownStyleData(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 15, vertical: 4),
                                     child: TextFormField(
                                       validator: (value) =>
-                                          validateEmail(value!),
-                                      keyboardType: TextInputType.emailAddress,
-                                      controller: controller_email,
+                                          validatetele(value!),
+                                      keyboardType: TextInputType.number,
+                                      controller: controller_tele,
                                       cursorHeight: 30,
                                       decoration: InputDecoration(
                                           enabledBorder: OutlineInputBorder(
@@ -326,12 +409,11 @@ class _SingUpState extends State<SingUp> {
                                                       BorderRadius.circular(16),
                                                   borderSide: BorderSide(
                                                       color: Colors.red)),
-                                          prefixIcon: Icon(
-                                              Icons.alternate_email_outlined),
+                                          prefixIcon: Icon(Icons.call),
                                           prefixIconColor: Color(0xFF034277),
                                           contentPadding: EdgeInsets.all(10),
                                           label: Text(
-                                            'Email',
+                                            'Telephone',
                                             style: TextStyle(
                                                 color: Colors.cyan.shade600,
                                                 fontFamily: 'PoppinsExtraLight',
@@ -349,10 +431,18 @@ class _SingUpState extends State<SingUp> {
                                     child: TextFormField(
                                       validator: (value) =>
                                           validatePassword(value!),
-                                      obscureText: true,
+                                      obscureText: isSee ?  true : false,
                                       controller: controller_password,
                                       cursorHeight: 30,
                                       decoration: InputDecoration(
+                                          suffixIcon: IconButton(
+                                            icon: Icon(isSee
+                                                ? Icons.visibility
+                                                : Icons.visibility_off),
+                                            onPressed: () => setState(() {
+                                              isSee = !isSee;
+                                            }),
+                                          ),
                                           enabledBorder: OutlineInputBorder(
                                               borderRadius:
                                                   BorderRadius.circular(16),
@@ -388,7 +478,7 @@ class _SingUpState extends State<SingUp> {
                                           ),
                                           border: OutlineInputBorder(
                                               borderRadius: BorderRadius.all(
-                                                  Radius.circular(20)))),
+                                                  Radius.circular(16)))),
                                     ),
                                   ),
                                   Padding(
@@ -459,36 +549,37 @@ class _SingUpState extends State<SingUp> {
                                                 onPressed: () async {
                                                   if (_formkey.currentState!
                                                       .validate()) {
-                                                    showDialog(
-                                                        context: context,
-                                                        barrierDismissible:
-                                                            false,
-                                                        builder: (context) =>
-                                                            Center(
-                                                              child:
-                                                                  CircularProgressIndicator(),
-                                                            ));
-                                                    final result =
-                                                        regiterUserwithName(
-                                                            controller_email
-                                                                .text
-                                                                .trim(),
+                                                    var res = await Patient
+                                                        .registre_patient(
+                                                            gender,
+                                                            controller_tele
+                                                                .text,
+                                                            controller_name
+                                                                .text,
                                                             controller_password
-                                                                .text
-                                                                .trim(),
-                                                            controller_name.text
-                                                                .trim(),
-                                                            type,
-                                                            '');
-                                                    print(result);
+                                                                .text);
+                                                    if (res["success"]) {
+                                                      Navigator
+                                                          .pushAndRemoveUntil(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder:
+                                                                (context) =>
+                                                                    homepage()),
+                                                        (route) =>
+                                                            false, // Remove all previous routes from the stack
+                                                      );
+                                                    }
 
-                                                    Navigator.of(context)
-                                                        .push(MaterialPageRoute(
-                                                      builder: (BuildContext
-                                                          context) {
-                                                        return Log_in();
-                                                      },
-                                                    ));
+                                                    // regiterUserwithName(
+                                                    //     controller_email.text
+                                                    //         .trim(),
+                                                    //     controller_password.text
+                                                    //         .trim(),
+                                                    //     controller_name.text
+                                                    //         .trim(),
+                                                    //     type,
+                                                    //     '' , context);
                                                   }
                                                 },
                                                 child: Padding(
@@ -533,24 +624,47 @@ class _SingUpState extends State<SingUp> {
                               ),
                             ]),
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              IconButton(
-                                  onPressed: () {},
-                                  icon:
-                                      Image.asset('add_Icons/google-plus.png')),
-                              IconButton(
-                                  onPressed: () {},
-                                  icon: Image.asset('add_Icons/apple.png')),
-                              IconButton(
-                                  onPressed: () {},
-                                  icon: Icon(
-                                    Icons.facebook_outlined,
-                                    size: 28,
-                                  ))
-                            ],
-                          ),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.center,
+                          //   children: [
+                          //     IconButton(
+                          //         onPressed: () async {
+                          //           showDialog(
+                          //               context: context,
+                          //               barrierDismissible: false,
+                          //               builder: (context) => Center(
+                          //                     child:
+                          //                         CircularProgressIndicator(),
+                          //                   ));
+                          //           UserCredential? user =
+                          //               await signinWithGoogle();
+                          //           if (user != null) {
+                          //             print(user.user?.email);
+                          //             if (await APIs.UserExist()) {
+                          //               Navigator.of(context)
+                          //                   .pushReplacement(MaterialPageRoute(
+                          //                 builder: (BuildContext context) {
+                          //                   return Auth();
+                          //                 },
+                          //               ));
+                          //             } else {
+                          //               await APIs.CreateUser();
+                          //               Navigator.of(context)
+                          //                   .pushReplacement(MaterialPageRoute(
+                          //                 builder: (BuildContext context) {
+                          //                   return Auth();
+                          //                 },
+                          //               ));
+                          //             }
+                          //           }
+                          //         },
+                          //         icon: Text(
+                          //           'Google',
+                          //           style: TextStyle(
+                          //               fontSize: 18, fontFamily: 'Poppins'),
+                          //         )),
+                          //   ],
+                          // ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -581,7 +695,7 @@ class _SingUpState extends State<SingUp> {
                                     style: TextStyle(
                                         fontSize: 18,
                                         color: Colors.black,
-                                        fontFamily: 'Poppins'),
+                                        fontFamily: 'Poppins_SemiBoldItalic'),
                                   ))
                             ],
                           )

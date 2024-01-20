@@ -1,0 +1,105 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Doctors</title>
+     
+  <!-- Include required CSS and JavaScript files -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+
+
+     <%- include('../component/navbar') %>
+
+ 
+    <style>
+
+
+.dropbtn {
+  background-color: transparent;
+  color: transparent;
+    border: none;
+  cursor: pointer;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+.dropdown-content a:hover {background-color: #f1f1f1;}
+.dropdown:hover .dropdown-content {display: block;}
+.dropdown:hover .dropbtn {background-color:  #937a7a;   border-radius: 50%;  width: 2.5rem; height: 2.5rem;}
+    </style>
+</head>
+<body>
+
+    <%- include('../component/sidebar') %>
+  
+  <!--Main layout-->
+  <main style="margin-top: 58px">
+    <div class="container pt-4">
+         <% if ( Doctors.length > 0) {  %>
+        <table  id="example"  class="py-2"  style="width:100%">
+          <thead>
+              <tr>
+                  <th>Complete nom</th>
+                  <th>Email</th>
+                  <th>Telephone</th>
+               </tr>
+          </thead>
+          <tbody>
+      <% Doctors.forEach(element => {  %>
+      <tr>
+        <td><%=element.complete_name%></td>
+        <td><%=element.mail%></td>
+        <td><%=element.num_tele%></td>
+      </tr>
+      <%  }); %>
+          </tbody>
+        </table>
+       <% }  else { %>
+        <div style='position:relative; padding-top:calc(15% + 30px)' class="d-flex justify-content-center mt-4"> 
+          <p>There are no Doctors to display...</p>
+         </div>
+       
+      <% } %>
+   
+
+
+    </div>
+  </main>
+  <!--Main layout-->
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<script>
+ 
+
+  $(document).ready(function () {
+    $('#example').DataTable(
+       );
+ 
+  })
+
+
+
+
+ 
+</script>
+</html>

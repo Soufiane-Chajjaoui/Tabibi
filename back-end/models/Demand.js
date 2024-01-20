@@ -1,12 +1,13 @@
 
 const mongoose = require('mongoose') ;
-
+const PatientSchema = require('./Person_Model');
 
 
 const SchemaDemand = new mongoose.Schema({
 
             idPatient : {
-                type : mongoose.ObjectId,
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Patient',
                 require : true
             } ,
             accepted : {
@@ -14,17 +15,25 @@ const SchemaDemand = new mongoose.Schema({
                 require : true ,
                 default : false
             },
-            Urgance_name : {
-                type : String ,
-                require : true
-            }
-            ,
-            createAt : {
-                type : Date ,
-                default: new Date()
-            } , 
-        }
-    )
+
+     
+        } ,{timestamps : true}
+    );
+ 
+
+SchemaDemand.pre('save', async function (next) {
+  try {
+    const existingDemand = await Demand.findOne({ idPatient: this.idPatient });
+    if (existingDemand) {
+      throw new Error('You have already sent a request. Please wait a response.');
+    }
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
+ 
 
     const Demand = mongoose.model('Demand' , SchemaDemand) ;
 

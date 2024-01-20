@@ -1,0 +1,13 @@
+body {
+    background-image: url('../assets/background_doctor.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    backdrop-filter: blur(7px);
+  
+
+}
+.container {
+    width: calc(100vw - 1px); /* Subtract 20px from the window width */
+    height: calc(100vh - 1px); /* Subtract 20px from the window height */
+       
+})

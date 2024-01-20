@@ -1,0 +1,219 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Reponses</title>
+
+    <%- include('../component/navbar') %>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+    <style>
+
+
+.dropbtn {
+  background-color: transparent;
+  color: transparent;
+    border: none;
+  cursor: pointer;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+.dropdown-content a:hover {background-color: #f1f1f1;}
+.dropdown:hover .dropdown-content {display: block;}
+.dropdown:hover .dropbtn {background-color:  #937a7a;   border-radius: 50%;  width: 2.5rem; height: 2.5rem;}
+    </style>
+</head>
+<body>
+
+    <%- include('../component/sidebar') %>
+  
+  <!--Main layout-->
+  <main style="margin-top: 58px">
+    <div class="container pt-4">
+      <div class="alert alert-warning alert-dismissible fade show" id="alert" style="display: none;" role="alert">
+        <strong id="libell_delete"></strong> Urgance ete bien supprimer.
+        <button type="button" class="btn-close" id="close-alert" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      <div class="d-flex ">
+        <div class="pt-2 me-auto">
+        <div class="input-group ">
+            <div class="form-outline">
+              <input id="search-input" type="text"  onkeyup="FilterCard()" class="form-control" />
+              <label class="form-label" for="form1">Search</label>
+            </div>
+            <button id="search-button" type="button" class="btn btn-primary">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+      </div> 
+      <hr>
+      <div class="row ">
+     
+      <% if ( reponses.length > 0) {  %>
+        
+        <% reponses.forEach(element => { %>
+          <div class="col-3 p-2">
+            <div id="cardWrapper_<%= element._id %>">
+              <div class="card" id="filterSearch" style="background-color:#cfcfcf;">
+                <center>
+                  <img src="<%= element.name_Image.url %>" class="img-fluid" width="50%" />
+                </center>
+                <div class="card-body">
+                  <h5 class="card-title text-center " style="  line-height: 1.2;  
+                  height: 2.4em;  
+                  overflow: hidden;
+                  text-overflow: ellipsis;"><%= element.description %></h5>
+                  <div class="dropdown" style="float:right;">
+                    <button class="dropbtn">
+                      <img src="../assets/planning.png" width="30px" alt="menu operation" />
+                    </button>
+                    <div class="dropdown-content">
+                      <a href="#" data-mdb-toggle="modal" data-mdb-target="#updatemodal" data-mdb-whatever="@mdo"
+                        onclick="updateReponse(['<%= element._id %>', '<%= element.description %>', '<%= element.moreDetails.details %>', '<%= element.name_Image.public_id %>'])">
+                        <i class="fa fa-pencil-square-o fa-fw me-2" aria-hidden="true"></i> Modifie
+                      </a>
+                      <a onclick="deleteReponse('<%= element._id %>', '<%= element.name_Image.public_id %>')"
+                        style="cursor: pointer;" class="delete">
+                        <i class="fa fa-trash-o fa-fw me-2" aria-hidden="true"></i> Delete
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% }); %>
+       
+       
+       <% }  else { %>
+        <div style='position:relative; padding-top:calc(10% + 30px)' class="d-flex justify-content-center mt-4"> 
+          <img src="assets/empty-folder.png" alt="empty Folder" width="20%" height="50%">
+          <br>
+          <!-- <p>There are no Sous Urgance to display...</p> -->
+         </div>
+      <% } %>
+      </div> 
+      <!-- Modals -->
+          <div class="modal fade" id="updatemodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Modifier Reponse</h5>
+                  <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form  action="../update-reponse" method="post" enctype="multipart/form-data">
+                  <input type="hidden" name="id" id="idReponse">
+
+                  <input type="hidden" name="publicId" id="publicId">
+
+                   <div class="modal-body">
+                    <div class="mb-3">
+                        <div class="mb-3">
+                          <label for="recipient-name" class="col-form-label">Reponse Sous Sous :</label>
+                          <textarea name="Reponse" id="description" class="md-textarea form-control" rows="1" required ></textarea>
+                        </div>
+                        <div class="mb-3">
+                          <label for="recipient-name" class="col-form-label">Plus Details de Reponse:</label>
+                          <textarea name="MoreDetails" id="MoreDetails" class="md-textarea form-control" rows="3" required ></textarea>
+                        </div>
+                       </div>
+                    <div class="file-upload-wrapper">
+                      <label for="file" class="col-form-label">Image Reponse:</label>
+                      <input type="file" id="input-file-now" name="image_up" id="image_up" class="form-control"  />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
+                  <input type="submit" class="btn btn-primary"  value="Send message" />
+                </div>
+              </form>
+              </div>
+            </div>
+          </div>
+    </div>
+  </main>
+  <!--Main layout-->
+</body>
+<script>
+
+
+function updateReponse(args) {
+    document.getElementById('idReponse').value = args[0];
+    document.getElementById('description').value = args[1];
+    document.getElementById('MoreDetails').value = args[2];
+    const public_id = args[3].replace('uploads/', '');
+    document.getElementById('publicId').value = public_id;
+}
+  
+ async function  deleteReponse(arg1 , arg2) {
+    
+    showSpinner();
+    const res = await fetch('/delete-reponse' , 
+    {
+        headers: {'Content-Type': 'application/json'},
+        body   : JSON.stringify({
+            id : arg1.trim() ,
+            public_id : arg2.trim()
+        }),
+        method : 'DELETE'
+    });
+    const response = await res.json();
+    console.log(response);
+    if (response.success) {
+     // Remove the card wrapper from the DOM
+     const itemRemoved = document.getElementById(`cardWrapper_${arg1}`); 
+        if (itemRemoved) {
+          itemRemoved.remove();  
+          hideSpinner()  
+
+        }
+
+
+    }
+  }
+
+
+  // function FilterCard() {
+  //   const input = document.getElementById('search-input') ;
+  //   const cards = document.getElementById('filterSearch') ;
+  //   let filter = input.value ;
+  //   for (let i = 0; i < cards.length; i++) {
+  //       let title = cards[i].querySelector(".card-body");
+  //       if (title.innerText.indexOf(filter) > -1) {
+  //           cards[i].classList.remove("d-none")
+  //       } else {
+  //           cards[i].classList.add("d-none")
+  //       }
+  //   }
+
+  // }
+//     const searchButton = document.getElementById('search-button');
+// const searchInput = document.getElementById('search-input');
+// searchButton.addEventListener('click', () => {
+//   const inputValue = searchInput.value;
+//   alert(inputValue);
+// });
+</script>
+</html>

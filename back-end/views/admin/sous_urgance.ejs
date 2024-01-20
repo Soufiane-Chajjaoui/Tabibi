@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   
-    <title>Sous urgance</title>
+    <title>Sous urgances</title>
     <%- include('../component/navbar') %>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
@@ -67,17 +67,6 @@
             </button>
           </div>
         </div>
-          <div class=" p-2 ">
-            <button
-                type="button"
-                class="btn btn-primary"
-                data-mdb-toggle="modal"
-                data-mdb-target="#Ajouter"
-                data-mdb-whatever="@mdo"
-                >
-                <i class="fa fa-plus"></i> Urgance
-            </button>
-        </div>
       </div> 
       <hr>
      
@@ -87,26 +76,27 @@
         
       <% sous_urgance.forEach(element => {  %>
         <div class="col-3 p-2" >
-           <div class="card  text-center" id="filterSearch" style="background-color:#cfcfcf;">
-              <center><img src="<%= element.name_Image.url %>"  style="padding-top: 20px " class="img-fluid" width="70px" height="40px" /></center>
+          <div id="cardWrapper_<%= element._id %>">
+
+           <div class="card  text-center" id="filterSearch"  style="background-color:#cfcfcf;">
+              <center><img src="<%= element.name_Image.url %>" class="img-fluid" /></center>
             
-              <div class="card-header"><%= element.id_Urgance.libell_urg %></div>
+              
 
            <div class="card-body">
              <h5 class="card-title"><%= element.libell %></h5>
              <div class="dropdown" style="float:right;">
               <button class="dropbtn"><img src="../assets/planning.png" width="30px" alt=""></button>
               <div class="dropdown-content">
-               
                 <a href="#"  data-mdb-toggle="modal"
-                data-mdb-target="#Reponse"
-                data-mdb-whatever="@mdo" onclick="reponse([ '<%= element._id %>' , '<%= element.libell %>'])""><i class="fa fa-code-fork fa-fw me-2" aria-hidden="true"></i>
-                  Reponse</a>
+                data-mdb-target="#SousSousUrg"
+                data-mdb-whatever="@mdo" onclick="SousSousUrg([ '<%= element._id %>' , '<%= element.libell %>'])""><i class="fa fa-code-fork fa-fw me-2" aria-hidden="true"></i>
+                  Sous Sous</a>
                 <a href="#" data-mdb-toggle="modal"
                 data-mdb-target="#updatemodal"
-                data-mdb-whatever="@mdo" onclick="update([ '<%= element._id %>' , '<%= element.libell %>'  , '<%= element.name_Image.url %>'])"><i class="fa fa-pencil-square-o fa-fw me-2" aria-hidden="true"></i>
+                data-mdb-whatever="@mdo" onclick="update([ '<%= element._id %>' , '<%= element.libell %>'  , '<%= element.name_Image.public_id %>'])"><i class="fa fa-pencil-square-o fa-fw me-2" aria-hidden="true"></i>
                     Modifie</a>
-                    <a  data-doc="<%= element._id %>" data-img="<%= element.name_Image.public_id %>" style="cursor: pointer;" class="delete"><i class="fa fa-trash-o fa-fw me-2" aria-hidden="true"></i>
+                    <a  onclick="removeSous('<%= element._id %>' ,  '<%= element.name_Image.public_id %>')" style="cursor: pointer;" class="delete"><i class="fa fa-trash-o fa-fw me-2" aria-hidden="true"></i>
                       Delete</a>
               </div> 
             </div>
@@ -114,74 +104,48 @@
          </div> 
           
          </div>
+         </div>
       <%  }); %>
        
        
        <% }  else { %>
-        <div style='position:relative; padding-top:calc(15% + 30px)' class="d-flex justify-content-center mt-4"> 
-          <p>There are no Urgance to display...</p>
+        <div style='position:relative; padding-top:calc(10% + 30px)' class="d-flex justify-content-center mt-4"> 
+          <img src="assets/empty-folder.png" alt="empty Folder" width="20%" height="50%">
+          <br>
+          <!-- <p>There are no Sous Urgance to display...</p> -->
          </div>
        
       <% } %>
       </div>   
       <!-- Modals -->
-
-        <!-- Modal -->
-        <div class="modal top fade" id="Reponse" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="static" data-mdb-keyboard="false">
-          <div class="modal-dialog ">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel"> </h5>
-                <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-              <form action="../add-reponse" method="post" enctype="multipart/form-data">
+      <div class="modal fade" id="SousSousUrg" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel"> </h5>
+              <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form  action="../add-sous-sous-urgance" method="post" enctype="multipart/form-data">
+               <input type="hidden" name="id_sous_urgance" id="id_sous_urgance">
+            <div class="modal-body">
                 <div class="mb-3">
-                  <label for="recipient-name" class="col-form-label">Description de Reponse:</label>
-                  <textarea name="Description"  class="md-textarea form-control" rows="3" required ></textarea>
-                  <input type="hidden" name="id_sous_urgance" id="id_sous_urgance">
+                  <label for="recipient-name" class="col-form-label">Libell:</label>
+                  <input type="text" name="libell" class="form-control" required />
                 </div>
                 <div class="file-upload-wrapper">
-                  <label for="file" class="col-form-label">Image Reponse:</label>
-                  <input type="file" id="input-file-now" name="image_reponse" id="file" accept="image/*" class="form-control" required />
+                  <label for="file" class="col-form-label">Image Urgance:</label>
+                  <input type="file" id="input-file-now" name="image_sous_sous"  class="form-control"  />
                 </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">
-                  Close
-                </button>
-                <button type="submit" class="btn btn-primary">Save changes</button>
-              </div>
-            </form>
             </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
+              <input type="submit" class="btn btn-primary"  value="Add" />
+            </div>
+          </form>
           </div>
         </div>
-          <div class="modal fade" id="Ajouter" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">Ajouter Urgance</h5>
-                  <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form  action="../admin-add_Urgance" method="post" enctype="multipart/form-data">
-                <div class="modal-body">
-                    <div class="mb-3">
-                      <label for="recipient-name" class="col-form-label">Libell:</label>
-                      <input type="text" name="libell" class="form-control" id="recipient-name" required />
-                    </div>
-                    <div class="file-upload-wrapper">
-                      <label for="file" class="col-form-label">Image Urgance:</label>
-                      <input type="file" id="input-file-now" name="image" id="file" accept="image/*" class="form-control" required />
-                    </div>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
-                  <input type="submit" class="btn btn-primary"  value="Send message" />
-                </div>
-              </form>
-              </div>
-            </div>
-          </div>
+      </div>
+        <!-- Modal Update Sous Urgance-->
           <div class="modal fade" id="updatemodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
               <div class="modal-content">
@@ -189,8 +153,9 @@
                   <h5 class="modal-title" id="exampleModalLabel">Modifier Urgance</h5>
                   <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form  action="../admin-update_urgance" method="post" enctype="multipart/form-data">
-                  <input type="hidden" name="id" id="urganceId">
+                <form  action="../update-sous-urgance" method="post" enctype="multipart/form-data">
+                  <input type="hidden" name="id" id="sous_urganceId">
+                  <input type="hidden" name="public_id" id="public_id">
                 <div class="modal-body">
                     <div class="mb-3">
                       <label for="recipient-name" class="col-form-label">Libell:</label>
@@ -215,56 +180,38 @@
 </body>
 <script>
 
-  function reponse(args) {
-    document.getElementById('exampleModalLabel').innerHTML = 'Reponse de ' + args[1] ;
+  function SousSousUrg(args) {
+    document.getElementById('exampleModalLabel').innerHTML = 'Sous de ' + args[1] ;
     document.getElementById('id_sous_urgance').value = args[0] ;
     document.getElementById('Reponse').onclick ;
   }
   function update(args) {
 
-    document.getElementById('urganceId').value = args[0] ;
+    document.getElementById('sous_urganceId').value = args[0] ;
     document.getElementById('libell_up').value = args[1] ;
+    document.getElementById('public_id').value = args[2] ;
     document.getElementById('updatemodal').onclick ;
     
   }
- 
 
-  $(document).ready(function () {
-     $("#close-alert").on('click' , function(){
-      $('#alert').remove() ;
-    })
-
-     $("#search-input").on("keyup" , function () {
-      var value = $(this).val().toLowerCase() ;
-      $("#filterSearch").filter(function() {
-      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+  async function removeSous(arg1 ,arg2) {
+    showSpinner();
+    const res = await fetch('/delete-sous-urgance/'+arg1.trim()+'/'+arg1.trim() ,{
+      method : 'DELETE' ,
+      headers : { 'Content-Type': 'application/json' },
     });
-    })
-    $('.delete').on('click' , function () {
-       var urganceId =  $(this).attr("data-doc") ;
-       console.log(urganceId)
-       var id_image = $(this).attr("data-img") ;
-       var obj = $(this) ; 
-      $.ajax({
-        url : "/delete-Sous_urgance" ,
-        type : "delete" ,
-        data : { "urganceId" : urganceId , 'id_image' : id_image } ,
-        success : function (response) {
-           if (response.success == true) {
 
-            $(obj).parent().parent().parent().parent().remove() ;
-             $('#alert').css("display" , "block") ;
-             $('#libell_delete').html( response.message ) ;
-           }else alert('false tahaja mkhdama') ;
-        }
-      })
-      
-    })
-  })
+    const result = await res.json();
 
-
-
-
-
+    if (result.success) {
+        // Remove the card wrapper from the DOM
+    const cardWrapperToRemove = document.getElementById(`cardWrapper_${arg1}`);
+    if (cardWrapperToRemove) {
+    cardWrapperToRemove.remove();
+    hideSpinner()  
+    }
+  }
+}
+ 
 </script>
 </html>

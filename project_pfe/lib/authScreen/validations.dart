@@ -1,10 +1,12 @@
 String? validatePassword(String value) {
-  RegExp regex = RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$');
+  RegExp regex = RegExp(r'^(?=.*?[a-z]).{8,}$');
   if (value.isEmpty) {
     return 'Please enter password';
+  } else if (value.length < 8) {
+    return 'Please then 10 letters';
   } else {
     if (!regex.hasMatch(value)) {
-      return "Enter valid password exemple 'Helloworld2023'";
+      return "Enter valid password exemple 'helloworld2023'";
     } else {
       return null;
     }

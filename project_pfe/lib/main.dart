@@ -11,6 +11,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:project_pfe/authScreen/auth_doctor/signUp_two.dart';
 
 import 'package:project_pfe/choice_type.dart';
+import 'package:project_pfe/doctor/homepageDoctor.dart';
 import 'package:project_pfe/patient/homepage.dart';
 
 // import 'package:project_pfe/testApi.dart';
@@ -21,13 +22,15 @@ import 'package:project_pfe/start_Screen.dart';
 import 'package:project_pfe/testshowImage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'patient/EditProfil.dart';
+
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
   final prefs = await SharedPreferences.getInstance();
   bool showhome = false;
-  if (prefs.getString('patient') != null) {
+  if (await prefs.getString('_id') != null) {
     showhome = true;
   }
   runApp(MyApp(showhome: showhome));
@@ -76,7 +79,7 @@ class MyApp extends StatelessWidget {
       //   },
       // ),
       // home: showhome ? homepage() :StartPage() ,
-      home: Auth(),
+      home: StartPage(),
       debugShowCheckedModeBanner: false,
     );
   }

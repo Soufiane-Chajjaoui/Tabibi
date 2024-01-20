@@ -1,11 +1,10 @@
 // ignore_for_file: unused_local_variable, non_constant_identifier_names, prefer_const_constructors, prefer_const_literals_to_create_immutables, unnecessary_string_interpolations, await_only_futures
 
-import 'dart:convert';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
-import 'package:project_pfe/API/api.dart';
 import 'package:project_pfe/actions/Patient.dart';
+import 'package:project_pfe/actions/Person.dart';
+import 'package:project_pfe/main.dart';
 import 'package:project_pfe/patient/EditProfil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,7 +18,7 @@ class Profil extends StatefulWidget {
 class _ProfilState extends State<Profil> {
   String? id;
   Patient? patient;
-
+  String? image;
   String name = 'user name';
   getProfil() async {
     final prefs = await SharedPreferences.getInstance();
@@ -27,21 +26,22 @@ class _ProfilState extends State<Profil> {
     print(id);
     patient = await Patient.getProfil(id);
     setState(() {
+      image = patient?.image!['url'];
       name = patient!.complete_name!;
     });
-    print(patient!.complete_name);
   }
 
   @override
   void initState() {
     // TODO: implement initState
-    // getProfil();
+    getProfil();
     super.initState();
-    final user = APIs.auth.currentUser;
-    print(user);
-    setState(() {
-      name = "${user?.displayName.toString()}";
-    });
+    //  APIs.getSelfInfo();
+    //  final user = APIs.auth.currentUser;
+    //  print(user);
+    // setState(() {
+    //   name = "${user?.displayName.toString()}";
+    // });
   }
 
   // widgets
@@ -227,12 +227,18 @@ class _ProfilState extends State<Profil> {
                                   Color.fromARGB(179, 102, 80, 148),
                               foregroundColor:
                                   Color.fromARGB(184, 246, 229, 229)),
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
+                          onPressed: () async {
+                            bool isBack = await Navigator.of(context)
+                                .push(MaterialPageRoute(
                               builder: (BuildContext context) {
-                                return EditProfil();
+                                return EditProfil(
+                                  type: 'patient',
+                                );
                               },
                             ));
+                            if (isBack) {
+                              await getProfil();
+                            }
                           },
                           icon: Icon(Icons.edit)),
                     ],
@@ -241,15 +247,24 @@ class _ProfilState extends State<Profil> {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CircleAvatar(
-                      radius: 40,
-                      child: Image.asset(
-                        "images/pngwing.png",
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.fill,
-                      ),
-                    ),
+                    ClipRRect(
+                        borderRadius: BorderRadius.circular(50),
+                        child: CachedNetworkImage(
+                          fit: BoxFit.cover,
+                          imageUrl: image ?? "harawkan",
+                          height: 70,
+                          width: 70,
+                          progressIndicatorBuilder: (context, url, progress) =>
+                              Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                          errorWidget: (context, url, error) => Image.asset(
+                            'images/user.png',
+                            fit: BoxFit.cover,
+                            height: 170,
+                            width: 170,
+                          ),
+                        )),
                     Text(
                       "${name}",
                       style: TextStyle(fontFamily: 'Poppins'),
@@ -257,12 +272,11 @@ class _ProfilState extends State<Profil> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('Male '),
+                        Text('${patient?.gender} '),
                         Icon(
                           Icons.circle,
                           size: 9,
                         ),
-                        Text(' 19 y.o')
                       ],
                     )
                   ],
@@ -295,8 +309,17 @@ class _ProfilState extends State<Profil> {
               listechoixe(Icons.history_rounded, 'Emergency Historic', true),
               listechoixe(Icons.help_outlined, 'Helps & Support', false),
               IconButton(
-                  onPressed: () {
-                    APIs.auth.signOut();
+                  onPressed: () async {
+                    await Person.LogOut();
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MyApp(
+                                showhome: false,
+                              )),
+                      (route) =>
+                          false, // Remove all previous routes from the stack
+                    );
                   },
                   icon: listechoixe(Icons.logout_rounded, 'Logout', false))
             ],
